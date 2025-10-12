@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: volunteer-hub-backend
+  
+  # MySQL Database Configuration (No Password)
+  datasource:
+    url: jdbc:mysql://localhost:3306/volunteerhub?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password:  # No password
+  
+  jpa:
+    hibernate:
+      ddl-auto: update  # create-drop, create, update, validate, none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+jwt:
+  secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
+  expiration: 86400000 # 24 hours in milliseconds
+
+server:
+  port: 8081  # Đổi port để tránh conflict
+
+# CORS configuration  
+cors:
+  allowed-origins: http://localhost:5174,http://localhost:5173
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true
+
+logging:
+  level:
+    com.volunteerhub: DEBUG
+    org.springframework.security: DEBUG
