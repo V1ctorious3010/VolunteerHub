@@ -1,0 +1,135 @@
+{
+    "opportunities": [
+        {
+            "id": "vol001",
+            "title": "Beach Cleanup Campaign",
+            "description": "Join us in cleaning up the beautiful beaches of Da Nang. Help preserve marine life and keep our coastline pristine. We provide all necessary equipment including gloves, bags, and refreshments. This is a great opportunity to meet like-minded people while making a positive impact on our environment.",
+            "thumbnail": "https://images.unsplash.com/photo-1618477247222-acbdb0e159b3?w=500",
+            "category": "Environment",
+            "location": "Da Nang Beach",
+            "address": "My Khe Beach, Son Tra District, Da Nang City",
+            "startDate": "2024-11-15T07:00:00",
+            "endDate": "2024-11-15T12:00:00",
+            "deadline": "2024-11-10",
+            "maxVolunteers": 50,
+            "currentVolunteers": 23,
+            "status": "ACTIVE",
+            "requirements": [
+                "Minimum age: 16 years old",
+                "Good physical health",
+                "Commitment to full 5-hour session",
+                "Bring your own water bottle"
+            ],
+            "benefits": [
+                "Certificate of participation",
+                "Free lunch and drinks",
+                "Transportation reimbursement",
+                "Volunteer hours counted for students"
+            ],
+            "organization": {
+                "id": 2,
+                "name": "Green Earth Foundation",
+                "email": "org1@volunteerhub.com",
+                "phoneNumber": "+84 987 654 321",
+                "logo": "https://ui-avatars.com/api/?name=Green+Earth&background=22c55e&color=fff"
+            },
+            "contactPerson": {
+                "name": "Ms. Linh Nguyen",
+                "email": "linh@greenearthvn.org",
+                "phone": "+84 905 123 456"
+            },
+            "createdAt": "2024-10-01T00:00:00",
+            "updatedAt": "2024-10-15T00:00:00"
+        },
+        {
+            "id": "vol002",
+            "title": "Teaching English to Rural Children",
+            "description": "Volunteer to teach English to underprivileged children in rural areas. Make a difference in their future by helping them develop language skills that will open doors to better opportunities. No previous teaching experience required - we provide training and materials.",
+            "thumbnail": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500",
+            "category": "Education",
+            "location": "Ha Giang Province",
+            "address": "Dong Van District, Ha Giang Province",
+            "startDate": "2024-11-20T08:00:00",
+            "endDate": "2024-11-27T17:00:00",
+            "deadline": "2024-11-15",
+            "maxVolunteers": 20,
+            "currentVolunteers": 12,
+            "status": "ACTIVE",
+            "requirements": [
+                "English proficiency (B1 level or higher)",
+                "Passion for teaching children",
+                "Available for full week (7 days)",
+                "Comfortable with basic living conditions"
+            ],
+            "benefits": [
+                "Free accommodation and meals",
+                "Cultural exchange experience",
+                "Official volunteer certificate",
+                "Teaching experience for CV"
+            ],
+            "organization": {
+                "id": 3,
+                "name": "Education For All",
+                "email": "edu@volunteerhub.com",
+                "phoneNumber": "+84 976 543 210",
+                "logo": "https://ui-avatars.com/api/?name=Education+For+All&background=3b82f6&color=fff"
+            },
+            "contactPerson": {
+                "name": "Mr. Tuan Pham",
+                "email": "tuan@eduforall.vn",
+                "phone": "+84 903 987 654"
+            },
+            "createdAt": "2024-09-15T00:00:00",
+            "updatedAt": "2024-10-14T00:00:00"
+        },
+        {
+            "id": "vol003",
+            "title": "Food Distribution for the Homeless",
+            "description": "Help distribute meals to homeless people in Hanoi. Every meal brings hope and warmth to those in need. Join our weekly program and be part of a compassionate community making real change in people's lives.",
+            "thumbnail": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500",
+            "category": "Community",
+            "location": "Hanoi City Center",
+            "address": "Hoan Kiem District, Hanoi",
+            "startDate": "2024-10-20T17:00:00",
+            "endDate": "2024-10-20T21:00:00",
+            "deadline": "2024-10-18",
+            "maxVolunteers": 30,
+            "currentVolunteers": 28,
+            "status": "ACTIVE",
+            "requirements": [
+                "Compassionate and respectful attitude",
+                "Physical ability to carry food boxes",
+                "Available from 5 PM to 9 PM",
+                "Food safety awareness"
+            ],
+            "benefits": [
+                "Make immediate impact",
+                "Community service hours",
+                "Meet inspiring people",
+                "Dinner provided for volunteers"
+            ],
+            "organization": {
+                "id": 4,
+                "name": "Helping Hands",
+                "email": "help@volunteerhub.com",
+                "phoneNumber": "+84 965 432 109",
+                "logo": "https://ui-avatars.com/api/?name=Helping+Hands&background=f59e0b&color=fff"
+            },
+            "contactPerson": {
+                "name": "Ms. Hoa Tran",
+                "email": "hoa@helpinghands.vn",
+                "phone": "+84 908 765 432"
+            },
+            "createdAt": "2024-09-01T00:00:00",
+            "updatedAt": "2024-10-15T00:00:00"
+        }
+    ],
+    "featured": [
+        "vol001",
+        "vol002",
+        "vol004"
+    ],
+    "urgent": [
+        "vol003"
+    ]
+}
