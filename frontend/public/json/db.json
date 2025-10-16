@@ -1,210 +1,223 @@
 {
-    "users": [
-        {
-            "id": 1,
-            "email": "admin@volunteerhub.com",
-            "firstName": "Admin",
-            "lastName": "User",
-            "phoneNumber": "+84 123 456 789",
-            "role": "ADMIN",
-            "enabled": true,
-            "createdAt": "2024-01-01T00:00:00",
-            "updatedAt": "2024-01-01T00:00:00"
-        },
-        {
-            "id": 2,
-            "email": "org1@volunteerhub.com",
-            "firstName": "Green",
-            "lastName": "Earth Foundation",
-            "phoneNumber": "+84 987 654 321",
-            "role": "ORGANIZATION",
-            "enabled": true,
-            "createdAt": "2024-01-15T00:00:00",
-            "updatedAt": "2024-01-15T00:00:00"
-        },
-        {
-            "id": 3,
-            "email": "volunteer1@gmail.com",
-            "firstName": "Nguyen",
-            "lastName": "Van A",
-            "phoneNumber": "+84 912 345 678",
-            "role": "VOLUNTEER",
-            "enabled": true,
-            "createdAt": "2024-02-01T00:00:00",
-            "updatedAt": "2024-02-01T00:00:00"
-        },
-        {
-            "id": 4,
-            "email": "volunteer2@gmail.com",
-            "firstName": "Tran",
-            "lastName": "Thi B",
-            "phoneNumber": "+84 923 456 789",
-            "role": "VOLUNTEER",
-            "enabled": true,
-            "createdAt": "2024-02-05T00:00:00",
-            "updatedAt": "2024-02-05T00:00:00"
-        }
-    ],
-    "volunteers": [
-        {
-            "_id": "vol001",
-            "post_title": "Beach Cleanup Campaign",
-            "thumbnail": "https://images.unsplash.com/photo-1618477247222-acbdb0e159b3?w=500",
-            "category": "Environment",
-            "deadline": "2024-12-31",
-            "description": "Join us in cleaning up the beautiful beaches of Da Nang. Help preserve marine life and keep our coastline pristine.",
-            "location": "Da Nang Beach",
-            "max_volunteers": 50,
-            "current_volunteers": 23,
-            "status": "ACTIVE",
-            "organization": {
-                "id": 2,
-                "name": "Green Earth Foundation",
-                "email": "org1@volunteerhub.com"
-            }
-        },
-        {
-            "_id": "vol002",
-            "post_title": "Teaching English to Rural Children",
-            "thumbnail": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500",
-            "category": "Education",
-            "deadline": "2024-11-30",
-            "description": "Volunteer to teach English to underprivileged children in rural areas. Make a difference in their future.",
-            "location": "Ha Giang Province",
-            "max_volunteers": 20,
-            "current_volunteers": 12,
-            "status": "ACTIVE",
-            "organization": {
-                "id": 2,
-                "name": "Education For All",
-                "email": "edu@volunteerhub.com"
-            }
-        },
-        {
-            "_id": "vol003",
-            "post_title": "Food Distribution for the Homeless",
-            "thumbnail": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500",
-            "category": "Community",
-            "deadline": "2024-10-25",
-            "description": "Help distribute meals to homeless people in Hanoi. Every meal brings hope and warmth to those in need.",
-            "location": "Hanoi City Center",
-            "max_volunteers": 30,
-            "current_volunteers": 28,
-            "status": "ACTIVE",
-            "organization": {
-                "id": 2,
-                "name": "Helping Hands",
-                "email": "help@volunteerhub.com"
-            }
-        },
-        {
-            "_id": "vol004",
-            "post_title": "Tree Planting Initiative",
-            "thumbnail": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500",
-            "category": "Environment",
-            "deadline": "2024-12-15",
-            "description": "Join our tree planting campaign to create green spaces in urban areas. Together we can combat climate change.",
-            "location": "Ho Chi Minh City",
-            "max_volunteers": 100,
-            "current_volunteers": 67,
-            "status": "ACTIVE",
-            "organization": {
-                "id": 2,
-                "name": "Green Earth Foundation",
-                "email": "org1@volunteerhub.com"
-            }
-        },
-        {
-            "_id": "vol005",
-            "post_title": "Senior Citizens Care Program",
-            "thumbnail": "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=500",
-            "category": "Healthcare",
-            "deadline": "2024-11-20",
-            "description": "Spend time with elderly residents at nursing homes. Bring joy through conversations, activities, and companionship.",
-            "location": "Hue City",
-            "max_volunteers": 15,
-            "current_volunteers": 8,
-            "status": "ACTIVE",
-            "organization": {
-                "id": 2,
-                "name": "Elder Care Vietnam",
-                "email": "elder@volunteerhub.com"
-            }
-        },
-        {
-            "_id": "vol006",
-            "post_title": "Animal Shelter Assistance",
-            "thumbnail": "https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=500",
-            "category": "Animal Welfare",
-            "deadline": "2024-12-20",
-            "description": "Help care for abandoned animals at our shelter. Feed, clean, and give love to dogs and cats awaiting adoption.",
-            "location": "Can Tho City",
-            "max_volunteers": 25,
-            "current_volunteers": 19,
-            "status": "ACTIVE",
-            "organization": {
-                "id": 2,
-                "name": "Paws & Hearts",
-                "email": "paws@volunteerhub.com"
-            }
-        }
-    ],
-    "applications": [
-        {
-            "id": 1,
-            "userId": 3,
-            "opportunityId": "vol001",
-            "status": "APPROVED",
-            "appliedAt": "2024-10-01T10:00:00",
-            "updatedAt": "2024-10-02T14:30:00"
-        },
-        {
-            "id": 2,
-            "userId": 3,
-            "opportunityId": "vol004",
-            "status": "PENDING",
-            "appliedAt": "2024-10-10T09:15:00",
-            "updatedAt": "2024-10-10T09:15:00"
-        },
-        {
-            "id": 3,
-            "userId": 4,
-            "opportunityId": "vol002",
-            "status": "APPROVED",
-            "appliedAt": "2024-09-25T11:20:00",
-            "updatedAt": "2024-09-26T08:45:00"
-        }
-    ],
-    "categories": [
-        {
-            "id": 1,
-            "name": "Environment",
-            "description": "Environmental conservation and sustainability projects",
-            "icon": "🌿"
-        },
-        {
-            "id": 2,
-            "name": "Education",
-            "description": "Teaching and educational support programs",
-            "icon": "📚"
-        },
-        {
-            "id": 3,
-            "name": "Community",
-            "description": "Community development and social welfare",
-            "icon": "🤝"
-        },
-        {
-            "id": 4,
-            "name": "Healthcare",
-            "description": "Health and medical support services",
-            "icon": "🏥"
-        },
-        {
-            "id": 5,
-            "name": "Animal Welfare",
-            "description": "Animal rescue and care programs",
-            "icon": "🐾"
-        }
-    ]
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@volunteerhub.com",
+      "firstName": "Admin",
+      "lastName": "User",
+      "phoneNumber": "+84 123 456 789",
+      "role": "ADMIN",
+      "enabled": true,
+      "createdAt": "2024-01-01T00:00:00",
+      "updatedAt": "2024-01-01T00:00:00"
+    },
+    {
+      "id": 2,
+      "email": "org1@volunteerhub.com",
+      "firstName": "Green",
+      "lastName": "Earth Foundation",
+      "phoneNumber": "+84 987 654 321",
+      "role": "ORGANIZATION",
+      "enabled": true,
+      "createdAt": "2024-01-15T00:00:00",
+      "updatedAt": "2024-01-15T00:00:00"
+    },
+    {
+      "id": 3,
+      "email": "volunteer1@gmail.com",
+      "firstName": "Nguyen",
+      "lastName": "Van A",
+      "phoneNumber": "+84 912 345 678",
+      "role": "VOLUNTEER",
+      "enabled": true,
+      "createdAt": "2024-02-01T00:00:00",
+      "updatedAt": "2024-02-01T00:00:00"
+    },
+    {
+      "id": 4,
+      "email": "volunteer2@gmail.com",
+      "firstName": "Tran",
+      "lastName": "Thi B",
+      "phoneNumber": "+84 923 456 789",
+      "role": "VOLUNTEER",
+      "enabled": true,
+      "createdAt": "2024-02-05T00:00:00",
+      "updatedAt": "2024-02-05T00:00:00"
+    },
+    {
+      "id": 5,
+      "email": "a@gmail.com",
+      "password": "123456",
+      "firstName": "a",
+      "lastName": "",
+      "displayName": "a",
+      "phoneNumber": "",
+      "photoURL": "https://ui-avatars.com/api/?name=a",
+      "role": "user",
+      "enabled": true,
+      "createdAt": "2025-10-16T10:01:13.214Z"
+    }
+  ],
+  "volunteers": [
+    {
+      "_id": "vol001",
+      "post_title": "Beach Cleanup Campaign",
+      "thumbnail": "https://images.unsplash.com/photo-1618477247222-acbdb0e159b3?w=500",
+      "category": "Environment",
+      "deadline": "2024-12-31",
+      "description": "Join us in cleaning up the beautiful beaches of Da Nang. Help preserve marine life and keep our coastline pristine.",
+      "location": "Da Nang Beach",
+      "max_volunteers": 50,
+      "current_volunteers": 23,
+      "status": "ACTIVE",
+      "organization": {
+        "id": 2,
+        "name": "Green Earth Foundation",
+        "email": "org1@volunteerhub.com"
+      }
+    },
+    {
+      "_id": "vol002",
+      "post_title": "Teaching English to Rural Children",
+      "thumbnail": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500",
+      "category": "Education",
+      "deadline": "2024-11-30",
+      "description": "Volunteer to teach English to underprivileged children in rural areas. Make a difference in their future.",
+      "location": "Ha Giang Province",
+      "max_volunteers": 20,
+      "current_volunteers": 12,
+      "status": "ACTIVE",
+      "organization": {
+        "id": 2,
+        "name": "Education For All",
+        "email": "edu@volunteerhub.com"
+      }
+    },
+    {
+      "_id": "vol003",
+      "post_title": "Food Distribution for the Homeless",
+      "thumbnail": "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500",
+      "category": "Community",
+      "deadline": "2024-10-25",
+      "description": "Help distribute meals to homeless people in Hanoi. Every meal brings hope and warmth to those in need.",
+      "location": "Hanoi City Center",
+      "max_volunteers": 30,
+      "current_volunteers": 28,
+      "status": "ACTIVE",
+      "organization": {
+        "id": 2,
+        "name": "Helping Hands",
+        "email": "help@volunteerhub.com"
+      }
+    },
+    {
+      "_id": "vol004",
+      "post_title": "Tree Planting Initiative",
+      "thumbnail": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500",
+      "category": "Environment",
+      "deadline": "2024-12-15",
+      "description": "Join our tree planting campaign to create green spaces in urban areas. Together we can combat climate change.",
+      "location": "Ho Chi Minh City",
+      "max_volunteers": 100,
+      "current_volunteers": 67,
+      "status": "ACTIVE",
+      "organization": {
+        "id": 2,
+        "name": "Green Earth Foundation",
+        "email": "org1@volunteerhub.com"
+      }
+    },
+    {
+      "_id": "vol005",
+      "post_title": "Senior Citizens Care Program",
+      "thumbnail": "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=500",
+      "category": "Healthcare",
+      "deadline": "2024-11-20",
+      "description": "Spend time with elderly residents at nursing homes. Bring joy through conversations, activities, and companionship.",
+      "location": "Hue City",
+      "max_volunteers": 15,
+      "current_volunteers": 8,
+      "status": "ACTIVE",
+      "organization": {
+        "id": 2,
+        "name": "Elder Care Vietnam",
+        "email": "elder@volunteerhub.com"
+      }
+    },
+    {
+      "_id": "vol006",
+      "post_title": "Animal Shelter Assistance",
+      "thumbnail": "https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=500",
+      "category": "Animal Welfare",
+      "deadline": "2024-12-20",
+      "description": "Help care for abandoned animals at our shelter. Feed, clean, and give love to dogs and cats awaiting adoption.",
+      "location": "Can Tho City",
+      "max_volunteers": 25,
+      "current_volunteers": 19,
+      "status": "ACTIVE",
+      "organization": {
+        "id": 2,
+        "name": "Paws & Hearts",
+        "email": "paws@volunteerhub.com"
+      }
+    }
+  ],
+  "applications": [
+    {
+      "id": 1,
+      "userId": 3,
+      "opportunityId": "vol001",
+      "status": "APPROVED",
+      "appliedAt": "2024-10-01T10:00:00",
+      "updatedAt": "2024-10-02T14:30:00"
+    },
+    {
+      "id": 2,
+      "userId": 3,
+      "opportunityId": "vol004",
+      "status": "PENDING",
+      "appliedAt": "2024-10-10T09:15:00",
+      "updatedAt": "2024-10-10T09:15:00"
+    },
+    {
+      "id": 3,
+      "userId": 4,
+      "opportunityId": "vol002",
+      "status": "APPROVED",
+      "appliedAt": "2024-09-25T11:20:00",
+      "updatedAt": "2024-09-26T08:45:00"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Environment",
+      "description": "Environmental conservation and sustainability projects",
+      "icon": "🌿"
+    },
+    {
+      "id": 2,
+      "name": "Education",
+      "description": "Teaching and educational support programs",
+      "icon": "📚"
+    },
+    {
+      "id": 3,
+      "name": "Community",
+      "description": "Community development and social welfare",
+      "icon": "🤝"
+    },
+    {
+      "id": 4,
+      "name": "Healthcare",
+      "description": "Health and medical support services",
+      "icon": "🏥"
+    },
+    {
+      "id": 5,
+      "name": "Animal Welfare",
+      "description": "Animal rescue and care programs",
+      "icon": "🐾"
+    }
+  ]
 }

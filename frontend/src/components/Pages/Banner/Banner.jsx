@@ -25,7 +25,7 @@ const Banner = () => {
         {/* === CỘT BÊN TRÁI (VĂN BẢN) === */}
         <div className="lg:w-1/2 text-center lg:text-left">
           {/* Tiêu đề chính - to và đậm */}
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-600 leading-tight">
             Helping Organizations Better&nbsp;
             <span className="text-green-600">Recruit</span>,&nbsp;
             <span className="text-green-600">Engage</span>, and&nbsp;

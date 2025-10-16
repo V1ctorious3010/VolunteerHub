@@ -7,9 +7,15 @@
  * Chạy server: node public/json/server.js
  */
 
-const jsonServer = require('json-server');
+import jsonServer from 'json-server';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const server = jsonServer.create();
-const router = jsonServer.router('public/json/db.json');
+const router = jsonServer.router(join(__dirname, 'db.json'));
 const middlewares = jsonServer.defaults();
 
 // Set default middlewares (logger, static, cors và no-cache)
@@ -23,9 +29,19 @@ server.use(jsonServer.bodyParser);
 /**
  * POST /api/auth/login
  * Mock login endpoint
+ * 
+ * Request body: { email, password }
  */
 server.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;
+
+    // Validation
+    if (!email || !password) {
+        return res.status(400).json({
+            message: 'Email and password are required',
+            status: 400
+        });
+    }
 
     // Tìm user trong database
     const db = router.db; // Lowdb instance
@@ -40,14 +56,19 @@ server.post('/api/auth/login', (req, res) => {
     }
 
     // Mock successful login (không check password trong mock)
+    // Trong production, sẽ verify password hash
+    const token = `mock_token_${user.id}_${Date.now()}`;
+
     res.status(200).json({
-        token: `mock_token_${user.id}_${Date.now()}`,
+        token,
         user: {
             id: user.id,
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
+            displayName: user.displayName || `${user.firstName} ${user.lastName}`.trim(),
             phoneNumber: user.phoneNumber,
+            photoURL: user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName)}`,
             role: user.role,
             enabled: user.enabled
         },
@@ -58,9 +79,37 @@ server.post('/api/auth/login', (req, res) => {
 /**
  * POST /api/auth/register
  * Mock register endpoint
+ * 
+ * Request body: { email, firstName, lastName, phoneNumber, password }
+ * hoặc { name, email, password } (từ Register form)
  */
 server.post('/api/auth/register', (req, res) => {
-    const { email, firstName, lastName, phoneNumber, password } = req.body;
+    const { email, firstName, lastName, phoneNumber, password, name } = req.body;
+
+    // Validation
+    if (!email || !password) {
+        return res.status(400).json({
+            message: 'Email and password are required',
+            status: 400
+        });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({
+            message: 'Invalid email format',
+            status: 400
+        });
+    }
+
+    // Validate password length
+    if (password.length < 6) {
+        return res.status(400).json({
+            message: 'Password must be at least 6 characters',
+            status: 400
+        });
+    }
 
     const db = router.db;
     const users = db.get('users').value();
@@ -74,12 +123,28 @@ server.post('/api/auth/register', (req, res) => {
         });
     }
 
+    // Parse name nếu có (format: "FirstName LastName")
+    let userFirstName = firstName || '';
+    let userLastName = lastName || '';
+
+    if (name && !firstName) {
+        const nameParts = name.trim().split(' ');
+        if (nameParts.length === 1) {
+            userFirstName = nameParts[0];
+            userLastName = '';
+        } else {
+            userFirstName = nameParts[0];
+            userLastName = nameParts.slice(1).join(' ');
+        }
+    }
+
     // Create new user
     const newUser = {
         id: users.length + 1,
         email,
-        firstName,
-        lastName,
+        firstName: userFirstName,
+        lastName: userLastName,
+        displayName: name || `${userFirstName} ${userLastName}`.trim(),
         phoneNumber: phoneNumber || null,
         role: 'VOLUNTEER',
         enabled: true,
@@ -90,18 +155,59 @@ server.post('/api/auth/register', (req, res) => {
     // Add to database
     db.get('users').push(newUser).write();
 
+    // Generate token
+    const token = `mock_token_${newUser.id}_${Date.now()}`;
+
     res.status(200).json({
-        token: `mock_token_${newUser.id}_${Date.now()}`,
+        token,
         user: {
             id: newUser.id,
             email: newUser.email,
             firstName: newUser.firstName,
             lastName: newUser.lastName,
+            displayName: newUser.displayName,
             phoneNumber: newUser.phoneNumber,
             role: newUser.role,
             enabled: newUser.enabled
         },
         message: 'User registered successfully'
+    });
+});
+
+/**
+ * POST /jwt
+ * Mock JWT endpoint (được gọi sau khi register/login)
+ * Frontend gọi endpoint này để lưu cookie
+ */
+server.post('/jwt', (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({
+            message: 'Email is required',
+            status: 400
+        });
+    }
+
+    const db = router.db;
+    const user = db.get('users').find({ email }).value();
+
+    if (!user) {
+        return res.status(404).json({
+            message: 'User not found',
+            status: 404
+        });
+    }
+
+    // Generate JWT token (mock)
+    const token = `jwt_token_${user.id}_${Date.now()}`;
+
+    // Trong production, token sẽ được set vào cookie
+    // Ở đây chỉ return token để frontend có thể lưu
+    res.status(200).json({
+        success: true,
+        token,
+        message: 'JWT token generated successfully'
     });
 });
 

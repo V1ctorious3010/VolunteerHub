@@ -11,7 +11,7 @@ import UseAuth from '../Hook/UseAuth';
 // Component Login nhận props title để set title trang
 const Login = ({ title }) => {
     // Destructure các hàm authentication từ custom hook
-    const { user, googleLogIn, logIn } = UseAuth();
+    const { user, logIn } = UseAuth();
 
     // State để toggle hiển thị/ẩn password
     const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +21,7 @@ const Login = ({ title }) => {
 
     // Hook để navigate giữa các trang
     const navigate = useNavigate();
+    const location = useLocation();
 
     // Hàm xử lý submit form đăng nhập bằng email/password
     const onSubmit = async (data) => {
@@ -32,14 +33,6 @@ const Login = ({ title }) => {
             const result = await logIn(email, password);
             console.log(result);
 
-            // Tạo JWT token trên server sau khi đăng nhập thành công
-            const { data } = await axios.post(
-                `${import.meta.env.VITE_API_URL}/jwt`,
-                { email: result?.user?.email },
-                { withCredentials: true }
-            );
-            console.log(data);
-
             // Redirect về trang trước đó hoặc trang chủ
             navigate(location?.state || "/");
 
@@ -48,7 +41,7 @@ const Login = ({ title }) => {
         } catch (err) {
             // Xử lý lỗi đăng nhập
             console.log(err);
-            toast.error("Invalid credentials !"); // Thông báo lỗi credentials không hợp lệ
+            toast.error("Invalid credentials!"); // Thông báo lỗi credentials không hợp lệ
         }
     };
     // useEffect để kiểm tra nếu user đã đăng nhập thì redirect về trang chủ

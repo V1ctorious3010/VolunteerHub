@@ -11,37 +11,57 @@ File chính chứa toàn bộ data cho dự án:
 - `applications`: Đơn đăng ký tham gia
 - `categories`: Các danh mục tình nguyện
 
-### 2. **auth.json** - Authentication responses
-Mock responses cho các API authentication:
-- `login`: Response khi đăng nhập thành công/thất bại
-- `register`: Response khi đăng ký tài khoản
-- `refreshToken`: Response khi refresh JWT token
-- `currentUser`: Thông tin user hiện tại
+### 2. **server.js** - Custom Mock Server ⭐ (Updated)
+Mock API server với custom logic:
+- `POST /api/auth/register` - Register với validation đầy đủ
+- `POST /api/auth/login` - Login endpoint
+- `POST /jwt` - Generate JWT token
+- `GET /api/auth/current` - Get current user
+- `GET /api/volunteers` - Get volunteers với filters
+- `POST /api/opportunities/:id/apply` - Apply for opportunity
 
-### 3. **opportunities.json** - Chi tiết volunteer opportunities
-Thông tin đầy đủ về các cơ hội tình nguyện:
-- Chi tiết mô tả
-- Yêu cầu và lợi ích
-- Thông tin tổ chức
-- Người liên hệ
-- Danh sách featured/urgent
+### 3. **auth.json** - Authentication responses
+Mock responses cho các API authentication (reference only)
+
+### 4. **opportunities.json** - Chi tiết volunteer opportunities
+Thông tin đầy đủ về các cơ hội tình nguyện
+
+### 5. **API-REGISTER-UPDATE.md** - Documentation
+Chi tiết về các cải tiến mới cho Register API
 
 ## 🚀 Cách sử dụng
 
-### Option 1: JSON Server (Recommended)
-Sử dụng json-server để tạo REST API từ file JSON:
+### ⭐ Option 1: Custom Server (RECOMMENDED)
+Sử dụng custom server với logic authentication đầy đủ:
 
 ```bash
-# Cài đặt json-server
-npm install -g json-server
+# Chạy custom mock server
+npm run mock-api:custom
 
-# Chạy server từ db.json
-json-server --watch public/json/db.json --port 3001
+# Server chạy tại http://localhost:3001
+```
+
+**Endpoints có sẵn:**
+```
+POST   /api/auth/register   - Register new user (✨ Updated)
+POST   /api/auth/login      - Login user (✨ Updated)
+POST   /jwt                 - Generate JWT (🆕 New)
+GET    /api/auth/current    - Get current user
+GET    /api/volunteers      - Get volunteers list
+POST   /api/opportunities/:id/apply - Apply for opportunity
+```
+
+### Option 2: Basic JSON Server
+Chỉ dùng nếu không cần authentication logic:
+
+```bash
+# Chạy basic json-server
+npm run mock-api
 
 # API sẽ chạy tại http://localhost:3001
 ```
 
-**Endpoints có sẵn:**
+**Endpoints cơ bản:**
 ```
 GET    /users
 GET    /users/:id
