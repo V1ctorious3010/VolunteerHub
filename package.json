@@ -6,6 +6,7 @@
     "react-bootstrap": "^2.10.10"
   },
   "devDependencies": {
+    "cookie-parser": "^1.4.7",
     "daisyui": "^5.3.2"
   }
 }

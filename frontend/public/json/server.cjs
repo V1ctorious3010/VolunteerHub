@@ -1,6 +1,6 @@
 /**
  * Custom Mock API Server for VolunteerHub
- * Using Express to create authentication endpoints
+ * Using Express with HTTP-only Cookies for Authentication
  * Run: npm run mock-api:custom
  */
 
@@ -8,15 +8,20 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = 3001;
 const DB_PATH = path.join(__dirname, 'db.json');
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // Vite default port
+    credentials: true // Cho phép gửi cookies
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // Parse cookies
 
 // Logger middleware
 app.use((req, res, next) => {
@@ -96,8 +101,15 @@ app.post('/api/auth/register', (req, res) => {
 
         const token = `mock_token_${newUser.id}_${Date.now()}`;
 
+        // Set HTTP-only cookie
+        res.cookie('auth_token', token, {
+            httpOnly: true,      // Không thể truy cập bằng JavaScript
+            secure: false,       // Set true khi dùng HTTPS
+            sameSite: 'lax',     // CSRF protection
+            maxAge: 7 * 24 * 60 * 60 * 1000  // 7 days
+        });
+
         res.status(201).json({
-            token,
             user: {
                 id: newUser.id,
                 email: newUser.email,
@@ -146,8 +158,15 @@ app.post('/api/auth/login', (req, res) => {
 
         const token = `mock_token_${user.id}_${Date.now()}`;
 
+        // Set HTTP-only cookie
+        res.cookie('auth_token', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
         res.status(200).json({
-            token,
             user: {
                 id: user.id,
                 email: user.email,
@@ -174,24 +193,30 @@ app.post('/api/auth/login', (req, res) => {
  * POST /api/auth/logout - Logout user
  */
 app.post('/api/auth/logout', (req, res) => {
+    // Xóa cookie
+    res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax'
+    });
     res.status(200).json({ message: 'Logout successful' });
 });
 
 /**
- * GET /api/auth/current - Get current user
+ * GET /api/auth/current - Get current user from cookie
  */
 app.get('/api/auth/current', (req, res) => {
     try {
-        const authHeader = req.headers.authorization;
+        // Đọc token từ cookie thay vì Authorization header
+        const token = req.cookies.auth_token;
 
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        if (!token) {
             return res.status(401).json({
                 message: 'No token provided',
                 status: 401
             });
         }
 
-        const token = authHeader.split(' ')[1];
         const parts = token.split('_');
 
         if (parts.length !== 4 || parts[0] !== 'mock' || parts[1] !== 'token') {
@@ -232,9 +257,7 @@ app.get('/api/auth/current', (req, res) => {
             status: 500
         });
     }
-});
-
-/**
+});/**
  * POST /jwt - Legacy endpoint
  */
 app.post('/jwt', (req, res) => {
