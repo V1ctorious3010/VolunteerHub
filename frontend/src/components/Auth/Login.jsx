@@ -4,7 +4,6 @@ import toast from "react-hot-toast"; // Thư viện hiển thị thông báo
 import { useEffect, useState } from "react"; // React hooks
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Icon hiển thị/ẩn password
 import { useForm } from "react-hook-form"; // Thư viện quản lý form
-import axios from "axios"; // HTTP client để gọi API
 import { Helmet } from "react-helmet"; // Quản lý document head (title, meta tags)
 import PropTypes from "prop-types"; // Kiểm tra kiểu dữ liệu props
 import UseAuth from '../Hook/UseAuth';

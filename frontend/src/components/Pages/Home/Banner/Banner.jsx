@@ -1,4 +1,4 @@
-import bannerImage from '../../../assets/images/banner/homepage.jpg';
+import bannerImage from '../../../../assets/images/banner/homepage.jpg';
 
 /**
  * Banner Component
