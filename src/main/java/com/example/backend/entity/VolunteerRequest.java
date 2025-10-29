@@ -26,7 +26,7 @@ public class VolunteerRequest {
     // Many-to-One tới Người dùng/Tình nguyện viên
     // Giả sử tên Entity User của bạn là AppUser
     @ManyToOne(fetch = FetchType.LAZY) // Tải dữ liệu user khi cần
-    @JoinColumn(name = "volunteerEmail", nullable = false) // Tên cột khóa ngoại trong DB
+    @JoinColumn(name = "email", nullable = false) // Tên cột khóa ngoại trong DB
     @JsonIgnore
     private Volunteer volunteer;
 

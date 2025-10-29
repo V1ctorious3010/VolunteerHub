@@ -53,11 +53,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     // Trong ứng dụng thực tế, bạn sẽ load UserDetails từ Database
 //          UserDetails userDetails = new User(userEmail, "", Collections.emptyList());
 
-                    Volunteer volunteerDetails = volunteerRepository.findByVolunteerEmail(userEmail)
+                    Volunteer volunteerDetails = volunteerRepository.findByEmail(userEmail)
                         .orElseThrow();
                     if (volunteerDetails != null) {
                         System.out.println("DEBUG JWT: Volunteer Entity loaded successfully: "
-                            + volunteerDetails.getVolunteerEmail()); // ⭐️ Log thành công
+                            + volunteerDetails.getEmail()); // ⭐️ Log thành công
 
                         // 4. Tạo đối tượng Authentication
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

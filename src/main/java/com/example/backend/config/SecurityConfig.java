@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -74,21 +76,8 @@ public class SecurityConfig {
                     // Cho phép các API công khai truy cập không cần xác thực
                     .requestMatchers(
                         "/",
-                        "/jwt", // <-- Endpoint của bạn
-                        "/logout",
-                        "/login",
-                        "/volunteers",
-                        "/need-volunteers/**",
-                        "/post/**",
-//                            "/request-volunteer",
-                        "/add-volunteer-post",
-                        "/update-volunteer-count/**",
-                        "/get-volunteer-post/**",
-                        "/get-volunteer-request/**",
-                        "/update-volunteer-post/**",
-                        "/my-volunteer-post/**",
-                        "/my-volunteer-request/**"
-
+                        "/auth/register", // <-- Endpoint của bạn
+                        "/auth/login"
                     ).permitAll()
 
                     // Mọi request khác đều phải được xác thực
@@ -96,5 +85,9 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

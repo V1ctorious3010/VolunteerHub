@@ -12,5 +12,4 @@ public class VolunteerRequestDto {
     private String location;      // Từ VolunteerPost
     private String category;      // Từ VolunteerPost
     private String status; // Từ VolunteerRequest
-    // Từ Volunteer (để gửi về client)
 }
