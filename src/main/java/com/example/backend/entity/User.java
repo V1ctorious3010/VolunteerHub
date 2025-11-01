@@ -24,7 +24,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Volunteer implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @Column(name = "Email")
@@ -46,9 +46,9 @@ public class Volunteer implements UserDetails {
         ADMIN
     }
 
-    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<VolunteerRequest> requests;
+    private List<Registration> requests;
 
     public String getEmail() {
         return email;
@@ -87,7 +87,7 @@ public class Volunteer implements UserDetails {
         this.role = role;
     }
 
-    public void setRequests(List<VolunteerRequest> requests) {
+    public void setRequests(List<Registration> requests) {
         this.requests = requests;
     }
 

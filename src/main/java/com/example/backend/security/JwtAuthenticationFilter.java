@@ -1,7 +1,7 @@
 package com.example.backend.security;
 
-import com.example.backend.entity.Volunteer;
-import com.example.backend.repo.VolunteerRepository;
+import com.example.backend.entity.User;
+import com.example.backend.repo.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -10,14 +10,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.stream.Stream;
 
 @Component
@@ -27,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private VolunteerRepository volunteerRepository;
+    private UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -49,21 +46,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (userEmail != null
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                    // Do ứng dụng chỉ sử dụng email làm định danh, chúng ta tạo UserDetails giả
-                    // Trong ứng dụng thực tế, bạn sẽ load UserDetails từ Database
-//          UserDetails userDetails = new User(userEmail, "", Collections.emptyList());
-
-                    Volunteer volunteerDetails = volunteerRepository.findByEmail(userEmail)
+                    User userDetails = userRepository.findByEmail(userEmail)
                         .orElseThrow();
-                    if (volunteerDetails != null) {
+                    if (userDetails != null) {
                         System.out.println("DEBUG JWT: Volunteer Entity loaded successfully: "
-                            + volunteerDetails.getEmail()); // ⭐️ Log thành công
+                            + userDetails.getEmail()); // ⭐️ Log thành công
 
                         // 4. Tạo đối tượng Authentication
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            volunteerDetails, // ⭐️ Đặt Entity Volunteer thực tế vào Context
+                                userDetails, // ⭐️ Đặt Entity Volunteer thực tế vào Context
                             null,
-                            volunteerDetails.getAuthorities()); // Yêu cầu Volunteer implement UserDetails
+                            userDetails.getAuthorities()); // Yêu cầu Volunteer implement UserDetails
 
                         authToken.setDetails(
                             new WebAuthenticationDetailsSource().buildDetails(request));

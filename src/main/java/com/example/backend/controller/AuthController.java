@@ -2,11 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.RegisterRequest;
-import com.example.backend.entity.VolunteerRequest;
-import com.example.backend.repo.VolunteerRepository;
-import com.example.backend.security.JwtService;
 import com.example.backend.service.AuthService;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

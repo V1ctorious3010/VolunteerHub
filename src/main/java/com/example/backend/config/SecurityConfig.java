@@ -75,7 +75,7 @@ public class SecurityConfig {
 
                     // Cho phép các API công khai truy cập không cần xác thực
                     .requestMatchers(
-                        "/",
+                        "/**",
                         "/auth/register", // <-- Endpoint của bạn
                         "/auth/login"
                     ).permitAll()
