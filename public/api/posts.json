@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "title": "Help needed: Beach cleanup",
+        "description": "Join us to clean the east beach. Gloves and bags provided.",
+        "location": "East Beach",
+        "date": "2025-11-15",
+        "slots": 10,
+        "owner": {
+            "id": 101,
+            "name": "Community Org"
+        }
+    },
+    {
+        "id": 2,
+        "title": "Food drive volunteer",
+        "description": "Help sort and pack food donations for local families.",
+        "location": "Community Center",
+        "date": "2025-11-20",
+        "slots": 5,
+        "owner": {
+            "id": 102,
+            "name": "Helping Hands"
+        }
+    }
+]
