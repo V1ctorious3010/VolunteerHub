@@ -1,10 +1,4 @@
-import { useContext } from "react";
-import { AuthContext } from "../Providers/AuthProviders";
-
-
-const UseAuth = () => {
-    const all=useContext(AuthContext)
-    return all;
-};
-
-export default UseAuth;
+// This file is deprecated after migrating to Redux. Please import useSelector/useDispatch directly.
+export default function UseAuth() {
+    throw new Error('UseAuth has been removed. Use Redux hooks instead.');
+}

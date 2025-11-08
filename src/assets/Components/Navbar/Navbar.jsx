@@ -1,11 +1,14 @@
 import logo from "../../images/Minimalist local charity logo with helping hands.svg";
 import { Link, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
-import UseAuth from "./../../Hook/UseAuth";
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../../features/auth/authSlice';
 import "react-dropdown/style.css";
 
 const Navbar = () => {
-  const { user, logOut, role } = UseAuth();
+  const dispatch = useDispatch();
+  const { user } = useSelector(s => s.auth);
+  const role = user?.role;
   const [isChecked, setIsChecked] = useState(false);
 
   const handleCheckboxChange = (e) => {
@@ -52,7 +55,7 @@ const Navbar = () => {
               <NavLink>
                 <a>My Profile</a>
                 <ul className="p-2">
-                  {role === 'Event Organizer' && (
+                  {role === 'organization' && (
                     <Link to='/add-volunteer-post'>
                       <a>Add Volunteer Post</a>
                     </Link>
@@ -112,7 +115,7 @@ const Navbar = () => {
                   tabIndex={0}
                   className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
                 >
-                  {role === 'Event Organizer' && (
+                  {role === 'organization' && (
                     <li>
                       <Link to="/add-volunteer-post" className="justify-between">
                         Add Volunteer Post
@@ -157,7 +160,7 @@ const Navbar = () => {
 
                 <div className="flex  font-bold">
                   <button
-                    onClick={logOut}
+                    onClick={() => dispatch(logout())}
                     className="btn btn-sm hover:scale-125 transition  btn-secondary"
                   >
                     Logout
