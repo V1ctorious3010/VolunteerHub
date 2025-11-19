@@ -1,36 +1,114 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.AuthResponse;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.RegisterRequest;
-import com.example.backend.entity.VolunteerRequest;
-import com.example.backend.repo.VolunteerRepository;
-import com.example.backend.security.JwtService;
+import com.example.backend.entity.Volunteer;
 import com.example.backend.service.AuthService;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/auth")
+import java.time.Duration;
+
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173",
-    "https://volunteer-management-sys-66dad.web.app"}, allowCredentials = "true")
+@RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    private AuthService authService;
+
+    private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(req));
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest req) {
+        AuthResponse resp = authService.register(req);
+        return ResponseEntity.ok(resp);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-        return ResponseEntity.ok(authService.login(req));
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest req) {
+        Volunteer v = authService.loginAndGetUser(req);
+
+        String accessToken = authService.generateAccessToken(v);
+        String refreshToken = authService.generateRefreshToken(v);
+
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("Lax")  // neu FE khac domain -> doi thanh "None"
+            .path("/")
+            .maxAge(Duration.ofMinutes(15))
+            .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("Lax")
+            .path("/auth")
+            .maxAge(Duration.ofDays(14))
+            .build();
+
+        AuthResponse resp = new AuthResponse(
+            "Đăng nhập thành công",
+            v.getName(),
+            v.getEmail()
+        );
+
+        return ResponseEntity.ok()
+            .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+            .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+            .body(resp);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Void> refresh(
+        @CookieValue(name = "refreshToken", required = false) String refreshToken
+    ) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String newAccessToken = authService.refreshAccessToken(refreshToken);
+
+        ResponseCookie newAccessCookie = ResponseCookie.from("accessToken", newAccessToken)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("Lax")
+            .path("/")
+            .maxAge(Duration.ofMinutes(15))
+            .build();
+
+        return ResponseEntity.ok()
+            .header(HttpHeaders.SET_COOKIE, newAccessCookie.toString())
+            .build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<AuthResponse> logout() {
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", "")
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("Lax")
+            .path("/")
+            .maxAge(0)
+            .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", "")
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("Lax")
+            .path("/auth")
+            .maxAge(0)
+            .build();
+        AuthResponse resp = new AuthResponse(
+            "Đăng xuất thành công",
+            null,
+            null
+        );
+        return ResponseEntity.ok()
+            .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+            .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+            .body(resp);
     }
 }

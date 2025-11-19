@@ -46,10 +46,6 @@ public class Volunteer implements UserDetails {
         ADMIN
     }
 
-    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    private List<VolunteerRequest> requests;
-
     public String getEmail() {
         return email;
     }
@@ -85,10 +81,6 @@ public class Volunteer implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public void setRequests(List<VolunteerRequest> requests) {
-        this.requests = requests;
     }
 
     @Override

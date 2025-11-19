@@ -1,6 +1,7 @@
 package com.example.backend.config;
 
 import com.example.backend.security.JwtAuthenticationFilter;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,25 +70,27 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             // Cấu hình ủy quyền
             .authorizeHttpRequests(auth -> auth
-                    // Cho phép OPTIONS (CORS pre-flight)
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/logout").permitAll()
+                // Cho phép OPTIONS (CORS pre-flight)
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                    // Cho phép các API công khai truy cập không cần xác thực
-                    .requestMatchers(
-                        "/",
-                        "/auth/register", // <-- Endpoint của bạn
-                        "/auth/login"
-                    ).permitAll()
+                // Cho phép các API công khai truy cập không cần xác thực
+                .requestMatchers(
+                    "/",
+                    "/auth/register",
+                    "/auth/login",
+                    "/auth/refresh"
+                ).permitAll()
 
-                    // Mọi request khác đều phải được xác thực
-                    .anyRequest().authenticated()
+                // Mọi request khác đều phải được xác thực
+                .anyRequest().authenticated()
             );
 
         return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

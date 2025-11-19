@@ -8,12 +8,9 @@ import com.example.backend.exception.BadCredentialsAppException;
 import com.example.backend.repo.VolunteerRepository;
 import com.example.backend.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.webauthn.api.AuthenticatorResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class AuthService {
@@ -31,22 +28,46 @@ public class AuthService {
             .ifPresent(v -> {
                 throw new BadCredentialsAppException("Email đã tồn tại");
             });
+
         Volunteer v = new Volunteer();
         v.setEmail(req.getEmail());
         v.setPassword(passwordEncoder.encode(req.getPassword()));
         v.setName(req.getName());
         v.setRole(req.getRole());
         Volunteer saved = volunteerRepository.save(v);
+
         return new AuthResponse("Đăng kí tài khoản thành công", saved.getName(), saved.getEmail());
     }
-    @Transactional
-    public AuthResponse login(@RequestBody LoginRequest req) {
+
+    @Transactional(readOnly = true)
+    public Volunteer loginAndGetUser(LoginRequest req) {
         Volunteer v = volunteerRepository.findByEmail(req.getEmail())
             .orElseThrow(() -> new BadCredentialsAppException("Email không tồn tại hoặc sai"));
-
         if (!passwordEncoder.matches(req.getPassword(), v.getPassword())) {
             throw new BadCredentialsAppException("Mật khẩu không đúng");
         }
-        return new AuthResponse("Đăng nhập thành công", v.getName(), v.getEmail());
+        return v;
+    }
+
+    @Transactional(readOnly = true)
+    public String generateAccessToken(Volunteer v) {
+        return jwtService.generateAccessToken(v);
+    }
+
+    @Transactional(readOnly = true)
+    public String generateRefreshToken(Volunteer v) {
+        return jwtService.generateRefreshToken(v);
+    }
+
+    /**
+     * Nhận refreshToken, validate, trả về accessToken mới
+     */
+    @Transactional(readOnly = true)
+    public String refreshAccessToken(String refreshToken) {
+        Volunteer v = jwtService.validateRefreshAndLoadUser(refreshToken);
+        if (v == null) {
+            throw new BadCredentialsAppException("Refresh token không hợp lệ hoặc đã hết hạn");
+        }
+        return jwtService.generateAccessToken(v);
     }
 }

@@ -1,95 +1,142 @@
 package com.example.backend.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.example.backend.entity.Volunteer;
+import com.example.backend.repo.VolunteerRepository;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class JwtService {
 
-    @Value("${app.jwt.secret}")
-    private String secret;
+    private final VolunteerRepository volunteerRepository;
+    private final SecretKey accessKey;
+    private final SecretKey refreshKey;
+    private final Duration accessTtl;
+    private final Duration refreshTtl;
 
-    @Value("${app.jwt.expiration}")
-    private long expiration; // 7 ngày tính bằng milliseconds
-
-    // Cần một key đủ dài (Base64 encoded)
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        return Keys.hmacShaKeyFor(keyBytes);
+    public JwtService(
+        VolunteerRepository volunteerRepository,
+        @Value("${security.jwt.access.secret}") String accessSecret,
+        @Value("${security.jwt.refresh.secret}") String refreshSecret,
+        @Value("${security.jwt.access.expiration}") long accessMinutes,
+        @Value("${security.jwt.refresh.expiration}") long refreshDays
+    ) {
+        this.volunteerRepository = volunteerRepository;
+        this.accessKey = decodeKey(accessSecret);
+        this.refreshKey = decodeKey(refreshSecret);
+        this.accessTtl = Duration.ofMinutes(accessMinutes);
+        this.refreshTtl = Duration.ofDays(refreshDays);
     }
 
-    public String generateToken(String email) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", email);
+    public String generateAccessToken(Volunteer v) {
+        return buildToken(
+            Map.of(
+                "role", v.getRole().name(),
+                "name", v.getName(),
+                "type", "access"
+            ),
+            v.getEmail(),
+            accessTtl,
+            accessKey
+        );
+    }
 
+    public String generateRefreshToken(Volunteer v) {
+        return buildToken(
+            Map.of("type", "refresh"),
+            v.getEmail(),
+            refreshTtl,
+            refreshKey
+        );
+    }
+
+    public boolean isAccessTokenValid(String token) {
+        try {
+            Claims c = parse(token, accessKey);
+            return "access".equals(c.get("type")) && !isExpired(c);
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public String extractEmailFromAccess(String token) {
+        Claims c = parse(token, accessKey);
+        if (!"access".equals(c.get("type"))) {
+            throw new JwtException("Invalid token type");
+        }
+        return c.getSubject();
+    }
+
+    /**
+     * Validate refresh token, trả về Volunteer nếu hợp lệ, null nếu sai / hết hạn
+     */
+    public Volunteer validateRefreshAndLoadUser(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            return null;
+        }
+        try {
+            Claims c = parse(refreshToken, refreshKey);
+            if (!"refresh".equals(c.get("type"))) {
+                return null;
+            }
+            if (isExpired(c)) {
+                return null;
+            }
+            String email = c.getSubject();
+            return volunteerRepository.findByEmail(email).orElse(null);
+        } catch (JwtException | IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    // ================== private helpers ==================
+
+    private String buildToken(
+        Map<String, Object> claims,
+        String subject,
+        Duration ttl,
+        SecretKey key
+    ) {
+        Instant now = Instant.now();
+        Instant exp = now.plus(ttl);
         return Jwts.builder()
             .setClaims(claims)
-            .setSubject(email)
-            .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + expiration))
-            .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+            .setSubject(subject)
+            .setIssuedAt(Date.from(now))
+            .setExpiration(Date.from(exp))
+            .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
 
-    // Tạo Header Set-Cookie
-    public String createCookieHeader(String name, String value, boolean isJwt, long maxAge) {
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(name).append("=").append(value);
-
-        long finalMaxAge = maxAge;
-        if (isJwt) {
-            finalMaxAge = expiration / 1000; // Đổi từ ms sang giây
-        } else if (maxAge == 0) {
-            finalMaxAge = 0; // Logout
-        }
-
-        if (finalMaxAge >= 0) {
-            sb.append("; Max-Age=").append(finalMaxAge);
-        }
-
-        sb.append("; Path=/");
-        sb.append("; HttpOnly");
-
-        // *** ĐIỀU CHỈNH QUAN TRỌNG CHO LOCALHOST HTTP ***
-        // 1. SameSite=None: Bắt buộc cho Cross-Origin (Frontend/Backend khác cổng)
-//    sb.append("; SameSite=None");
-        sb.append("; SameSite=Lax"); // Thay None bằng Lax để tránh lỗi với localhost
-
-        // 2. Tắt Secure: Vì localhost chạy trên HTTP không an toàn, nếu bật Secure, trình duyệt sẽ từ chối set cookie.
-        // Bỏ sb.append("; Secure");
-
-        // Hoặc thêm logic kiểm tra môi trường nếu cần thiết
-        // if (isProductionEnvironment) { sb.append("; Secure"); }
-
-        return sb.toString();
-    }
-
-    private Claims extractAllClaims(String token) {
+    private Claims parse(String token, SecretKey key) {
         return Jwts.parserBuilder()
-            .setSigningKey(getSigningKey())
+            .setSigningKey(key)
             .build()
             .parseClaimsJws(token)
             .getBody();
     }
 
-    // Phương thức mới: Trích xuất email (username) từ token
-    public String extractUsername(String token) {
-        return extractAllClaims(token).getSubject(); // Mặc định Jjwt dùng Subject cho Username
+    private boolean isExpired(Claims claims) {
+        Date exp = claims.getExpiration();
+        return exp == null || exp.before(new Date());
     }
 
-    // Phiên bản cho JWT
-    public String createCookieHeader(String name, String value, boolean isJwt) {
-        return createCookieHeader(name, value, isJwt, -1);
+    private SecretKey decodeKey(String maybeBase64) {
+        try {
+            byte[] decoded = Decoders.BASE64.decode(maybeBase64);
+            return Keys.hmacShaKeyFor(decoded);
+        } catch (IllegalArgumentException e) {
+            return Keys.hmacShaKeyFor(maybeBase64.getBytes(StandardCharsets.UTF_8));
+        }
     }
 }
