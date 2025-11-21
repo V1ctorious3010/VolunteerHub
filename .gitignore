@@ -24,8 +24,3 @@ dist-ssr
 *.sw?
 .vercel
 .env
-
-
-src/assets/
-tailwind.config.js
-postcss.config.js

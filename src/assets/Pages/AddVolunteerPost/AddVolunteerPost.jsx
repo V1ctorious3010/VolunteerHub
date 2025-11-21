@@ -2,8 +2,8 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from 'react-redux';
-import axios from "axios";
 import { toast } from "react-hot-toast";
+import { addLocalPost } from "../../../utils/localApi";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
@@ -39,16 +39,15 @@ const AddVolunteerPost = ({ title }) => {
     };
 
     try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/add-volunteer-post`,
-        newVolunteerPost
-      );
-      console.log(data);
+      // Save locally (public JSON cannot be written). We persist to localStorage for dev flow.
+      const saved = addLocalPost({ id: Date.now(), ...newVolunteerPost });
+      console.log('saved', saved);
       toast.success("Your Volunteer post has been added ");
       form.reset();
-      navigate("/manage-my-post")
+      navigate("/manage-my-post");
     } catch (err) {
       console.log(err);
+      toast.error('Failed to save post locally');
     }
   };
   return (

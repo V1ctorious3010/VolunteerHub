@@ -1,28 +1,35 @@
 import { useEffect, useState } from "react";
 import VolunteerNeedsCard from "./VolunteerNeedsCard";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { Button } from "@material-tailwind/react";
+import { getPosts } from "../../../../utils/localApi";
 const VolunteerNeeds = () => {
   const [volunteers, setVolunteers] = useState([]);
   useEffect(() => {
-    const volunteers = async () => {
-      const { data } = await axios(
-        `${import.meta.env.VITE_API_URL}/volunteers`
-      );
-      setVolunteers(data);
+    const load = async () => {
+      const all = await getPosts();
+      // map base posts to expected shape
+      const mapped = all.map(p => ({
+        id: p.id,
+        thumbnail: p.thumbnail || '/images/loading/placeholder.png',
+        postTitle: p.title || p.postTitle,
+        category: p.category || 'General',
+        deadline: p.date || p.deadline,
+        description: p.description || '',
+      }));
+      setVolunteers(mapped);
     };
-    volunteers();
+    load();
   }, []);
   return (
     <div
-      
+
       className="py-16 font-qs"
     >
       <div data-aos="fade-left"
-      data-aos-anchor-placement="top-bottom"
-      data-aos-easing="linear"
-      data-aos-duration="1000" className="container mx-auto">
+        data-aos-anchor-placement="top-bottom"
+        data-aos-easing="linear"
+        data-aos-duration="1000" className="container mx-auto">
         <h2 className="text-3xl md:text-5xl font-bold text-center ">
           Volunteer Needs Now
         </h2>

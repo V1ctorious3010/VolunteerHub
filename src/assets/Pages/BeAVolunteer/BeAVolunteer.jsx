@@ -63,27 +63,24 @@ const BeAVolunteer = ({ title }) => {
     console.log(requestVolunteerPost);
     try {
       const requestPost = {
-        "volunteerPost": {
-          "id": id,
-        },
-        "volunteer": {
-          "volunteerEmail": volunteerEmail,
-        },
-        "status": status,
-        "suggestion": suggestion,
-      }
-
-      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/request-volunteer`, requestPost, {
-        withCredentials: true
-      })
-      console.log(data);
-      toast.success("Your Volunteer Request has been sent ")
+        id: Date.now(),
+        postId: id,
+        volunteerEmail,
+        status,
+        suggestion,
+        orgEmail,
+        orgName,
+        volunteerName,
+      };
+      // Save locally
+      const { addLocalRequest } = await import('../../../utils/localApi');
+      addLocalRequest(requestPost);
+      toast.success("Your Volunteer Request has been sent ");
       form.reset();
-      navigate("/manage-my-post")
-    }
-    catch (err) {
+      navigate("/manage-my-post");
+    } catch (err) {
       console.log(err);
-      toast.error("Failed to send request. Please try again.")
+      toast.error("Failed to send request. Please try again.");
     }
   };
   return (

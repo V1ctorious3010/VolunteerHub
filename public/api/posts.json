@@ -1,26 +1,26 @@
 [
     {
         "id": 1,
-        "title": "Help needed: Beach cleanup",
+        "postTitle": "Help needed: Beach cleanup",
         "description": "Join us to clean the east beach. Gloves and bags provided.",
         "location": "East Beach",
-        "date": "2025-11-15",
-        "slots": 10,
-        "owner": {
-            "id": 101,
-            "name": "Community Org"
-        }
+        "deadline": "2025-11-15",
+        "noOfVolunteer": 10,
+        "orgName": "Community Org",
+        "orgEmail": "contact@community.org",
+        "thumbnail": "https://via.placeholder.com/800x480?text=Beach+Cleanup",
+        "category": "Environment"
     },
     {
         "id": 2,
-        "title": "Food drive volunteer",
+        "postTitle": "Food drive volunteer",
         "description": "Help sort and pack food donations for local families.",
         "location": "Community Center",
-        "date": "2025-11-20",
-        "slots": 5,
-        "owner": {
-            "id": 102,
-            "name": "Helping Hands"
-        }
+        "deadline": "2025-11-20",
+        "noOfVolunteer": 5,
+        "orgName": "Helping Hands",
+        "orgEmail": "contact@helpinghands.org",
+        "thumbnail": "https://via.placeholder.com/800x480?text=Food+Drive",
+        "category": "Food Security"
     }
 ]

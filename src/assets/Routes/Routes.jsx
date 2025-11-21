@@ -11,12 +11,12 @@ import BeAVolunteer from "../Pages/BeAVolunteer/BeAVolunteer";
 import NeedVolunteer from "../Pages/NeedVolunteer/NeedVolunteer";
 import UpdateMyPost from "../Pages/UpdateMyPost/UpdateMyPost";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
- 
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout></MainLayout>,
-    errorElement:<ErrorPage></ErrorPage>,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         index: true,
@@ -33,7 +33,10 @@ const router = createBrowserRouter([
       {
         path: "/need-volunteer",
         element: <NeedVolunteer title="Need Volunteers"></NeedVolunteer>,
-        loader:() =>fetch(`${import.meta.env.VITE_API_URL}/need-volunteers`),
+        loader: async () => {
+          const res = await fetch('/api/posts.json');
+          return res.ok ? res.json() : [];
+        },
       },
       {
         path: "/add-volunteer-post",
@@ -58,8 +61,11 @@ const router = createBrowserRouter([
             <PostDetails title='Post Details'></PostDetails>
           </PrivateRoutes>
         ),
-        loader: ({ params }) =>
-          fetch(`${import.meta.env.VITE_API_URL}/post/${params.id}`),
+        loader: async ({ params }) => {
+          const res = await fetch('/api/posts.json');
+          const arr = res.ok ? await res.json() : [];
+          return arr.find(p => String(p.id) === String(params.id)) || null;
+        },
       },
       {
         path: "/update-my-post/:id",
@@ -68,8 +74,11 @@ const router = createBrowserRouter([
             <UpdateMyPost title="Update My Post"></UpdateMyPost>
           </PrivateRoutes>
         ),
-        loader: ({ params }) =>
-          fetch(`${import.meta.env.VITE_API_URL}/post/${params.id}`),
+        loader: async ({ params }) => {
+          const res = await fetch('/api/posts.json');
+          const arr = res.ok ? await res.json() : [];
+          return arr.find(p => String(p.id) === String(params.id)) || null;
+        },
       },
       {
         path: "/be-a-volunteer/:id",
@@ -78,8 +87,11 @@ const router = createBrowserRouter([
             <BeAVolunteer title="Be A Volunteer"></BeAVolunteer>
           </PrivateRoutes>
         ),
-        loader: ({ params }) =>
-          fetch(`${import.meta.env.VITE_API_URL}/post/${params.id}`)
+        loader: async ({ params }) => {
+          const res = await fetch('/api/posts.json');
+          const arr = res.ok ? await res.json() : [];
+          return arr.find(p => String(p.id) === String(params.id)) || null;
+        }
       },
     ],
   },

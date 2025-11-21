@@ -7,6 +7,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { Button } from "@material-tailwind/react";
 import axios from "axios";
+import { getPosts } from "../../../utils/localApi";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import LoadingGif from "../../Components/Loader/LoadingGif";
@@ -28,16 +29,31 @@ const NeedVolunteer = ({ title }) => {
   }, []);
   useEffect(() => {
     const getData = async () => {
-      // Build query params
-      let url = `${import.meta.env.VITE_API_URL}/need-volunteers?`;
-      const params = new URLSearchParams();
-
-      if (search) params.append('search', search);
-      if (category) params.append('category', category);
-      if (sort) params.append('sort', sort);
-
-      const { data } = await axios(url + params.toString());
-      setVolunteers(data);
+      const all = await getPosts();
+      // normalize posts
+      let mapped = all.map(p => ({
+        id: p.id,
+        postTitle: p.title || p.postTitle,
+        orgName: p.owner?.name || p.orgName || '',
+        category: p.category || 'General',
+        deadline: p.date || p.deadline,
+        location: p.location || '',
+        noOfVolunteer: p.slots || p.noOfVolunteer || 0,
+        description: p.description || '',
+      }));
+      // apply search
+      if (search) {
+        mapped = mapped.filter(m => m.postTitle?.toLowerCase().includes(search.toLowerCase()));
+      }
+      if (category) {
+        mapped = mapped.filter(m => m.category === category);
+      }
+      if (sort === 'asc') {
+        mapped.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+      } else if (sort === 'desc') {
+        mapped.sort((a, b) => new Date(b.deadline) - new Date(a.deadline));
+      }
+      setVolunteers(mapped);
     };
     getData();
   }, [search, category, sort]);
