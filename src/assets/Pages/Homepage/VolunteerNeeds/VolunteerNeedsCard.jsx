@@ -22,10 +22,13 @@ const VolunteerNeedsCard = ({ volunteer }) => {
           color="transparent"
           className="m-0 rounded-none"
         >
-          <img className="w-full h-60"
-            src={thumbnail}
-            alt="ui/ux review check"
-          />
+          {thumbnail ? (
+            <img className="w-full h-60" src={thumbnail} alt={postTitle} />
+          ) : (
+            <div className="w-full h-60 bg-gray-200 flex items-center justify-center">
+              <span className="text-gray-500">No image</span>
+            </div>
+          )}
         </CardHeader>
         <CardBody>
           <Typography className="h-16" variant="h4" color="blue-gray">

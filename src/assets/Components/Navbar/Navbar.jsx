@@ -103,6 +103,16 @@ const Navbar = () => {
             >
               <button className="px-8 py-3  text-xl">Need Volunteer</button>
             </NavLink>
+            <NavLink
+              to="/feed"
+              className={({ isActive }) =>
+                isActive
+                  ? "rounded-xl text-[#BE042F] font-semibold"
+                  : "font-bold"
+              }
+            >
+              <button className="px-8 py-3  text-xl">Feed</button>
+            </NavLink>
             <button className="font-bold ">
               <div className="dropdown dropdown-end z-50">
                 <div tabIndex={0} role="button" className="">

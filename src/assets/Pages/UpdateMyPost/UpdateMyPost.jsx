@@ -24,7 +24,13 @@ const UpdateMyPost = ({ title }) => {
     description,
   } = post;
 
-  const [startDate, setStartDate] = useState(new Date(post.deadline));
+  const parseDate = (v) => {
+    try {
+      const d = v ? new Date(v) : new Date();
+      return isNaN(d) ? new Date() : d;
+    } catch (_) { return new Date(); }
+  };
+  const [startDate, setStartDate] = useState(parseDate(post?.deadline));
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();

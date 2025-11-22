@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 const AddVolunteerPost = ({ title }) => {
   const [startDate, setStartDate] = useState(new Date());
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const user = useSelector(s => s.auth.user);
   const navigate = useNavigate();
   const handleFormSubmit = async (e) => {
@@ -19,13 +20,30 @@ const AddVolunteerPost = ({ title }) => {
     const postTitle = form.postTitle.value;
     const category = form.category.value;
     const location = form.location.value;
-    const thumbnail = form.thumbnail.value;
+    // Handle uploaded file (if any) and convert to base64 data URL
+    const file = form.thumbnail.files && form.thumbnail.files[0];
+    let thumbnail = "";
+    if (file) {
+      const fileToDataUrl = (f) => new Promise((res, rej) => {
+        const reader = new FileReader();
+        reader.onload = () => res(reader.result);
+        reader.onerror = rej;
+        reader.readAsDataURL(f);
+      });
+      try {
+        thumbnail = await fileToDataUrl(file);
+      } catch (err) {
+        console.error('Failed to read file', err);
+      }
+    }
     const noOfVolunteer = parseInt(form.noOfVolunteer.value);
     const deadline = startDate.toLocaleDateString();
     const orgName = form.orgName.value;
     const orgEmail = form.orgEmail.value;
     const description = form.description.value;
+    const id = Date.now();
     const newVolunteerPost = {
+      id,
       postTitle,
       category,
       location,
@@ -35,15 +53,15 @@ const AddVolunteerPost = ({ title }) => {
       description,
       orgEmail,
       orgName,
-
     };
 
     try {
       // Save locally (public JSON cannot be written). We persist to localStorage for dev flow.
-      const saved = addLocalPost({ id: Date.now(), ...newVolunteerPost });
+      const saved = addLocalPost(newVolunteerPost);
       console.log('saved', saved);
       toast.success("Your Volunteer post has been added ");
       form.reset();
+      setThumbnailPreview(null);
       navigate("/manage-my-post");
     } catch (err) {
       console.log(err);
@@ -124,15 +142,26 @@ const AddVolunteerPost = ({ title }) => {
 
               <div>
                 <label className="text-gray-800 font-semibold dark:text-gray-200">
-                  Thumbnail
+                  Thumbnail (upload image)
                 </label>
                 <input
                   id="thumbnail"
                   name="thumbnail"
-                  placeholder="Enter your thumbnail link"
-                  type="url"
+                  type="file"
+                  accept="image/*"
+                  onChange={(ev) => {
+                    const f = ev.target.files && ev.target.files[0];
+                    if (!f) return setThumbnailPreview(null);
+                    const reader = new FileReader();
+                    reader.onload = () => setThumbnailPreview(reader.result);
+                    reader.readAsDataURL(f);
+                  }}
                   className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
                 />
+
+                {thumbnailPreview && (
+                  <img src={thumbnailPreview} alt="preview" className="mt-2 h-28 object-cover rounded-md" />
+                )}
               </div>
               <div>
                 <label className="text-gray-800 font-semibold dark:text-gray-200">

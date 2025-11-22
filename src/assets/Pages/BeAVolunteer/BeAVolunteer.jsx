@@ -11,10 +11,16 @@ import PropTypes from "prop-types";
 
 
 const BeAVolunteer = ({ title }) => {
-  const [startDate, setStartDate] = useState(new Date());
-  console.log(startDate);
-  const navigate = useNavigate()
   const post = useLoaderData();
+  // safe parse of deadline -> Date
+  const parseDate = (v) => {
+    try {
+      const d = v ? new Date(v) : new Date();
+      return isNaN(d) ? new Date() : d;
+    } catch (_) { return new Date(); }
+  };
+  const [startDate, setStartDate] = useState(parseDate(post?.deadline));
+  const navigate = useNavigate();
   const user = useSelector(s => s.auth.user);
   const { id,
     postTitle,
@@ -22,7 +28,7 @@ const BeAVolunteer = ({ title }) => {
     location,
     thumbnail,
     noOfVolunteer,
-    deadline,
+    // deadline (string) handled by startDate
     description,
     orgEmail, orgName,
   } = post;
@@ -174,6 +180,7 @@ const BeAVolunteer = ({ title }) => {
                   name="thumbnail"
                   placeholder="Enter your thumbnail link"
                   type="url"
+                  disabled
                   className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
                 />
               </div>
@@ -188,6 +195,7 @@ const BeAVolunteer = ({ title }) => {
                   name="noOfVolunteer"
                   placeholder="Enter the total number of people you need"
                   type="number"
+                  disabled
                   className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
                 />
               </div>
@@ -196,9 +204,9 @@ const BeAVolunteer = ({ title }) => {
 
                 {/* Date Picker Input Field */}
                 <DatePicker
+                  disabled
                   className="border p-2 rounded-md w-full"
-                  selected={deadline}
-                  readOnly
+                  selected={startDate}
                   onChange={(date) => setStartDate(date)}
                 />
               </div>

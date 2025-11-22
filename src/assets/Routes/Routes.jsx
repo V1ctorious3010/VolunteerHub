@@ -9,6 +9,7 @@ import PrivateRoutes from "./PrivateRoutes";
 import PostDetails from "../Pages/PostDetails/PostDetails";
 import BeAVolunteer from "../Pages/BeAVolunteer/BeAVolunteer";
 import NeedVolunteer from "../Pages/NeedVolunteer/NeedVolunteer";
+import Feed from "../Pages/Feed/Feed";
 import UpdateMyPost from "../Pages/UpdateMyPost/UpdateMyPost";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home title="VolunteerHub"></Home>,
+      },
+      {
+        path: "/feed",
+        element: <Feed title="Feed"></Feed>,
       },
       {
         path: "/login",

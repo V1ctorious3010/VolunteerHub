@@ -32,6 +32,7 @@ const NeedVolunteer = ({ title }) => {
       const all = await getPosts();
       // normalize posts
       let mapped = all.map(p => ({
+        thumbnail: p.thumbnail,
         id: p.id,
         postTitle: p.title || p.postTitle,
         orgName: p.owner?.name || p.orgName || '',

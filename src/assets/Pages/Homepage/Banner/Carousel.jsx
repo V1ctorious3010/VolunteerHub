@@ -22,10 +22,9 @@ const Carousel = ({ image, text, paragraph }) => {
     );
 };
 
-// ⭐️ Sửa lỗi ở đây: Gộp tất cả và đổi kiểu dữ liệu thành string
 Carousel.propTypes = {
     // image là URL của ảnh (string)
-    image: PropTypes.string.isRequired, 
+    image: PropTypes.string.isRequired,
     // text là tiêu đề (string)
     text: PropTypes.string.isRequired,
     // paragraph là nội dung (string)

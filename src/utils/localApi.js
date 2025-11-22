@@ -1,5 +1,6 @@
 // Helpers to work with public JSON files in /public/api and localStorage overrides
 const POSTS_KEY = 'vh_local_posts';
+const FEED_KEY = 'vh_feed_posts';
 const REQUESTS_KEY = 'vh_local_requests';
 const USERS_KEY = 'vh_local_users';
 
@@ -41,6 +42,47 @@ export function addLocalPost(post) {
     local.push(post);
     writeJSON(POSTS_KEY, local);
     return post;
+}
+
+// Feed-specific helpers (separate storage for Feed posts)
+export async function getFeedPosts() {
+    // load base feed from /api/feed.json and merge with local overrides
+    try {
+        const res = await fetch('/api/feed.json');
+        const base = res.ok ? await res.json() : [];
+        const local = readJSON(FEED_KEY, []);
+        return [...base, ...local];
+    } catch {
+        return readJSON(FEED_KEY, []);
+    }
+}
+
+export function addLocalFeedPost(post) {
+    const local = readJSON(FEED_KEY, []);
+    local.push(post);
+    writeJSON(FEED_KEY, local);
+    return post;
+}
+
+export function updateLocalFeedPost(id, updated) {
+    const local = readJSON(FEED_KEY, []);
+    const idx = local.findIndex(p => String(p.id) === String(id));
+    if (idx >= 0) {
+        local[idx] = { ...local[idx], ...updated };
+        writeJSON(FEED_KEY, local);
+        return local[idx];
+    }
+    const newPost = { id, ...updated };
+    local.push(newPost);
+    writeJSON(FEED_KEY, local);
+    return newPost;
+}
+
+export function deleteLocalFeedPost(id) {
+    const local = readJSON(FEED_KEY, []);
+    const remaining = local.filter(p => String(p.id) !== String(id));
+    writeJSON(FEED_KEY, remaining);
+    return true;
 }
 
 export function updateLocalPost(id, updated) {

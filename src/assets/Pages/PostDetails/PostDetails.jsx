@@ -22,6 +22,7 @@ const PostDetails = ({ title }) => {
     orgEmail,
     orgName
   } = post;
+  // console.log(post);
   const handleVolunteer = () => {
     console.log("I want to be a volunteer !");
 

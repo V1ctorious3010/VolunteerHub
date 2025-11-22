@@ -11,7 +11,7 @@ const VolunteerNeeds = () => {
       // map base posts to expected shape
       const mapped = all.map(p => ({
         id: p.id,
-        thumbnail: p.thumbnail || '/images/loading/placeholder.png',
+        thumbnail: p.thumbnail,
         postTitle: p.title || p.postTitle,
         category: p.category || 'General',
         deadline: p.date || p.deadline,
@@ -21,6 +21,7 @@ const VolunteerNeeds = () => {
     };
     load();
   }, []);
+  console.log(volunteers)
   return (
     <div
 
