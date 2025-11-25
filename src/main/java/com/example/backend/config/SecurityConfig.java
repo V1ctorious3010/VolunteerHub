@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -34,8 +36,7 @@ public class SecurityConfig {
 
         // Sử dụng AllowedOriginPatterns cho tương thích tốt nhất với allowCredentials(true)
         configuration.setAllowedOriginPatterns(Arrays.asList(
-            "http://localhost:5173",
-            "https://volunteer-management-sys-66dad.web.app"
+            "http://localhost:5173"
         ));
 
         configuration.setAllowCredentials(true);
@@ -73,7 +74,7 @@ public class SecurityConfig {
                 // Cho phép OPTIONS (CORS pre-flight)
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // Cho phép các API công khai truy cập không cần xác thực
+                // Cho phép các API công khai truy cập không cần xác thực = access token
                 .requestMatchers(
                     "/",
                     "/auth/register",

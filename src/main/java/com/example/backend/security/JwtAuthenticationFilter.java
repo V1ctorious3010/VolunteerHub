@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -21,12 +22,9 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final VolunteerRepository volunteerRepository;
 
-    public JwtAuthenticationFilter(JwtService jwtService,
-        VolunteerRepository volunteerRepository) {
+    public JwtAuthenticationFilter(JwtService jwtService) {
         this.jwtService = jwtService;
-        this.volunteerRepository = volunteerRepository;
     }
 
     @Override
@@ -39,17 +37,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
-                if (jwtService.isAccessTokenValid(token)) {
-                    String email = jwtService.extractEmailFromAccess(token);
-                    Volunteer v = volunteerRepository.findByEmail(email).orElse(null);
-                    if (v != null) {
-                        User principal = new User(v.getEmail(), v.getPassword(), Collections.emptyList());
-                        UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
-                        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(auth);
-                    }
-                }
+                String email = jwtService.extractEmailFromAccess(token);
+                String role = jwtService.extractRole(token);
+
+                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
+
+                User principal = new User(email, "", Collections.singleton(authority));
+
+                UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+
+                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception e) {
                 SecurityContextHolder.clearContext();
             }

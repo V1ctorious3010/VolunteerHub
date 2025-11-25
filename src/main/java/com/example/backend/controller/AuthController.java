@@ -4,11 +4,14 @@ import com.example.backend.dto.AuthResponse;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.RegisterRequest;
 import com.example.backend.entity.Volunteer;
+import com.example.backend.exception.BadCredentialsAppException;
 import com.example.backend.service.AuthService;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -21,13 +24,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest req) {
+    public ResponseEntity<AuthResponse> register(@RequestBody @Validated RegisterRequest req) {
         AuthResponse resp = authService.register(req);
         return ResponseEntity.ok(resp);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest req) {
+    public ResponseEntity<AuthResponse> login(@RequestBody @Validated LoginRequest req) {
         Volunteer v = authService.loginAndGetUser(req);
 
         String accessToken = authService.generateAccessToken(v);
@@ -63,13 +66,15 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<Void> refresh(
-        @CookieValue(name = "refreshToken", required = false) String refreshToken
+        @CookieValue(name = "refreshToken", required = false) String refreshToken // auto find refresh token from request cookies
     ) {
         if (refreshToken == null || refreshToken.isBlank()) {
-            return ResponseEntity.status(401).build();
+            throw new BadCredentialsAppException("Refresh token không tồn tại hoặc rỗng");
         }
 
-        String newAccessToken = authService.refreshAccessToken(refreshToken);
+        Map<String, String> tokens = authService.refreshAccessToken(refreshToken);
+        String newAccessToken = tokens.get("accessToken");
+        String newRefreshToken = tokens.get("refreshToken");
 
         ResponseCookie newAccessCookie = ResponseCookie.from("accessToken", newAccessToken)
             .httpOnly(true)
@@ -78,9 +83,17 @@ public class AuthController {
             .path("/")
             .maxAge(Duration.ofMinutes(15))
             .build();
+        ResponseCookie newRefreshCookie = ResponseCookie.from("refreshToken", newRefreshToken)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("Lax")
+            .path("/auth")
+            .maxAge(Duration.ofDays(14))
+            .build();
 
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, newAccessCookie.toString())
+            .header(HttpHeaders.SET_COOKIE, newRefreshCookie.toString())
             .build();
     }
 

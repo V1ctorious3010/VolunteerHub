@@ -139,4 +139,8 @@ public class JwtService {
             return Keys.hmacShaKeyFor(maybeBase64.getBytes(StandardCharsets.UTF_8));
         }
     }
+
+    public String extractRole(String token) {
+        return parse(token, accessKey).get("role", String.class);
+    }
 }

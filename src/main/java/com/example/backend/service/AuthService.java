@@ -7,6 +7,7 @@ import com.example.backend.entity.Volunteer;
 import com.example.backend.exception.BadCredentialsAppException;
 import com.example.backend.repo.VolunteerRepository;
 import com.example.backend.security.JwtService;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -63,11 +64,16 @@ public class AuthService {
      * Nhận refreshToken, validate, trả về accessToken mới
      */
     @Transactional(readOnly = true)
-    public String refreshAccessToken(String refreshToken) {
+    public Map<String, String> refreshAccessToken(String refreshToken) {
         Volunteer v = jwtService.validateRefreshAndLoadUser(refreshToken);
         if (v == null) {
             throw new BadCredentialsAppException("Refresh token không hợp lệ hoặc đã hết hạn");
         }
-        return jwtService.generateAccessToken(v);
+        String newAccess = jwtService.generateAccessToken(v);
+        String newRefresh = jwtService.generateRefreshToken(v);
+        return Map.of(
+            "accessToken", newAccess,
+            "refreshToken", newRefresh
+        );
     }
 }
