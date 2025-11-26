@@ -79,7 +79,8 @@ public class SecurityConfig {
                     "/",
                     "/auth/register",
                     "/auth/login",
-                    "/auth/refresh"
+                    "/auth/refresh",
+                    "/error"
                 ).permitAll()
 
                 // Mọi request khác đều phải được xác thực

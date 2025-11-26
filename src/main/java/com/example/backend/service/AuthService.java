@@ -35,6 +35,7 @@ public class AuthService {
         v.setPassword(passwordEncoder.encode(req.getPassword()));
         v.setName(req.getName());
         v.setRole(req.getRole());
+        v.setLocked(false);
         Volunteer saved = volunteerRepository.save(v);
 
         return saved;
@@ -46,6 +47,9 @@ public class AuthService {
             .orElseThrow(() -> new BadCredentialsAppException("Email không tồn tại hoặc sai"));
         if (!passwordEncoder.matches(req.getPassword(), v.getPassword())) {
             throw new BadCredentialsAppException("Mật khẩu không đúng");
+        }
+        if (v.isLocked()) {
+            throw new BadCredentialsAppException("Tài khoản đã bị vô hiệu hóa");
         }
         return v;
     }
@@ -68,6 +72,9 @@ public class AuthService {
         Volunteer v = jwtService.validateRefreshAndLoadUser(refreshToken);
         if (v == null) {
             throw new BadCredentialsAppException("Refresh token không hợp lệ hoặc đã hết hạn");
+        }
+        if (v.isLocked()) {
+            throw new BadCredentialsAppException("Tài khoản đã bị vô hiệu hóa");
         }
         String newAccess = jwtService.generateAccessToken(v);
         String newRefresh = jwtService.generateRefreshToken(v);

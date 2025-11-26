@@ -42,13 +42,22 @@ public class Volunteer implements UserDetails {
 
     public enum Role {
         VOLUNTEER,
-        MANAGER,
+        EVENT_ORGANIZER,
         ADMIN
     }
+
+    @Column(name = "events_num")
+    private int eventsNum = 1;
+    @Column(name = "is_locked")
+    private boolean isLocked = false;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<Registration> requests;
 
     public String getEmail() {
         return email;
     }
+
     @Override
     public String getPassword() {
         return this.password;
@@ -82,6 +91,21 @@ public class Volunteer implements UserDetails {
     public void setRole(Role role) {
         this.role = role;
     }
+
+
+    public int getEventsNum() {
+        return eventsNum;
+    }
+    public  void setEventsNum(int eventsNum) {}
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean isLocked) {
+        this.isLocked = isLocked;
+    }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
