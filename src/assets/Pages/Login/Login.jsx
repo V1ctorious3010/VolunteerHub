@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 const Login = ({ title }) => {
@@ -44,7 +43,7 @@ const Login = ({ title }) => {
       <Helmet>
         <title>{title}</title>
       </Helmet>
-      <div className="bg-white font-qs dark:bg-gray-900 rounded-md px-5 container mx-auto">
+      <div className="bg-white font-qs rounded-md px-5 container mx-auto">
         <div className="flex justify-center gap-5 py-16 lg:h-[80vh] ">
 
 
@@ -55,7 +54,7 @@ const Login = ({ title }) => {
                   <img className="md:size-48 size-32 p-0" src={logo} alt="" />
                 </div>
 
-                <p className="mt-3 font-bold text-gray-800 dark:text-gray-300">
+                <p className="mt-3 font-bold text-gray-800">
                   Log in to your account
                 </p>
               </div>
@@ -63,7 +62,7 @@ const Login = ({ title }) => {
               <div className="mt-8">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div>
-                    <label className="block mb-2 text-sm font-bold text-gray-800 dark:text-gray-200">
+                    <label className="block mb-2 text-sm font-bold text-gray-800">
                       Email Address
                     </label>
                     <input
@@ -72,13 +71,13 @@ const Login = ({ title }) => {
                       name="email"
                       id="email"
                       placeholder="Enter your email address"
-                      className="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                      className="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
 
                   <div className="mt-6">
                     <div className="flex justify-between mb-2">
-                      <label className="font-bold text-sm text-gray-700 dark:text-gray-200">
+                      <label className="font-bold text-sm text-gray-700">
                         Password
                       </label>
 
@@ -86,7 +85,7 @@ const Login = ({ title }) => {
                     <div className="relative">
                       <input
                         placeholder="Enter your password"
-                        className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                        className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                         type={showPassword ? "text" : "password"}
                         name="password"
                         {...register("password", { required: true })}

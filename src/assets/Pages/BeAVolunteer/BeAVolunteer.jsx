@@ -105,14 +105,14 @@ const BeAVolunteer = ({ title }) => {
       </Helmet>
       <div className="md:w-3/5 mx-auto min-h-[calc(100vh-364px)] my-12">
         <section className="p-2 md:p-6 mx-auto bg-white rounded-md shadow-md ">
-          <h2 className="text-2xl pt-6 text-center mb-8 font-body font-semibold text-gray-900 capitalize dark:text-white">
+          <h2 className="text-2xl pt-6 text-center mb-8 font-body font-semibold text-gray-900 capitalize">
             Be A Volunteer
           </h2>
 
           <form onSubmit={handleRequest}>
             <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 p-12">
               <div>
-                <label className="text-gray-800 font-semibold dark:text-gray-200">
+                <label className="text-gray-800 font-semibold">
                   Post Title
                 </label>
                 <input
@@ -122,7 +122,7 @@ const BeAVolunteer = ({ title }) => {
                   defaultValue={postTitle}
                   id="postTitle"
                   type="text"
-                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
               </div>
 
@@ -150,7 +150,7 @@ const BeAVolunteer = ({ title }) => {
               </div>
 
               <div className="flex flex-col gap-2 ">
-                <label className="text-gray-800 font-semibold dark:text-gray-200">
+                <label className="text-gray-800 font-semibold">
                   Location
                 </label>
                 <select
@@ -170,7 +170,7 @@ const BeAVolunteer = ({ title }) => {
               </div>
 
               <div>
-                <label className="text-gray-800 font-semibold dark:text-gray-200">
+                <label className="text-gray-800 font-semibold">
                   Thumbnail
                 </label>
                 <input
@@ -181,11 +181,11 @@ const BeAVolunteer = ({ title }) => {
                   placeholder="Enter your thumbnail link"
                   type="url"
                   disabled
-                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
               </div>
               <div>
-                <label className="text-gray-800 font-semibold dark:text-gray-200">
+                <label className="text-gray-800 font-semibold">
                   No. of Volunteer Needed
                 </label>
                 <input
@@ -196,7 +196,7 @@ const BeAVolunteer = ({ title }) => {
                   placeholder="Enter the total number of people you need"
                   type="number"
                   disabled
-                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
               </div>
               <div className="flex flex-col gap-2 ">
@@ -211,7 +211,7 @@ const BeAVolunteer = ({ title }) => {
                 />
               </div>
               <div>
-                <label className="text-gray-800 font-semibold dark:text-gray-200">
+                <label className="text-gray-800 font-semibold">
                   Organizer name
                 </label>
                 <input
@@ -220,11 +220,11 @@ const BeAVolunteer = ({ title }) => {
                   defaultValue={orgName}
                   type="text"
                   readOnly
-                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
               </div>
               <div>
-                <label className="text-gray-800 font-semibold dark:text-gray-200">
+                <label className="text-gray-800 font-semibold">
                   Organizer email
                 </label>
                 <input
@@ -234,7 +234,7 @@ const BeAVolunteer = ({ title }) => {
                   defaultValue={orgEmail}
                   readOnly
                   type="email"
-                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
               </div>
               <div className="flex flex-col gap-2 md:col-span-2">
@@ -254,7 +254,7 @@ const BeAVolunteer = ({ title }) => {
                 ></textarea>
               </div>
               <div>
-                <label className="text-gray-800 font-semibold dark:text-gray-200">
+                <label className="text-gray-800 font-semibold">
                   Volunteer name
                 </label>
                 <input
@@ -263,11 +263,11 @@ const BeAVolunteer = ({ title }) => {
                   defaultValue={user?.name}
                   type="text"
                   readOnly
-                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
               </div>
               <div>
-                <label className="text-gray-800 font-semibold dark:text-gray-200">
+                <label className="text-gray-800 font-semibold">
                   Volunteer email
                 </label>
                 <input
@@ -277,7 +277,7 @@ const BeAVolunteer = ({ title }) => {
                   defaultValue={user?.email}
                   readOnly
                   type="email"
-                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 dark:focus:border-blue-300 focus:outline-none focus:ring"
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
               </div>
               <div className="flex flex-col gap-2">

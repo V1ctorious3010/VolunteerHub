@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
@@ -14,7 +14,6 @@ const Register = ({ title }) => {
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const onSubmit = async (data) => {
     const { name, email, password, role } = data;
@@ -34,8 +33,8 @@ const Register = ({ title }) => {
     try {
       const action = await dispatch(registerUser({ name, email, role, password }));
       if (registerUser.fulfilled.match(action)) {
-        toast.success("Account created Successfully");
-        navigate(location?.state || "/");
+        toast.success("Account created Successfully! Please login.");
+        navigate("/login");
       } else {
         toast.error(action.payload || "Registration failed");
       }
@@ -56,26 +55,26 @@ const Register = ({ title }) => {
         <div className="flex justify-center px-4 py-12 lg:h-[90vh]  ">
           <div className="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
             <div className="w-full">
-              <h1 className="text-4xl font-semibold tracking-wider text-gray-800 capitalize dark:text-white">
+              <h1 className="text-4xl font-semibold tracking-wider text-gray-800 capitalize">
                 Create Your Own Account.
               </h1>
               <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-4 mt-8">
                 <div>
-                  <label className="block mb-2 font-semibold  text-gray-800 dark:text-gray-200">Name</label>
+                  <label className="block mb-2 font-semibold  text-gray-800">Name</label>
                   <input
                     type="text"
                     {...register("name", { required: true })}
                     placeholder="Enter your name"
-                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 font-semibold text-gray-800 dark:text-gray-200">Email address</label>
+                  <label className="block mb-2 font-semibold text-gray-800">Email address</label>
                   <input
                     {...register("email", { required: true })}
                     type="email"
                     placeholder="Enter your email address"
-                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
                 <div className="flex flex-col gap-2 ">
@@ -86,17 +85,16 @@ const Register = ({ title }) => {
                     id="role"
                     className="border p-2 rounded-md"
                   >
-                    <option value="volunteer">Volunteer</option>
-                    <option value="organization">Event Organizer</option>
-                    <option value="admin">Admin</option>
+                    <option value="VOLUNTEER">Volunteer</option>
+                    <option value="MANAGER">Event Organizer</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block mb-2 font-semibold text-gray-800 dark:text-gray-200">Password</label>
+                  <label className="block mb-2 font-semibold text-gray-800">Password</label>
                   <div className="relative">
                     <input
                       placeholder="Enter your password"
-                      className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                      className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                       type={showPassword ? "text" : "password"}
                       name="password"
                       {...register("password", { required: true })}

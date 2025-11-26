@@ -1,7 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 const USER_KEY = 'vh_auth_user';
-const LOCAL_USERS_KEY = 'vh_registered_users';
+
+// Base API URL - điều chỉnh theo cấu hình backend của bạn
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+// Cấu hình axios để gửi cookies
+const api = axios.create({
+    baseURL: API_BASE_URL,
+    withCredentials: true, // Quan trọng: cho phép gửi cookies
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
 
 // Helpers to read/write localStorage safely
 const readJSON = (key, fallback = null) => {
@@ -24,57 +36,92 @@ const writeJSON = (key, value) => {
 // Load user session from localStorage on init
 const initialUser = readJSON(USER_KEY, null);
 
-// Fetch users from public JSON and merge with locally registered users
-const fetchAllUsers = async () => {
-    const res = await fetch('/api/users.json');
-    const base = await res.json();
-    const local = readJSON(LOCAL_USERS_KEY, []);
-    return [...base, ...local];
-};
-
 export const login = createAsyncThunk(
     'auth/login',
-    async ({ email /*, password*/ }, { rejectWithValue }) => {
+    async ({ email, password }, { rejectWithValue }) => {
         try {
-            const users = await fetchAllUsers();
-            const found = users.find(u => u.email?.toLowerCase() === email?.toLowerCase());
-            if (!found) return rejectWithValue('Invalid credentials');
-            // Note: password validation skipped in mock setup
-            return { id: found.id, email: found.email, role: found.role, name: found.name };
-        } catch (e) {
-            return rejectWithValue('Login failed');
+            const response = await api.post('/auth/login', { email, password });
+            const { message, name, email: userEmail } = response.data;
+            return { name, email: userEmail, message };
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || error.response?.data || 'Đăng nhập thất bại';
+            return rejectWithValue(errorMessage);
         }
     }
 );
 
 export const register = createAsyncThunk(
     'auth/register',
-    async ({ name, email, role = 'volunteer' /*, password*/ }, { rejectWithValue }) => {
+    async ({ name, email, password, role = 'VOLUNTEER' }, { rejectWithValue }) => {
         try {
-            const users = await fetchAllUsers();
-            const exists = users.some(u => u.email?.toLowerCase() === email?.toLowerCase());
-            if (exists) return rejectWithValue('Email already exists');
-            // Create new user locally (since we cannot write to public JSON)
-            const newUser = {
-                id: Date.now(),
+            // Chuyển role sang uppercase để khớp với enum backend
+            const roleUpper = role.toUpperCase();
+            const response = await api.post('/auth/register', {
                 name,
                 email,
-                role,
-            };
-            const local = readJSON(LOCAL_USERS_KEY, []);
-            local.push(newUser);
-            writeJSON(LOCAL_USERS_KEY, local);
-            return newUser;
-        } catch (e) {
-            return rejectWithValue('Registration failed');
+                password,
+                role: roleUpper
+            });
+            const { message, name: userName, email: userEmail } = response.data;
+            return { name: userName, email: userEmail, message };
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || error.response?.data || 'Đăng ký thất bại';
+            return rejectWithValue(errorMessage);
         }
     }
 );
 
-export const logout = createAsyncThunk('auth/logout', async () => {
-    // No server call in mock mode; just resolve
-    return true;
-});
+export const logout = createAsyncThunk(
+    'auth/logout',
+    async (_, { rejectWithValue }) => {
+        try {
+            await api.post('/auth/logout');
+            return true;
+        } catch (error) {
+            // Vẫn đăng xuất ở client ngay cả khi server error
+            return true;
+        }
+    }
+);
+
+// Refresh access token
+export const refreshToken = createAsyncThunk(
+    'auth/refreshToken',
+    async (_, { rejectWithValue }) => {
+        try {
+            await api.post('/auth/refresh');
+            return true;
+        } catch (error) {
+            return rejectWithValue('Phiên đăng nhập đã hết hạn');
+        }
+    }
+);
+
+// Axios interceptor để tự động refresh token khi access token hết hạn
+api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+
+        // Nếu lỗi 401 và chưa thử refresh
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            try {
+                await api.post('/auth/refresh');
+                // Thử lại request ban đầu
+                return api(originalRequest);
+            } catch (refreshError) {
+                // Refresh thất bại, cần đăng nhập lại
+                return Promise.reject(refreshError);
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
+
+export { api };
 
 const authSlice = createSlice({
     name: 'auth',
@@ -116,6 +163,12 @@ const authSlice = createSlice({
             })
             // logout
             .addCase(logout.fulfilled, (state) => {
+                state.user = null;
+                state.error = null;
+                writeJSON(USER_KEY, null);
+            })
+            // refreshToken
+            .addCase(refreshToken.rejected, (state) => {
                 state.user = null;
                 state.error = null;
                 writeJSON(USER_KEY, null);

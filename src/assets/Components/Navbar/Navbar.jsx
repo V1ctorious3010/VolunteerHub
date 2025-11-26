@@ -124,7 +124,7 @@ const Navbar = () => {
                   tabIndex={0}
                   className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
                 >
-                  {(role === 'organization' || role === 'admin') && (
+                  {(role === 'MANAGER' || role === 'ADMIN') && (
                     <li>
                       <Link to="/add-volunteer-post" className="justify-between">
                         Add Volunteer Post
