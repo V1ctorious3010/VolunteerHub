@@ -22,46 +22,44 @@ import java.time.Duration;
 public class AuthController {
 
     private final AuthService authService;
+    private static final String ACCESS_TOKEN_COOKIE = "accessToken";
+    private static final String REFRESH_TOKEN_COOKIE = "refreshToken";
+    private static final String REFRESH_PATH = "/auth";
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody @Validated RegisterRequest req) {
-        AuthResponse resp = authService.register(req);
-        return ResponseEntity.ok(resp);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Validated LoginRequest req) {
-        Volunteer v = authService.loginAndGetUser(req);
-
-        String accessToken = authService.generateAccessToken(v);
-        String refreshToken = authService.generateRefreshToken(v);
-
-        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
-            .httpOnly(true)
-            .secure(true)
-            .sameSite("Lax")  // neu FE khac domain -> doi thanh "None"
-            .path("/")
-            .maxAge(Duration.ofMinutes(15))
-            .build();
-
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+    private ResponseCookie createCookie(String name, String value, String path, Duration duration) {
+        return ResponseCookie.from(name, value)
             .httpOnly(true)
             .secure(true)
             .sameSite("Lax")
-            .path("/auth")
-            .maxAge(Duration.ofDays(14))
+            .path(path)                 // cookie valid for all endpoints under path
+            .maxAge(duration)
             .build();
+    }
+    private ResponseEntity<AuthResponse> buildAuthResponse(Volunteer v, String message) {
+        String accessToken = authService.generateAccessToken(v);
+        String refreshToken = authService.generateRefreshToken(v);
 
-        AuthResponse resp = new AuthResponse(
-            "Đăng nhập thành công",
-            v.getName(),
-            v.getEmail()
-        );
+        ResponseCookie accessCookie = createCookie(ACCESS_TOKEN_COOKIE, accessToken, "/", Duration.ofMinutes(15));
+        ResponseCookie refreshCookie = createCookie(REFRESH_TOKEN_COOKIE, refreshToken, REFRESH_PATH, Duration.ofDays(14));
+
+        AuthResponse resp = new AuthResponse(message, v.getName(), v.getEmail());
 
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
             .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
             .body(resp);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody @Validated LoginRequest req) {
+        Volunteer v = authService.loginAndGetUser(req);
+        return buildAuthResponse(v, "Đăng nhập thành công!");
+    }
+    
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody @Validated RegisterRequest req) {
+        Volunteer v = authService.register(req);
+        return buildAuthResponse(v, "Đăng ký thành công! Bạn đã được tự động đăng nhập!");
     }
 
     @PostMapping("/refresh")
@@ -73,23 +71,8 @@ public class AuthController {
         }
 
         Map<String, String> tokens = authService.refreshAccessToken(refreshToken);
-        String newAccessToken = tokens.get("accessToken");
-        String newRefreshToken = tokens.get("refreshToken");
-
-        ResponseCookie newAccessCookie = ResponseCookie.from("accessToken", newAccessToken)
-            .httpOnly(true)
-            .secure(true)
-            .sameSite("Lax")
-            .path("/")
-            .maxAge(Duration.ofMinutes(15))
-            .build();
-        ResponseCookie newRefreshCookie = ResponseCookie.from("refreshToken", newRefreshToken)
-            .httpOnly(true)
-            .secure(true)
-            .sameSite("Lax")
-            .path("/auth")
-            .maxAge(Duration.ofDays(14))
-            .build();
+        ResponseCookie newAccessCookie = createCookie("accessToken", tokens.get("accessToken"), "/", Duration.ofMinutes(15));
+        ResponseCookie newRefreshCookie = createCookie("refreshToken", tokens.get("refreshToken"), "/auth", Duration.ofDays(14));
 
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, newAccessCookie.toString())
@@ -99,21 +82,8 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logout() {
-        ResponseCookie accessCookie = ResponseCookie.from("accessToken", "")
-            .httpOnly(true)
-            .secure(true)
-            .sameSite("Lax")
-            .path("/")
-            .maxAge(0)
-            .build();
-
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", "")
-            .httpOnly(true)
-            .secure(true)
-            .sameSite("Lax")
-            .path("/auth")
-            .maxAge(0)
-            .build();
+        ResponseCookie accessCookie = createCookie("accessToken", "", "/", Duration.ZERO);
+        ResponseCookie refreshCookie = createCookie("refreshToken", "", "/auth", Duration.ZERO);
         AuthResponse resp = new AuthResponse(
             "Đăng xuất thành công",
             null,

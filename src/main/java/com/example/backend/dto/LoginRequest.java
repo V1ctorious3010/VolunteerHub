@@ -7,6 +7,12 @@ public class LoginRequest {
     @Email(message = "Phải là định dạng email hợp lệ")
     @NotBlank(message = "Email không được để trống")
     private String email;
+
+    public LoginRequest(String password, String email) {
+        this.password = password;
+        this.email = email;
+    }
+
     @NotBlank(message = "Mật khẩu không được để trống")
     private String password;
 

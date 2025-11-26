@@ -24,7 +24,7 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
 
     @Transactional
-    public AuthResponse register(RegisterRequest req) {
+    public Volunteer register(RegisterRequest req) {
         volunteerRepository.findByEmail(req.getEmail())
             .ifPresent(v -> {
                 throw new BadCredentialsAppException("Email đã tồn tại");
@@ -37,7 +37,7 @@ public class AuthService {
         v.setRole(req.getRole());
         Volunteer saved = volunteerRepository.save(v);
 
-        return new AuthResponse("Đăng kí tài khoản thành công", saved.getName(), saved.getEmail());
+        return saved;
     }
 
     @Transactional(readOnly = true)
