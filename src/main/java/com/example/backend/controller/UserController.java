@@ -32,7 +32,7 @@ public class UserController {
         userService.banUser(request.getEmail());
 
         return ResponseEntity.ok()
-            .body(Map.of("message", "Đã khóa tài khoản " + request.getEmail()));
+            .body(Map.of("message", "Account has been locked: " + request.getEmail()));
     }
 
     @PostMapping("/unban")
@@ -40,7 +40,7 @@ public class UserController {
     public ResponseEntity<?> unbanUser(@RequestBody @Valid UserStatusRequest request) {
         userService.unbanUser(request.getEmail());
         return ResponseEntity.ok()
-            .body(Map.of("message", "Đã mở khóa tài khoản " + request.getEmail()));
+            .body(Map.of("message", "Account has been unlocked: " + request.getEmail()));
     }
 
 }

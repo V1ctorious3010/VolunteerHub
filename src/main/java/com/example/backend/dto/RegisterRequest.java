@@ -5,14 +5,17 @@ import jakarta.validation.constraints.Size;
 import com.example.backend.entity.Volunteer.Role;
 
 public class RegisterRequest {
-    @Email(message = "Phải là định dạng email hợp lệ")
-    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Must be a valid email format.")
+    @NotBlank(message = "Email must not be empty.")
     private String email;
-    @NotBlank(message = "Mật khẩu không được để trống")
-    @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
+
+    @NotBlank(message = "Password must not be empty.")
+    @Size(min = 6, message = "Password must be at least 6 characters long.")
     private String password;
-    @NotBlank(message = "Tên không được để trống")
+
+    @NotBlank(message = "Name must not be empty.")
     private String name;
+
     private Role role;
     public String getEmail() {
         return email;

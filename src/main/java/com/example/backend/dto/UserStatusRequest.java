@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class UserStatusRequest {
-    @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không hợp lệ")
+    @Email(message = "Must be a valid email format.")
+    @NotBlank(message = "Email must not be empty.")
     private String email;
 }

@@ -37,7 +37,7 @@ public class UserService {
     @Transactional
     public void banUser(String email) {
         Volunteer v = volunteerRepository.findByEmail(email)
-            .orElseThrow(() -> new BadCredentialsAppException("Không tìm thấy người dùng"));
+            .orElseThrow(() -> new BadCredentialsAppException("The user was not found."));
         v.setLocked(true);
         volunteerRepository.save(v);
     }
@@ -46,7 +46,7 @@ public class UserService {
     @Transactional
     public void unbanUser(String email) {
         Volunteer v = volunteerRepository.findByEmail(email)
-            .orElseThrow(() -> new BadCredentialsAppException("Không tìm thấy người dùng"));
+            .orElseThrow(() -> new BadCredentialsAppException("The user was not found."));
         v.setLocked(false);
         volunteerRepository.save(v);
     }

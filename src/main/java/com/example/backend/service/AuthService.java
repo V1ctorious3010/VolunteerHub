@@ -27,7 +27,7 @@ public class AuthService {
     public Volunteer register(RegisterRequest req) {
         volunteerRepository.findByEmail(req.getEmail())
             .ifPresent(v -> {
-                throw new BadCredentialsAppException("Email đã tồn tại");
+                throw new BadCredentialsAppException("This email already exists.");
             });
 
         Volunteer v = new Volunteer();
@@ -44,12 +44,12 @@ public class AuthService {
     @Transactional(readOnly = true)
     public Volunteer loginAndGetUser(LoginRequest req) {
         Volunteer v = volunteerRepository.findByEmail(req.getEmail())
-            .orElseThrow(() -> new BadCredentialsAppException("Email không tồn tại hoặc sai"));
+            .orElseThrow(() -> new BadCredentialsAppException("Email does not exist or is incorrect."));
         if (!passwordEncoder.matches(req.getPassword(), v.getPassword())) {
-            throw new BadCredentialsAppException("Mật khẩu không đúng");
+            throw new BadCredentialsAppException("The password is incorrect.");
         }
         if (v.isLocked()) {
-            throw new BadCredentialsAppException("Tài khoản đã bị vô hiệu hóa");
+            throw new BadCredentialsAppException("This account has been locked.");
         }
         return v;
     }
@@ -71,10 +71,10 @@ public class AuthService {
     public Map<String, String> refreshAccessToken(String refreshToken) {
         Volunteer v = jwtService.validateRefreshAndLoadUser(refreshToken);
         if (v == null) {
-            throw new BadCredentialsAppException("Refresh token không hợp lệ hoặc đã hết hạn");
+            throw new BadCredentialsAppException("The refresh token is invalid or has expired.");
         }
         if (v.isLocked()) {
-            throw new BadCredentialsAppException("Tài khoản đã bị vô hiệu hóa");
+            throw new BadCredentialsAppException("This account has been locked.");
         }
         String newAccess = jwtService.generateAccessToken(v);
         String newRefresh = jwtService.generateRefreshToken(v);

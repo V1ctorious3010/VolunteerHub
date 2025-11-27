@@ -53,13 +53,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Validated LoginRequest req) {
         Volunteer v = authService.loginAndGetUser(req);
-        return buildAuthResponse(v, "Đăng nhập thành công!");
+        return buildAuthResponse(v, "You have logged in successfully.");
     }
     
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody @Validated RegisterRequest req) {
         Volunteer v = authService.register(req);
-        return buildAuthResponse(v, "Đăng ký thành công! Bạn đã được tự động đăng nhập!");
+        return buildAuthResponse(v, "You have registered successfully and have been logged in automatically.");
     }
 
     @PostMapping("/refresh")
@@ -67,7 +67,7 @@ public class AuthController {
         @CookieValue(name = "refreshToken", required = false) String refreshToken // auto find refresh token from request cookies
     ) {
         if (refreshToken == null || refreshToken.isBlank()) {
-            throw new BadCredentialsAppException("Refresh token không tồn tại hoặc rỗng");
+            throw new BadCredentialsAppException("Refresh token is missing or empty.");
         }
 
         Map<String, String> tokens = authService.refreshAccessToken(refreshToken);
@@ -85,7 +85,7 @@ public class AuthController {
         ResponseCookie accessCookie = createCookie("accessToken", "", "/", Duration.ZERO);
         ResponseCookie refreshCookie = createCookie("refreshToken", "", "/auth", Duration.ZERO);
         AuthResponse resp = new AuthResponse(
-            "Đăng xuất thành công",
+            "You have logged out successfully.",
             null,
             null, null
         );
