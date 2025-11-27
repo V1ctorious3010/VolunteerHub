@@ -24,7 +24,7 @@ const ManageVolunteers = ({ title }) => {
     // Kiểm tra quyền ADMIN
     useEffect(() => {
         if (!user || user.role !== "ADMIN") {
-            toast.error("Bạn không có quyền truy cập trang này");
+            toast.error("You have no authority to access");
             navigate("/");
         }
     }, [user, navigate]);
@@ -36,8 +36,7 @@ const ManageVolunteers = ({ title }) => {
             const data = await fetchAllUsers();
             setUsers(data);
         } catch (error) {
-            console.error("Failed to fetch users:", error);
-            toast.error("Không thể tải danh sách người dùng");
+            toast.error("Failed to fetch users");
         } finally {
             setLoading(false);
         }
@@ -54,14 +53,13 @@ const ManageVolunteers = ({ title }) => {
         try {
             setActionLoading(email);
             await banUser(email);
-            toast.success(`Đã cấm người dùng ${email}`);
+            toast.success(`Ban succeed ${email}`);
             // Cập nhật state local
             setUsers((prev) =>
                 prev.map((u) => (u.email === email ? { ...u, locked: true } : u))
             );
         } catch (error) {
-            console.error("Failed to ban user:", error);
-            toast.error("Không thể cấm người dùng");
+            toast.error("Failed to ban user");
         } finally {
             setActionLoading(null);
         }
@@ -78,8 +76,7 @@ const ManageVolunteers = ({ title }) => {
                 prev.map((u) => (u.email === email ? { ...u, locked: false } : u))
             );
         } catch (error) {
-            console.error("Failed to unban user:", error);
-            toast.error("Không thể gỡ cấm người dùng");
+            toast.error("Failed to unban user");
         } finally {
             setActionLoading(null);
         }
@@ -106,6 +103,55 @@ const ManageVolunteers = ({ title }) => {
         }
     };
 
+    // Xuất danh sách users ra file JSON
+    const exportToJSON = () => {
+        const dataStr = JSON.stringify(users, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `volunteers_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        toast.success('Exported file JSON');
+    };
+
+    // Xuất danh sách users ra file CSV
+    const exportToCSV = () => {
+        if (users.length === 0) {
+            toast.error('No resources');
+            return;
+        }
+        // Header
+        const headers = ['Name', 'Email', 'Role', 'Status'];
+        // Rows
+        const rows = users.map(u => [
+            u.name || '',
+            u.email || '',
+            u.role || '',
+            u.locked ? 'Ban' : 'Active'
+        ]);
+        // Build CSV content
+        const csvContent = [
+            headers.join(','),
+            ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        ].join('\n');
+        // Add BOM for Excel UTF-8 compatibility
+        const bom = '\uFEFF';
+        const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `volunteers_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        toast.success('Exported file CSV');
+    };
+
     // Hiển thị role badge
     const getRoleBadge = (role) => {
         const colors = {
@@ -124,11 +170,11 @@ const ManageVolunteers = ({ title }) => {
     const getStatusBadge = (locked) => {
         return locked ? (
             <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-                Đã cấm
+                Banned
             </span>
         ) : (
             <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                Hoạt động
+                Active
             </span>
         );
     };
@@ -151,17 +197,31 @@ const ManageVolunteers = ({ title }) => {
             <div className="md:w-4/5 mx-auto min-h-[calc(100vh-364px)] my-12">
                 <section className="p-2 md:p-6 mx-auto bg-white rounded-md shadow-md">
                     <h2 className="text-2xl pt-6 text-center mb-8 font-body font-semibold text-gray-900 capitalize">
-                        Quản lý Volunteers
+                        Manage Volunteers
                     </h2>
 
                     {/* Refresh button */}
-                    <div className="flex justify-end mb-4 px-4">
+                    <div className="flex justify-end mb-4 px-4 gap-2 flex-wrap">
+                        <button
+                            onClick={exportToJSON}
+                            disabled={loading || users.length === 0}
+                            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 transition"
+                        >
+                            Export JSON
+                        </button>
+                        <button
+                            onClick={exportToCSV}
+                            disabled={loading || users.length === 0}
+                            className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50 transition"
+                        >
+                            Export CSV
+                        </button>
                         <button
                             onClick={loadUsers}
                             disabled={loading}
                             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition"
                         >
-                            {loading ? "Đang tải..." : "Làm mới"}
+                            {loading ? "Loading..." : "Refresh"}
                         </button>
                     </div>
 
@@ -172,7 +232,7 @@ const ManageVolunteers = ({ title }) => {
                         </div>
                     ) : users.length === 0 ? (
                         <div className="text-center py-12 text-gray-500">
-                            Không có người dùng nào
+                            No users found
                         </div>
                     ) : (
                         <div className="overflow-x-auto px-4">
@@ -180,19 +240,19 @@ const ManageVolunteers = ({ title }) => {
                                 <thead className="bg-gray-50">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Tên
+                                            Name
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Email
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Vai trò
+                                            Role
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Trạng thái
+                                            Status
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Hành động
+                                            Action
                                         </th>
                                     </tr>
                                 </thead>
@@ -218,7 +278,7 @@ const ManageVolunteers = ({ title }) => {
                                             <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                 {/* Không cho phép ban chính mình hoặc ADMIN khác */}
                                                 {volunteer.email === user.email ? (
-                                                    <span className="text-gray-400 italic">Bạn</span>
+                                                    <span className="text-gray-400 italic">You</span>
                                                 ) : volunteer.role === "ADMIN" ? (
                                                     <span className="text-gray-400 italic">Admin</span>
                                                 ) : volunteer.locked ? (
@@ -228,8 +288,8 @@ const ManageVolunteers = ({ title }) => {
                                                         className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 transition"
                                                     >
                                                         {actionLoading === volunteer.email
-                                                            ? "Đang xử lý..."
-                                                            : "Gỡ cấm"}
+                                                            ? "Processing..."
+                                                            : "Unban"}
                                                     </button>
                                                 ) : (
                                                     <button
@@ -238,8 +298,8 @@ const ManageVolunteers = ({ title }) => {
                                                         className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 transition"
                                                     >
                                                         {actionLoading === volunteer.email
-                                                            ? "Đang xử lý..."
-                                                            : "Cấm"}
+                                                            ? "Processing..."
+                                                            : "Ban"}
                                                     </button>
                                                 )}
                                             </td>
@@ -252,9 +312,9 @@ const ManageVolunteers = ({ title }) => {
 
                     {/* Summary */}
                     <div className="mt-6 px-4 text-sm text-gray-500">
-                        Tổng cộng: {users.length} người dùng |{" "}
-                        Hoạt động: {users.filter((u) => !u.locked).length} |{" "}
-                        Đã cấm: {users.filter((u) => u.locked).length}
+                        Total: {users.length} users |{" "}
+                        Active: {users.filter((u) => !u.locked).length} |{" "}
+                        Banned: {users.filter((u) => u.locked).length}
                     </div>
                 </section>
             </div>
@@ -286,12 +346,12 @@ const ManageVolunteers = ({ title }) => {
 
                         {/* Title */}
                         <h3 className="mt-4 text-lg font-semibold text-center text-gray-900">
-                            {confirmModal.type === 'ban' ? 'Xác nhận cấm người dùng' : 'Xác nhận gỡ cấm người dùng'}
+                            {confirmModal.type === 'ban' ? 'Confirm ban user' : 'Confirm unban user'}
                         </h3>
 
                         {/* Message */}
                         <p className="mt-2 text-center text-gray-600">
-                            Bạn có chắc muốn {confirmModal.type === 'ban' ? 'cấm' : 'gỡ cấm'} người dùng{' '}
+                            Are you sure you want to {confirmModal.type === 'ban' ? 'ban' : 'unban'} user{' '}
                             <span className="font-semibold">{confirmModal.name || confirmModal.email}</span>?
                         </p>
 
@@ -301,7 +361,7 @@ const ManageVolunteers = ({ title }) => {
                                 onClick={closeConfirmModal}
                                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition font-medium"
                             >
-                                Hủy
+                                Cancel
                             </button>
                             <button
                                 onClick={handleConfirmAction}
@@ -310,7 +370,7 @@ const ManageVolunteers = ({ title }) => {
                                     : 'bg-green-500 hover:bg-green-600'
                                     }`}
                             >
-                                {confirmModal.type === 'ban' ? 'Cấm' : 'Gỡ cấm'}
+                                {confirmModal.type === 'ban' ? 'Ban' : 'Unban'}
                             </button>
                         </div>
                     </div>

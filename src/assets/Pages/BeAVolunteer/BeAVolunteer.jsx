@@ -1,6 +1,5 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import image from "../../images/form/adds.avif";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from 'react-redux';
@@ -92,11 +91,7 @@ const BeAVolunteer = ({ title }) => {
   return (
     <div
       className="font-qs md:p-12 mb-12"
-      style={{
-        backgroundImage: `url(${image})`,
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
+
     >
       <Helmet>
         <title>

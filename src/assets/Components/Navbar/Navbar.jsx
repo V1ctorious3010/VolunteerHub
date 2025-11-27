@@ -8,31 +8,21 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const { user } = useSelector(s => s.auth);
   const role = user?.role;
-  const [isChecked, setIsChecked] = useState(false);
-
-  const handleCheckboxChange = (e) => {
-    setIsChecked(!isChecked);
-    if (e.target.checked) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-  };
-  const [theme, setTheme] = useState("light");
-  // console.log(role);
+  // ensure the app always uses light theme
   useEffect(() => {
-    localStorage.setItem("theme", theme);
-    const localTheme = localStorage.getItem("theme");
-
-    // add custom data-theme attribute
-    document.querySelector("html").setAttribute("data-theme", localTheme);
-  }, [theme]);
+    try {
+      document.querySelector("html").setAttribute("data-theme", "light");
+      localStorage.setItem("theme", "light");
+    } catch (e) {
+      // ignore if DOM not available
+    }
+  }, []);
   return (
     <div data-aos="fade-down"
       data-aos-anchor-placement="top-bottom"
       data-aos-easing="linear"
       data-aos-duration="1000" className="font-qs">
-      <div className="navbar  bg-base-100">
+      <div className="navbar bg-blue-600">
         <div className="w-1/2 justify-start md:justify-center">
           <div className="dropdown">
 
@@ -65,7 +55,7 @@ const Navbar = () => {
 
             <div>
               <h2 className="hidden md:flex font-bold text-xl md:text-2xl">
-                <span className="text-green-500">Volunteer</span>Hub
+                <span className="text-yellow-200">Volunteer Hub</span>
               </h2>
             </div>
           </Link>
@@ -76,44 +66,44 @@ const Navbar = () => {
               to="/"
               className={({ isActive }) =>
                 isActive
-                  ? "rounded-xl text-[#BE042F] font-semibold"
-                  : "font-bold"
+                  ? "rounded-xl text-white font-semibold"
+                  : "font-bold text-white"
               }
             >
-              <button className="px-8 py-3  text-lg">Home</button>
+              <button className="px-8 py-3 text-lg hover:bg-white/20 hover:scale-105 transition-all duration-200 rounded-lg">Home</button>
             </NavLink>
             <NavLink
               to="/need-volunteer"
               className={({ isActive }) =>
                 isActive
-                  ? "rounded-xl text-[#BE042F] font-semibold"
-                  : "font-bold"
+                  ? "rounded-xl text-white font-semibold"
+                  : "font-bold text-white"
               }
             >
-              <button className="px-8 py-3  text-xl">Need Volunteer</button>
+              <button className="px-8 py-3 text-xl hover:bg-white/20 hover:scale-105 transition-all duration-200 rounded-lg">Need Volunteer</button>
             </NavLink>
             <NavLink
               to="/feed"
               className={({ isActive }) =>
                 isActive
-                  ? "rounded-xl text-[#BE042F] font-semibold"
-                  : "font-bold"
+                  ? "rounded-xl text-white font-semibold"
+                  : "font-bold text-white"
               }
             >
-              <button className="px-8 py-3  text-xl">Feed</button>
+              <button className="px-8 py-3 text-xl hover:bg-white/20 hover:scale-105 transition-all duration-200 rounded-lg">Feed</button>
             </NavLink>
             <button className="font-bold ">
               <div className="dropdown dropdown-end z-50">
                 <div tabIndex={0} role="button" className="">
                   <div>
-                    <button className="px-8 py-3  text-xl">Mange</button>
+                    <button className="px-8 py-3 text-xl text-white hover:bg-white/20 hover:scale-105 transition-all duration-200 rounded-lg">Manage</button>
                   </div>
                 </div>
                 <ul
                   tabIndex={0}
                   className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
                 >
-                  {(role === 'MANAGER' || role === 'ADMIN') && (
+                  {(role === 'EVENT_ORGANIZER') && (
                     <li>
                       <Link to="/add-volunteer-post" className="justify-between">
                         Add Volunteer Post
@@ -122,38 +112,23 @@ const Navbar = () => {
                   )}
                   {role === 'ADMIN' && (
                     <li>
-                      <Link to="/manage-volunteers" className="justify-between text-red-600">
+                      <Link to="/manage-volunteers" className="justify-between text">
                         Manage Volunteers
                       </Link>
                     </li>
                   )}
-                  <li>
-                    <Link to="/manage-my-post">Manage My Post</Link>
-                  </li>
+                  {role === 'EVENT_ORGANIZER' && (
+                    <li>
+                      <Link to="/manage-my-post">Manage My Post</Link>
+                    </li>
+                  )}
                 </ul>
               </div>
             </button>
           </ul>
         </div>
         <div className="navbar-end gap-4">
-          <label className="themeSwitcherTwo relative inline-flex cursor-pointer select-none items-center">
-            <input
-              type="checkbox"
-              checked={isChecked}
-              onChange={handleCheckboxChange}
-              className="sr-only"
-            />
-
-            <span
-              className={`slider  flex h-7 w-[50px] items-center rounded-full p-1 duration-200 ${isChecked ? "bg-[#212b36]" : "bg-[#CCCCCE]"
-                }`}
-            >
-              <span
-                className={`dot h-6 w-6 rounded-full bg-white duration-200 ${isChecked ? "translate-x-[28px]" : ""
-                  }`}
-              ></span>
-            </span>
-          </label>
+          <div className="w-12" />
           <div className="md:navbar-end">
             {user?.email ? (
               <div className="flex items-center gap-4">
@@ -166,21 +141,27 @@ const Navbar = () => {
                 <div className="flex  font-bold">
                   <button
                     onClick={() => dispatch(logout())}
-                    className="btn btn-sm hover:scale-125 transition  btn-secondary"
+                    className="btn btn-sm hover:scale-110 hover:bg-black-600 transition-all duration-200"
                   >
                     Logout
                   </button>
                 </div>
               </div>
             ) : (
-              <>
+              <div className="flex items-center gap-3">
                 <Link
                   to="/login"
-                  className="mr-4 md:mr-0 px-4 py-2 lg:px-6 lg:py-3 rounded-lg hover:scale-105 cursor-pointer transition text-white  font-semibold lg:text-lg bg-green-500 "
+                  className="px-4 py-2 lg:px-6 lg:py-3 rounded-lg hover:scale-105 hover:bg-yellow-400 transition-all duration-200 cursor-pointer text-white font-semibold lg:text-lg bg-yellow-300"
                 >
-                  Log In{" "}
+                  Log In
                 </Link>
-              </>
+                <Link
+                  to="/register"
+                  className="px-4 py-2 lg:px-6 lg:py-3 rounded-lg hover:scale-105 hover:bg-green-600 transition-all duration-200 cursor-pointer text-white font-semibold lg:text-lg bg-green-500"
+                >
+                  Register
+                </Link>
+              </div>
             )}
           </div>
         </div>

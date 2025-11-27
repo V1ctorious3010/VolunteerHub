@@ -1,5 +1,4 @@
 import { useState } from "react";
-import image from "../../images//form/up1.jpg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
@@ -72,11 +71,7 @@ const UpdateMyPost = ({ title }) => {
       </Helmet>
       <div
         className="font-qs md:p-12 mb-12"
-        style={{
-          backgroundImage: `url(${image})`,
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
+
       >
         <div className="md:w-3/5 mx-auto min-h-[calc(100vh-364px)] my-12">
           <section className="p-2 md:p-6 mx-auto bg-white rounded-md shadow-md ">
