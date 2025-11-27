@@ -42,7 +42,7 @@ public class AuthController {
         ResponseCookie accessCookie = createCookie(ACCESS_TOKEN_COOKIE, accessToken, "/", Duration.ofMinutes(15));
         ResponseCookie refreshCookie = createCookie(REFRESH_TOKEN_COOKIE, refreshToken, REFRESH_PATH, Duration.ofDays(14));
 
-        AuthResponse resp = new AuthResponse(message, v.getName(), v.getEmail());
+        AuthResponse resp = new AuthResponse(message, v.getName(), v.getEmail(), v.getRole());
 
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
@@ -87,7 +87,7 @@ public class AuthController {
         AuthResponse resp = new AuthResponse(
             "Đăng xuất thành công",
             null,
-            null
+            null, null
         );
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
