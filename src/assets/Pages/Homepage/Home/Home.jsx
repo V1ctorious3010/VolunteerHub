@@ -1,4 +1,3 @@
-import Banner from "../Banner/Banner";
 import VolunteerNeeds from "../VolunteerNeeds/VolunteerNeeds";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
@@ -10,7 +9,6 @@ const Home = ({ title }) => {
       <Helmet>
         <title>{title}</title>
       </Helmet>
-      <Banner></Banner>
       <VolunteerNeeds></VolunteerNeeds>
     </motion.div>
   );

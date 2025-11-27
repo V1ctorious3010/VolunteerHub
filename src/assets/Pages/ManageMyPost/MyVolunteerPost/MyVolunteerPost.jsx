@@ -23,7 +23,7 @@ const MyVolunteerPost = ({ title }) => {
     return () => clearTimeout(timer);
   }, []);
   const [myVolunteerPost, setMyVolunteerPost] = useState([]);
-  console.log(myVolunteerPost);
+  // console.log(myVolunteerPost);
   useEffect(() => {
     const volunteers = async () => {
       // load posts and filter by owner matching current user id or name

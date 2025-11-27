@@ -1,7 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../../features/auth/authSlice";
-import logo from "../../images/Minimalist local charity logo with helping hands.svg";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -50,9 +49,6 @@ const Login = ({ title }) => {
           <div className="flex items-center w-full max-w-md px-6 mx-auto lg:w-2/6">
             <div className="flex-1">
               <div className="text-center">
-                <div className="flex justify-center mx-auto">
-                  <img className="md:size-48 size-32 p-0" src={logo} alt="" />
-                </div>
 
                 <p className="mt-3 font-bold text-gray-800">
                   Log in to your account

@@ -12,7 +12,7 @@ import { Helmet } from "react-helmet";
 
 const MyVolunteerRequest = ({ title }) => {
   const [showLoader, setShowLoader] = useState(true);
-  console.log(showLoader);
+  // console.log(showLoader);
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLoader(false);
@@ -24,7 +24,7 @@ const MyVolunteerRequest = ({ title }) => {
   const user = useSelector(s => s.auth.user);
   const navigate = useNavigate();
   const [myVolunteerRequest, setMyVolunteerRequest] = useState([]);
-  console.log(myVolunteerRequest);
+  // console.log(myVolunteerRequest);
   useEffect(() => {
     const volunteers = async () => {
       const { getRequests } = await import('../../../../utils/localApi');

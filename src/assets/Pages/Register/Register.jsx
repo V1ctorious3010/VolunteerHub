@@ -86,7 +86,7 @@ const Register = ({ title }) => {
                     className="border p-2 rounded-md"
                   >
                     <option value="VOLUNTEER">Volunteer</option>
-                    <option value="MANAGER">Event Organizer</option>
+                    <option value="EVENT_ORGANIZER">Event Organizer</option>
                   </select>
                 </div>
                 <div>

@@ -5,6 +5,7 @@ import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
 import AddVolunteerPost from "../Pages/AddVolunteerPost/AddVolunteerPost";
 import ManageMyPost from "../Pages/ManageMyPost/ManageMyPost";
+import ManageVolunteers from "../Pages/ManageVolunteers/ManageVolunteers";
 import PrivateRoutes from "./PrivateRoutes";
 import PostDetails from "../Pages/PostDetails/PostDetails";
 import BeAVolunteer from "../Pages/BeAVolunteer/BeAVolunteer";
@@ -97,6 +98,14 @@ const router = createBrowserRouter([
           const arr = res.ok ? await res.json() : [];
           return arr.find(p => String(p.id) === String(params.id)) || null;
         }
+      },
+      {
+        path: "/manage-volunteers",
+        element: (
+          <PrivateRoutes>
+            <ManageVolunteers title="Manage Volunteers"></ManageVolunteers>
+          </PrivateRoutes>
+        ),
       },
     ],
   },

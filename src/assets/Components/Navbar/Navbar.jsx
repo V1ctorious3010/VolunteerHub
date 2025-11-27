@@ -1,4 +1,3 @@
-import logo from "../../images/Minimalist local charity logo with helping hands.svg";
 import { Link, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,11 +19,7 @@ const Navbar = () => {
     }
   };
   const [theme, setTheme] = useState("light");
-  //Toggle Dark Theme :
-  // const handleToggle = (e) => {
-
-  // };
-
+  // console.log(role);
   useEffect(() => {
     localStorage.setItem("theme", theme);
     const localTheme = localStorage.getItem("theme");
@@ -67,13 +62,7 @@ const Navbar = () => {
             </ul>
           </div>
           <Link to="/" className="cursor-pointer inter flex items-center ">
-            <div>
-              <img
-                className=" size-16 md:size-24 rounded-xl dark:size-2"
-                src={logo}
-                alt=""
-              />
-            </div>
+
             <div>
               <h2 className="hidden md:flex font-bold text-xl md:text-2xl">
                 <span className="text-green-500">Volunteer</span>Hub
@@ -128,6 +117,13 @@ const Navbar = () => {
                     <li>
                       <Link to="/add-volunteer-post" className="justify-between">
                         Add Volunteer Post
+                      </Link>
+                    </li>
+                  )}
+                  {role === 'ADMIN' && (
+                    <li>
+                      <Link to="/manage-volunteers" className="justify-between text-red-600">
+                        Manage Volunteers
                       </Link>
                     </li>
                   )}

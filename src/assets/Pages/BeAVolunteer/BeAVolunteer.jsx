@@ -33,7 +33,7 @@ const BeAVolunteer = ({ title }) => {
     orgEmail, orgName,
   } = post;
 
-  console.log(post);
+  // console.log(post);
   const handleRequest = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -66,7 +66,7 @@ const BeAVolunteer = ({ title }) => {
       orgName,
       postId: id
     };
-    console.log(requestVolunteerPost);
+    // console.log(requestVolunteerPost);
     try {
       const requestPost = {
         id: Date.now(),

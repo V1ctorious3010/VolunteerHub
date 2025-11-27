@@ -4,7 +4,7 @@ import axios from 'axios';
 const USER_KEY = 'vh_auth_user';
 
 // Base API URL - điều chỉnh theo cấu hình backend của bạn
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = 'http://localhost:5000';
 
 // Cấu hình axios để gửi cookies
 const api = axios.create({
@@ -42,7 +42,21 @@ export const login = createAsyncThunk(
         try {
             const response = await api.post('/auth/login', { email, password });
             const { message, name, email: userEmail } = response.data;
-            return { name, email: userEmail, message };
+            // Try to extract role from response in several possible shapes
+            let role = response.data.role || response.data.user?.role || null;
+
+            // If role not provided in login response, try to fetch current profile
+            if (!role) {
+                try {
+                    const meResp = await api.get('/auth/me');
+                    role = meResp.data?.role || meResp.data?.user?.role || null;
+                } catch (e) {
+                    // ignore — backend may not expose /auth/me
+                }
+            }
+
+            // store role if known (required for ADMIN-only pages)
+            return { name, email: userEmail, message, role };
         } catch (error) {
             const errorMessage = error.response?.data?.message || error.response?.data || 'Đăng nhập thất bại';
             return rejectWithValue(errorMessage);
@@ -63,7 +77,18 @@ export const register = createAsyncThunk(
                 role: roleUpper
             });
             const { message, name: userName, email: userEmail } = response.data;
-            return { name: userName, email: userEmail, message };
+            let returnedRole = response.data.role || response.data.user?.role || null;
+            if (!returnedRole) {
+                // try to fetch profile after register if backend supports it
+                try {
+                    const meResp = await api.get('/auth/me');
+                    returnedRole = meResp.data?.role || meResp.data?.user?.role || null;
+                } catch (e) {
+                    // ignore
+                }
+            }
+            const roleToStore = returnedRole || roleUpper;
+            return { name: userName, email: userEmail, message, role: roleToStore };
         } catch (error) {
             const errorMessage = error.response?.data?.message || error.response?.data || 'Đăng ký thất bại';
             return rejectWithValue(errorMessage);
@@ -96,6 +121,26 @@ export const refreshToken = createAsyncThunk(
         }
     }
 );
+
+// ============ User Management APIs (Admin only) ============
+
+// Lấy danh sách tất cả users
+export const fetchAllUsers = async () => {
+    const response = await api.get('/user/users');
+    return response.data;
+};
+
+// Ban user
+export const banUser = async (email) => {
+    const response = await api.post('/user/ban', { email });
+    return response.data;
+};
+
+// Unban user
+export const unbanUser = async (email) => {
+    const response = await api.post('/user/unban', { email });
+    return response.data;
+};
 
 // Axios interceptor để tự động refresh token khi access token hết hạn
 api.interceptors.response.use(
