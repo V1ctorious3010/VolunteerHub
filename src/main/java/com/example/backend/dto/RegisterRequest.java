@@ -14,6 +14,7 @@ public class RegisterRequest {
     private String password;
 
     @NotBlank(message = "Name must not be empty.")
+    @Size(max = 100, message = "Too long.")
     private String name;
 
     private Role role;

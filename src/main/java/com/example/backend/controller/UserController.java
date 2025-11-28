@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/ban")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> banUser(@RequestBody @Valid UserStatusRequest request) {
 
         userService.banUser(request.getEmail());
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/unban")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> unbanUser(@RequestBody @Valid UserStatusRequest request) {
         userService.unbanUser(request.getEmail());
         return ResponseEntity.ok()
