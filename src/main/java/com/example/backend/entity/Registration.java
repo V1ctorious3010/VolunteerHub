@@ -25,9 +25,9 @@ public class Registration {
     // Many-to-One tới Người dùng/Tình nguyện viên
     // Giả sử tên Entity User của bạn là AppUser
     @ManyToOne(fetch = FetchType.LAZY) // Tải dữ liệu user khi cần
-    @JoinColumn(name = "userId", nullable = false) // Tên cột khóa ngoại trong DB
+    @JoinColumn(name = "userEmail", nullable = false) // Tên cột khóa ngoại trong DB
     @JsonIgnore
-    private Volunteer user;
+    private User user;
 
     @Column(name = "createdAt")
     private LocalDateTime createdAt = LocalDateTime.now(); // Thời gian request

@@ -54,8 +54,8 @@ public class Event {
     private EventStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "managerId")
-    private Volunteer manager;
+    @JoinColumn(name = "managerEmail")
+    private User manager;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Registration> requests;

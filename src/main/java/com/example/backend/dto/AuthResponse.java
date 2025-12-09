@@ -1,6 +1,6 @@
 package com.example.backend.dto;
 
-import com.example.backend.entity.Volunteer.Role;
+import com.example.backend.entity.User.Role;
 
 public class AuthResponse {
     private String message;

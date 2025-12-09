@@ -2,7 +2,7 @@ package com.example.backend.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import com.example.backend.entity.Volunteer.Role;
+import com.example.backend.entity.User.Role;
 
 public class RegisterRequest {
     @Email(message = "Must be a valid email format.")

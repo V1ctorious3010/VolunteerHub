@@ -1,7 +1,5 @@
 package com.example.backend.security;
 
-import com.example.backend.entity.Volunteer;
-import com.example.backend.repo.VolunteerRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

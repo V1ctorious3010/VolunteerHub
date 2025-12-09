@@ -1,8 +1,8 @@
 package com.example.backend.service;
 
-import com.example.backend.entity.Volunteer;
+import com.example.backend.entity.User;
 import com.example.backend.exception.BadCredentialsAppException;
-import com.example.backend.repo.VolunteerRepository;
+import com.example.backend.repo.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,21 +14,21 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final VolunteerRepository volunteerRepository;
+    private final UserRepository userRepository;
     /**
      * Lấy danh sách tất cả volunteer (không phân trang)
      */
     @Transactional(readOnly = true)
-    public List<Volunteer> getAllVolunteers() {
-        return volunteerRepository.findAll();
+    public List<User> getAllVolunteers() {
+        return userRepository.findAll();
     }
 
     /**
      * Lấy danh sách volunteer có phân trang
      */
     @Transactional(readOnly = true)
-    public Page<Volunteer> getVolunteers(Pageable pageable) {
-        return volunteerRepository.findAll(pageable);
+    public Page<User> getVolunteers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     /**
@@ -36,18 +36,18 @@ public class UserService {
      */
     @Transactional
     public void banUser(String email) {
-        Volunteer v = volunteerRepository.findByEmail(email)
+        User v = userRepository.findByEmail(email)
             .orElseThrow(() -> new BadCredentialsAppException("The user was not found."));
         v.setLocked(true);
-        volunteerRepository.save(v);
+        userRepository.save(v);
     }
 
 
     @Transactional
     public void unbanUser(String email) {
-        Volunteer v = volunteerRepository.findByEmail(email)
+        User v = userRepository.findByEmail(email)
             .orElseThrow(() -> new BadCredentialsAppException("The user was not found."));
         v.setLocked(false);
-        volunteerRepository.save(v);
+        userRepository.save(v);
     }
 }

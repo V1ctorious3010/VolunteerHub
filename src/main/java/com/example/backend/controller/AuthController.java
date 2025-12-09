@@ -3,7 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.AuthResponse;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.RegisterRequest;
-import com.example.backend.entity.Volunteer;
+import com.example.backend.entity.User;
 import com.example.backend.exception.BadCredentialsAppException;
 import com.example.backend.service.AuthService;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class AuthController {
             .maxAge(duration)
             .build();
     }
-    private ResponseEntity<AuthResponse> buildAuthResponse(Volunteer v, String message) {
+    private ResponseEntity<AuthResponse> buildAuthResponse(User v, String message) {
         String accessToken = authService.generateAccessToken(v);
         String refreshToken = authService.generateRefreshToken(v);
 
@@ -52,13 +52,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Validated LoginRequest req) {
-        Volunteer v = authService.loginAndGetUser(req);
+        User v = authService.loginAndGetUser(req);
         return buildAuthResponse(v, "You have logged in successfully.");
     }
     
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody @Validated RegisterRequest req) {
-        Volunteer v = authService.register(req);
+        User v = authService.register(req);
         return buildAuthResponse(v, "You have registered successfully and have been logged in automatically.");
     }
 

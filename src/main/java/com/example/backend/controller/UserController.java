@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 import com.example.backend.dto.UserStatusRequest;
-import com.example.backend.entity.Volunteer;
+import com.example.backend.entity.User;
 import com.example.backend.service.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -11,8 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
-
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -21,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/users")
-    public List<Volunteer> getAllUsers() {
+    public List<User> getAllUsers() {
         return userService.getAllVolunteers();
     }
 

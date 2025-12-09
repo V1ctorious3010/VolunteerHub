@@ -1,7 +1,7 @@
 package com.example.backend.security;
 
-import com.example.backend.entity.Volunteer;
-import com.example.backend.repo.VolunteerRepository;
+import com.example.backend.entity.User;
+import com.example.backend.repo.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -18,27 +18,27 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    private final VolunteerRepository volunteerRepository;
+    private final UserRepository userRepository;
     private final SecretKey accessKey;
     private final SecretKey refreshKey;
     private final Duration accessTtl;
     private final Duration refreshTtl;
 
     public JwtService(
-        VolunteerRepository volunteerRepository,
+        UserRepository userRepository,
         @Value("${security.jwt.access.secret}") String accessSecret,
         @Value("${security.jwt.refresh.secret}") String refreshSecret,
         @Value("${security.jwt.access.expiration}") long accessMinutes,
         @Value("${security.jwt.refresh.expiration}") long refreshDays
     ) {
-        this.volunteerRepository = volunteerRepository;
+        this.userRepository = userRepository;
         this.accessKey = decodeKey(accessSecret);
         this.refreshKey = decodeKey(refreshSecret);
         this.accessTtl = Duration.ofMinutes(accessMinutes);
         this.refreshTtl = Duration.ofDays(refreshDays);
     }
 
-    public String generateAccessToken(Volunteer v) {
+    public String generateAccessToken(User v) {
         return buildToken(
             Map.of(
                 "role", v.getRole().name(),
@@ -51,7 +51,7 @@ public class JwtService {
         );
     }
 
-    public String generateRefreshToken(Volunteer v) {
+    public String generateRefreshToken(User v) {
         return buildToken(
             Map.of("type", "refresh"),
             v.getEmail(),
@@ -80,7 +80,7 @@ public class JwtService {
     /**
      * Validate refresh token, trả về Volunteer nếu hợp lệ, null nếu sai / hết hạn
      */
-    public Volunteer validateRefreshAndLoadUser(String refreshToken) {
+    public User validateRefreshAndLoadUser(String refreshToken) {
         if (refreshToken == null || refreshToken.isBlank()) {
             return null;
         }
@@ -93,7 +93,7 @@ public class JwtService {
                 return null;
             }
             String email = c.getSubject();
-            return volunteerRepository.findByEmail(email).orElse(null);
+            return userRepository.findByEmail(email).orElse(null);
         } catch (JwtException | IllegalArgumentException e) {
             return null;
         }

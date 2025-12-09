@@ -20,11 +20,11 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "volunteer")
+@Table(name = "user")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Volunteer implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @Column(name = "Email")
@@ -46,10 +46,12 @@ public class Volunteer implements UserDetails {
         ADMIN
     }
 
-    @Column(name = "events_num")
-    private int eventsNum = 1;
-    @Column(name = "is_locked")
+    @Column(name = "isLocked")
     private boolean isLocked = false;
+
+    @Column(name = "avatar")
+    private String avatar;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<Registration> requests;
@@ -92,11 +94,6 @@ public class Volunteer implements UserDetails {
         this.role = role;
     }
 
-
-    public int getEventsNum() {
-        return eventsNum;
-    }
-    public  void setEventsNum(int eventsNum) {}
     public boolean isLocked() {
         return isLocked;
     }
@@ -104,8 +101,6 @@ public class Volunteer implements UserDetails {
     public void setLocked(boolean isLocked) {
         this.isLocked = isLocked;
     }
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
