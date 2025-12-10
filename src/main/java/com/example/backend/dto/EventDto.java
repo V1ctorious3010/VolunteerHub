@@ -16,6 +16,6 @@ public class EventDto {
     private String duration;
     private String description;
     private String status;
-    private String managerEmail;
-    private String managerName;
+    private String orgEmail;
+    private String orgName;
 }
