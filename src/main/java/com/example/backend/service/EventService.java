@@ -37,8 +37,8 @@ public class EventService {
             dto.setDuration(event.getDuration());
             dto.setDescription(event.getDescription());
             dto.setStatus(event.getStatus().name());
-            dto.setManagerName(event.getManager() != null ? event.getManager().getName() : null);
-            dto.setManagerEmail(event.getManager() != null ? event.getManager().getEmail() : null);
+            dto.setOrgName(event.getOrganizer() != null ? event.getOrganizer().getName() : null);
+            dto.setOrgEmail(event.getOrganizer() != null ? event.getOrganizer().getEmail() : null);
 
             return dto;
         });
