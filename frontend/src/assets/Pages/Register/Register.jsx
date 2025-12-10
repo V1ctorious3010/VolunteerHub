@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { register as registerUser } from "../../../features/auth/authSlice";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
+import { ROLE } from "../../../constants/roles";
 
 const Register = ({ title }) => {
   const dispatch = useDispatch();
@@ -85,8 +86,8 @@ const Register = ({ title }) => {
                     id="role"
                     className="border p-2 rounded-md"
                   >
-                    <option value="VOLUNTEER">Volunteer</option>
-                    <option value="EVENT_ORGANIZER">Event Organizer</option>
+                    <option value={ROLE.VOLUNTEER}>Volunteer</option>
+                    <option value={ROLE.EVENT_ORGANIZER}>Event Organizer</option>
                   </select>
                 </div>
                 <div>

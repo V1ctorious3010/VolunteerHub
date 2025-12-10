@@ -32,12 +32,10 @@ const VolunteerNeeds = () => {
         data-aos-easing="linear"
         data-aos-duration="1000" className="container mx-auto">
         <h2 className="text-3xl md:text-5xl font-bold text-center ">
-          Volunteer Needs Now
+          Dự án đang chờ bạn
         </h2>
         <p className="w-2/3 mx-auto mt-4 text-center leading-relaxed text-gray-600">
-          Volunteer Needs Now is the pulse of our community engagement. This
-          section highlights current opportunities where your time and skills
-          can make an immediate impact.
+          Hãy chọn hành trình khiến bạn muốn trao đi thời gian, sức lực và tấm lòng của mình.
         </p>
       </div>
 
@@ -55,7 +53,7 @@ const VolunteerNeeds = () => {
           className="flex items-center justify-center mt-8"
         >
           <Button size="lg" color="deep-orange" variant="gradient">
-            See All
+            Xem tất cả
           </Button>
         </Link>
       </div>

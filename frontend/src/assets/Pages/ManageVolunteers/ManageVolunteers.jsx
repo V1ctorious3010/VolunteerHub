@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import toast from "react-hot-toast";
 import { fetchAllUsers, banUser, unbanUser } from "../../../features/auth/authSlice";
+import { ROLE } from "../../../constants/roles";
 import PropTypes from "prop-types";
 
 const ManageVolunteers = ({ title }) => {
@@ -23,7 +24,7 @@ const ManageVolunteers = ({ title }) => {
 
     // Kiểm tra quyền ADMIN
     useEffect(() => {
-        if (!user || user.role !== "ADMIN") {
+        if (!user || user.role !== ROLE.ADMIN) {
             toast.error("You have no authority to access");
             navigate("/");
         }
@@ -43,7 +44,7 @@ const ManageVolunteers = ({ title }) => {
     };
     console.log(users);
     useEffect(() => {
-        if (user?.role === "ADMIN") {
+        if (user?.role === ROLE.ADMIN) {
             loadUsers();
         }
     }, [user]);
@@ -155,9 +156,9 @@ const ManageVolunteers = ({ title }) => {
     // Hiển thị role badge
     const getRoleBadge = (role) => {
         const colors = {
-            ADMIN: "bg-red-500 text-white",
-            MANAGER: "bg-blue-500 text-white",
-            VOLUNTEER: "bg-green-500 text-white",
+            [ROLE.ADMIN]: "bg-red-500 text-white",
+            [ROLE.EVENT_ORGANIZER]: "bg-blue-500 text-white",
+            [ROLE.VOLUNTEER]: "bg-green-500 text-white",
         };
         return (
             <span className={`px-2 py-1 rounded-full text-xs font-semibold ${colors[role] || "bg-gray-500 text-white"}`}>
@@ -279,7 +280,7 @@ const ManageVolunteers = ({ title }) => {
                                                 {/* Không cho phép ban chính mình hoặc ADMIN khác */}
                                                 {volunteer.email === user.email ? (
                                                     <span className="text-gray-400 italic">You</span>
-                                                ) : volunteer.role === "ADMIN" ? (
+                                                ) : volunteer.role === ROLE.ADMIN ? (
                                                     <span className="text-gray-400 italic">Admin</span>
                                                 ) : volunteer.locked ? (
                                                     <button

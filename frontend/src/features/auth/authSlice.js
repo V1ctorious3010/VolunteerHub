@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { ROLE } from '../../constants/roles';
 
 const USER_KEY = 'vh_auth_user';
 
@@ -66,10 +67,10 @@ export const login = createAsyncThunk(
 
 export const register = createAsyncThunk(
     'auth/register',
-    async ({ name, email, password, role = 'VOLUNTEER' }, { rejectWithValue }) => {
+    async ({ name, email, password, role = ROLE.VOLUNTEER }, { rejectWithValue }) => {
         try {
             // Chuyển role sang uppercase để khớp với enum backend
-            const roleUpper = role.toUpperCase();
+            const roleUpper = typeof role === 'string' ? role.toUpperCase() : ROLE.VOLUNTEER;
             const response = await api.post('/auth/register', {
                 name,
                 email,
