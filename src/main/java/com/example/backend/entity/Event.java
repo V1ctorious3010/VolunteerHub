@@ -13,6 +13,8 @@ import java.util.List;
 public class Event {
 
     public enum EventStatus {
+        PENDING,
+        REJECTED,
         COMING,
         ONGOING,
         FINISHED,
@@ -51,7 +53,7 @@ public class Event {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private EventStatus status;
+    private EventStatus status = EventStatus.PENDING;
 
     @ManyToOne
     @JoinColumn(name = "orgEmail")
