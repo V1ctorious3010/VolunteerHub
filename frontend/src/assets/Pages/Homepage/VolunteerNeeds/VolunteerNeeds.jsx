@@ -2,20 +2,19 @@ import { useEffect, useState } from "react";
 import VolunteerNeedsCard from "./VolunteerNeedsCard";
 import { Link } from "react-router-dom";
 import { Button } from "@material-tailwind/react";
-import { getPosts } from "../../../../utils/localApi";
+import { getEvents } from "../../../../utils/localApi";
 const VolunteerNeeds = () => {
   const [volunteers, setVolunteers] = useState([]);
   useEffect(() => {
     const load = async () => {
-      const all = await getPosts();
-      // map base posts to expected shape
-      const mapped = all.map(p => ({
-        id: p.id,
-        thumbnail: p.thumbnail,
-        postTitle: p.title || p.postTitle,
-        category: p.category || 'General',
-        deadline: p.date || p.deadline,
-        description: p.description || '',
+      const events = await getEvents();
+      const mapped = events.map(e => ({
+        id: e.id,
+        thumbnail: e.thumbnail,
+        title: e.title,
+        category: e.category || 'General',
+        startTime: e.startTime || e.deadline,
+        description: e.description || '',
       }));
       setVolunteers(mapped);
     };

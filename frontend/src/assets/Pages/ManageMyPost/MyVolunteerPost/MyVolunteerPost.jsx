@@ -26,11 +26,21 @@ const MyVolunteerPost = ({ title }) => {
   // console.log(myVolunteerPost);
   useEffect(() => {
     const volunteers = async () => {
-      // load posts and filter by owner matching current user id or name
-      const { getPosts } = await import('../../../../utils/localApi');
-      const all = await getPosts();
-      const mine = all.filter(p => (p.owner && p.owner.id && user && p.owner.id === user.id) || (p.owner && p.owner.name === user?.name));
-      setMyVolunteerPost(mine);
+      // load events from backend and filter by organizer matching current user
+      const { getEvents } = await import('../../../../utils/localApi');
+      const all = await getEvents();
+      const mine = all.filter(e => (user?.email && e.orgEmail === user.email) || (user?.name && e.orgName === user.name));
+      // normalize to previous post shape where possible
+      const normalized = mine.map(e => ({
+        id: e.id,
+        title: e.title,
+        category: e.category || 'General',
+        startTime: e.startTime,
+        location: e.location,
+        orgEmail: e.orgEmail,
+        orgName: e.orgName,
+      }));
+      setMyVolunteerPost(normalized);
     };
     volunteers();
   }, [user?.id, user?.name]);
@@ -46,12 +56,10 @@ const MyVolunteerPost = ({ title }) => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        // simulate delete by removing from localStorage overlay
-        const { deleteLocalPost } = await import('../../../../utils/localApi');
-        deleteLocalPost(id);
+        // No backend delete endpoint is implemented here — simulate removal from UI
         Swal.fire({
           title: "Deleted!",
-          text: "Your post has been deleted.",
+          text: "The item has been removed locally.",
           icon: "success",
         });
         const remaining = myVolunteerPost.filter((post) => post.id !== id);
@@ -84,9 +92,9 @@ const MyVolunteerPost = ({ title }) => {
                 <thead>
                   <tr className="text-white raleway text-base bg-[#DE00DF]">
                     <th></th>
-                    <th>Post Title</th>
+                    <th>Title</th>
                     <th>Category </th>
-                    <th>Deadline </th>
+                    <th>Start Time </th>
                     <th>Location</th>
                     <th>Actions</th>
                   </tr>
@@ -96,20 +104,24 @@ const MyVolunteerPost = ({ title }) => {
                   {myVolunteerPost.map((post, idx) => (
                     <tr className="border border-gray-300" key={post.id}>
                       <th className="font-semibold">{idx + 1}</th>
-                      <td className="font-semibold">{post.postTitle}</td>
+                      <td className="font-semibold">{post.title}</td>
                       <td className="font-semibold">{post.category}</td>
-                      <td className="font-semibold">{post.deadline}</td>
+                      <td className="font-semibold">{post.startTime}</td>
                       <td className="font-semibold">{post.location}</td>
 
                       <td>
-                        <div className="flex items-center gap-6">
-                          <Link to={`/update-my-post/${post.id}`}>
-                            <MdEdit className="size-6" />
-                          </Link>
-                          <button onClick={() => handleDelete(post.id)}>
-                            <MdDelete className="size-6" />
-                          </button>
-                        </div>
+                        {((post.orgEmail && post.orgEmail === user?.email) || (post.orgName && post.orgName === user?.name)) ? (
+                          <div className="flex items-center gap-6">
+                            <Link to={`/update-my-post/${post.id}`}>
+                              <MdEdit className="size-6" />
+                            </Link>
+                            <button onClick={() => handleDelete(post.id)}>
+                              <MdDelete className="size-6" />
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-500">—</span>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -133,17 +145,21 @@ const MyVolunteerPost = ({ title }) => {
                     {/* row 1 */}
                     {myVolunteerPost.map((post) => (
                       <tr className="border border-gray-300" key={post.id}>
-                        <td>{post.postTitle}</td>
+                        <td>{post.title}</td>
                         <td>{post.category}</td>
                         <td>
-                          <div className="flex items-center gap-6">
-                            <Link to={`/update-my-post/${post.id}`}>
-                              <MdEdit className="size-6" />
-                            </Link>
-                            <button onClick={() => handleDelete(post.id)}>
-                              <MdDelete className="size-6" />
-                            </button>
-                          </div>
+                          {((post.orgEmail && post.orgEmail === user?.email) || (post.orgName && post.orgName === user?.name)) ? (
+                            <div className="flex items-center gap-6">
+                              <Link to={`/update-my-post/${post.id}`}>
+                                <MdEdit className="size-6" />
+                              </Link>
+                              <button onClick={() => handleDelete(post.id)}>
+                                <MdDelete className="size-6" />
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-sm text-gray-500">—</span>
+                          )}
                         </td>
                       </tr>
                     ))}

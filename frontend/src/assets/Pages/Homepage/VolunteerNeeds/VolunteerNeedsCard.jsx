@@ -9,7 +9,7 @@ import {
 import { Link } from "react-router-dom";
 
 const VolunteerNeedsCard = ({ volunteer }) => {
-  const { id, thumbnail, postTitle, category, deadline, description } = volunteer;
+  const { id, thumbnail, title, category, startTime, description } = volunteer;
   return (
     <div data-aos="fade-down"
       data-aos-anchor-placement="top-bottom"
@@ -23,7 +23,7 @@ const VolunteerNeedsCard = ({ volunteer }) => {
           className="m-0 rounded-none"
         >
           {thumbnail ? (
-            <img className="w-full h-60" src={thumbnail} alt={postTitle} />
+            <img className="w-full h-60" src={thumbnail} alt={title} />
           ) : (
             <div className="w-full h-60 bg-gray-200 flex items-center justify-center">
               <span className="text-gray-500">No image</span>
@@ -32,7 +32,7 @@ const VolunteerNeedsCard = ({ volunteer }) => {
         </CardHeader>
         <CardBody>
           <Typography className="h-16" variant="h4" color="blue-gray">
-            {postTitle}
+            {title}
           </Typography>
           <Typography className="mt-2" variant="h5" color="blue-gray">
             <span className="text-green-500">{category}</span>
@@ -48,7 +48,7 @@ const VolunteerNeedsCard = ({ volunteer }) => {
             </Link>
           </div>
           <div>
-            <h2 className="font-qs font-bold">Deadline : {deadline}</h2>
+            <h2 className="font-qs font-bold">Start : {startTime}</h2>
           </div>
         </CardFooter>
       </Card>

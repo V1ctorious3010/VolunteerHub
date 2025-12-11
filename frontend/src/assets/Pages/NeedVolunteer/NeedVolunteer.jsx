@@ -7,7 +7,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { Button } from "@material-tailwind/react";
 import axios from "axios";
-import { getPosts } from "../../../utils/localApi";
+import { getEvents } from "../../../utils/localApi";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import LoadingGif from "../../Components/Loader/LoadingGif";
@@ -29,31 +29,26 @@ const NeedVolunteer = ({ title }) => {
   }, []);
   useEffect(() => {
     const getData = async () => {
-      const all = await getPosts();
-      // normalize posts
-      let mapped = all.map(p => ({
-        thumbnail: p.thumbnail,
-        id: p.id,
-        postTitle: p.title || p.postTitle,
-        orgName: p.owner?.name || p.orgName || '',
-        category: p.category || 'General',
-        deadline: p.date || p.deadline,
-        location: p.location || '',
-        noOfVolunteer: p.slots || p.noOfVolunteer || 0,
-        description: p.description || '',
+      // Map frontend sort to backend sortBy param: "startTime,ASC" or "startTime,DESC"
+      let sortBy = '';
+      if (sort === 'asc') sortBy = 'startTime,ASC';
+      else if (sort === 'desc') sortBy = 'startTime,DESC';
+
+      const events = await getEvents({ keyword: search || '', location: '', start: '', page: 0, sortBy });
+      // normalize events to shape used by UI
+      const mapped = events.map(e => ({
+        thumbnail: e.thumbnail,
+        id: e.id,
+        title: e.title,
+        orgName: e.orgName || e.orgEmail || '',
+        category: e.category || 'General',
+        startTime: e.startTime || e.deadline,
+        location: e.location || '',
+        noOfVolunteer: e.noOfVolunteer || 0,
+        remaining: e.remaining,
+        description: e.description || '',
       }));
-      // apply search
-      if (search) {
-        mapped = mapped.filter(m => m.postTitle?.toLowerCase().includes(search.toLowerCase()));
-      }
-      if (category) {
-        mapped = mapped.filter(m => m.category === category);
-      }
-      if (sort === 'asc') {
-        mapped.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
-      } else if (sort === 'desc') {
-        mapped.sort((a, b) => new Date(b.deadline) - new Date(a.deadline));
-      }
+
       setVolunteers(mapped);
     };
     getData();
@@ -230,12 +225,12 @@ const NeedVolunteer = ({ title }) => {
                       {volunteers.map((post, idx) => (
                         <tr className="border border-gray-300" key={post.id}>
                           <th className="font-semibold">{idx + 1}</th>
-                          <td className="font-semibold">{post.postTitle}</td>
+                          <td className="font-semibold">{post.title}</td>
                           <td className="font-semibold">
                             {post.orgName}
                           </td>
                           <td className="font-semibold">{post.category}</td>
-                          <td className="font-semibold">{post.deadline}</td>
+                          <td className="font-semibold">{post.startTime}</td>
                           <td className="font-semibold">{post.location}</td>
                           <td className="font-semibold text-center">
                             {post.noOfVolunteer}
@@ -269,8 +264,8 @@ const NeedVolunteer = ({ title }) => {
                         {/* row 1 */}
                         {volunteers.map((post) => (
                           <tr className="border border-gray-300" key={post.id}>
-                            <td>{post.postTitle}</td>
-                            <td>{post.deadline}</td>
+                            <td>{post.title}</td>
+                            <td>{post.startTime}</td>
                             <td>
                               <Link to={`/post-details/${post.id}`}>
                                 <Button color="green">Chi tiết</Button>

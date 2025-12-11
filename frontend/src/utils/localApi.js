@@ -19,22 +19,32 @@ const writeJSON = (key, value) => {
     } catch { }
 };
 
-export async function getBasePosts() {
-    const res = await fetch('/api/posts.json');
-    return res.ok ? res.json() : [];
-}
-
-export async function getPosts() {
-    const base = await getBasePosts();
-    const local = readJSON(POSTS_KEY, []);
-    // local posts override or extend base
-    // ensure ids are unique; local posts may have ids generated via Date.now()
-    return [...base, ...local];
-}
-
-export async function getPostById(id) {
-    const posts = await getPosts();
-    return posts.find(p => String(p.id) === String(id)) || null;
+/**
+ * Use backend events API instead of local JSON posts.
+ * Example endpoint: http://localhost:5000/events?keyword=&location=&start=&page=0&sortBy=
+ */
+export async function getEvents({ keyword = '', location = '', start = '', page = 0, sortBy = '' } = {}) {
+    try {
+        const qs = new URLSearchParams({
+            keyword: keyword || '',
+            location: location || '',
+            start: start || '',
+            page: String(page || 0),
+            sortBy: sortBy || ''
+        });
+        const url = `http://localhost:5000/events?${qs.toString()}`;
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return Array.isArray(data) ? data : [];
+    } catch (e) {
+        console.error('getEvents error', e);
+        return [];
+    }
 }
 
 export function addLocalPost(post) {
@@ -46,15 +56,8 @@ export function addLocalPost(post) {
 
 // Feed-specific helpers (separate storage for Feed posts)
 export async function getFeedPosts() {
-    // load base feed from /api/feed.json and merge with local overrides
-    try {
-        const res = await fetch('/api/feed.json');
-        const base = res.ok ? await res.json() : [];
-        const local = readJSON(FEED_KEY, []);
-        return [...base, ...local];
-    } catch {
-        return readJSON(FEED_KEY, []);
-    }
+    // Previously loaded from static /api/feed.json — now rely on local overrides only
+    return readJSON(FEED_KEY, []);
 }
 
 export function addLocalFeedPost(post) {
@@ -108,10 +111,8 @@ export function deleteLocalPost(id) {
 }
 
 export async function getRequests() {
-    const res = await fetch('/api/requests.json');
-    const base = res.ok ? await res.json() : [];
-    const local = readJSON(REQUESTS_KEY, []);
-    return [...base, ...local];
+    // No static requests JSON anymore — return local requests only
+    return readJSON(REQUESTS_KEY, []);
 }
 
 export function addLocalRequest(req) {
@@ -129,10 +130,16 @@ export function deleteLocalRequest(id) {
 }
 
 export async function getUsers() {
-    const res = await fetch('/api/users.json');
-    const base = res.ok ? await res.json() : [];
-    const local = readJSON(USERS_KEY, []);
-    return [...base, ...local];
+    // Try backend first, fallback to localStorage
+    try {
+        const res = await fetch('http://localhost:5000/user/users', { credentials: 'include' });
+        if (res.ok) {
+            return await res.json();
+        }
+    } catch (e) {
+        // ignore
+    }
+    return readJSON(USERS_KEY, []);
 }
 
 export function addLocalUser(u) {

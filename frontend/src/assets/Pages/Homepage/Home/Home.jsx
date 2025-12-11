@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { motion, useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
-import { getPosts } from "../../../../utils/localApi";
+import { getEvents } from "../../../../utils/localApi";
 import { fetchAllUsers } from "../../../../features/auth/authSlice";
 
 // Import icons
@@ -25,11 +25,9 @@ const Home = ({ title }) => {
     const loadStats = async () => {
       try {
         // Get posts count
-        const posts = await getPosts();
-        const postCount = posts?.length || 0;
-
-        // Get events count (posts with category 'event' or all posts as events)
-        const eventCount = posts?.filter(p => p.category === 'event')?.length || postCount;
+        const events = await getEvents();
+        const postCount = events?.length || 0;
+        const eventCount = postCount;
 
         // Get users count
         let volunteerCount = 0;

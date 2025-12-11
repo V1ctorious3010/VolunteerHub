@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPosts } from "../../../utils/localApi";
+import { getEvents } from "../../../utils/localApi";
 import { getFeedPosts, addLocalFeedPost, updateLocalFeedPost } from "../../../utils/localApi";
 import PropTypes from 'prop-types';
 import { toast } from 'react-hot-toast';
@@ -21,8 +21,8 @@ const Feed = ({ title }) => {
   useEffect(() => {
     const load = async () => {
       // load base events and seed feed if empty
-      const base = await getPosts();
-      setEvents(base.map(b => ({ id: b.id, title: b.postTitle || b.title })));
+      const base = await getEvents();
+      setEvents(base.map(b => ({ id: b.id, title: b.title })));
       const feed = await getFeedPosts();
       // normalize for UI (no postTitle)
       const mapped = feed.map(p => ({
@@ -130,7 +130,7 @@ const Feed = ({ title }) => {
 
   // events list for composer: use base events loaded earlier
   // map events state to expected shape
-  const composerEvents = events.map(e => ({ id: e.id, postTitle: e.title, title: e.title }));
+  const composerEvents = events.map(e => ({ id: e.id, title: e.title }));
 
   return (
     <div className="py-16 font-qs">

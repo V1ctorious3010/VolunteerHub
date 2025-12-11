@@ -34,7 +34,7 @@ const Register = ({ title }) => {
     try {
       const action = await dispatch(registerUser({ name, email, role, password }));
       if (registerUser.fulfilled.match(action)) {
-        toast.success("Tạo tài khoản thành công! Vui lòng đăng nhập.");
+        toast.success("Tạo tài khoản thành công!");
         navigate("/login");
       } else {
         toast.error(action.payload || "Đăng ký thất bại");
@@ -65,7 +65,7 @@ const Register = ({ title }) => {
                   <input
                     type="text"
                     {...register("name", { required: true })}
-                    placeholder=""
+                    placeholder="Nguyen Van A"
                     className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
@@ -74,7 +74,7 @@ const Register = ({ title }) => {
                   <input
                     {...register("email", { required: true })}
                     type="email"
-                    placeholder=""
+                    placeholder="example@gmail.com"
                     className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
@@ -94,7 +94,7 @@ const Register = ({ title }) => {
                   <label className="block mb-2 font-semibold text-gray-800">Mật khẩu</label>
                   <div className="relative">
                     <input
-                      placeholder=""
+                      placeholder="123aA"
                       className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                       type={showPassword ? "text" : "password"}
                       name="password"

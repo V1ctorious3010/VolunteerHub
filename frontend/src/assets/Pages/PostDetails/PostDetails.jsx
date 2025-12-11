@@ -6,18 +6,19 @@ import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 
 
-const PostDetails = ({ title }) => {
+const PostDetails = ({ title2 }) => {
   const post = useLoaderData();
   const user = useSelector(s => s.auth.user);
   const navigate = useNavigate();
   const {
     id,
-    postTitle,
+    title,
     category,
     location,
     thumbnail,
     noOfVolunteer,
-    deadline,
+    remaining,
+    startTime,
     description,
     orgEmail,
     orgName
@@ -25,8 +26,8 @@ const PostDetails = ({ title }) => {
   // console.log(post);
   const handleVolunteer = () => {
     // console.log("I want to be a volunteer !");
-
-    if (noOfVolunteer <= 0) {
+    const available = typeof remaining !== 'undefined' ? remaining : noOfVolunteer;
+    if (available <= 0) {
       toast.error("Sự kiện đã đủ người !");
       return
     }
@@ -53,7 +54,7 @@ const PostDetails = ({ title }) => {
           />
           <div className="space-y-6">
             <Typography className="mb-4" variant="h2">
-              {postTitle}
+              {title2}
             </Typography>
             <Typography variant="h4">
               Thể loại :{" "}
@@ -84,7 +85,7 @@ const PostDetails = ({ title }) => {
 
                   className="text-lg font-qs font-bold "
                 >
-                  {deadline}
+                  {startTime}
                 </Typography>
               </div>
               <div className=" flex items-center gap-2">
@@ -98,7 +99,7 @@ const PostDetails = ({ title }) => {
                   color="blue-gray"
                   className="text-lg font-qs font-bold bg-green-300 px-3 py-2 rounded-full "
                 >
-                  {noOfVolunteer}
+                  {typeof remaining !== 'undefined' ? remaining : noOfVolunteer}
                 </Typography>
               </div>
             </div>

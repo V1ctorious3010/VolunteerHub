@@ -9,13 +9,13 @@ import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 
 
-const UpdateMyPost = ({ title }) => {
+const UpdateMyPost = ({ title2 }) => {
   const navigate = useNavigate();
   const user = useSelector(s => s.auth.user);
   const post = useLoaderData();
   const {
     id,
-    postTitle,
+    title,
     category,
     location,
     thumbnail,
@@ -29,27 +29,27 @@ const UpdateMyPost = ({ title }) => {
       return isNaN(d) ? new Date() : d;
     } catch (_) { return new Date(); }
   };
-  const [startDate, setStartDate] = useState(parseDate(post?.deadline));
+  const [startDate, setStartDate] = useState(parseDate(post?.startTime || post?.deadline));
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const postTitle = form.postTitle.value;
+    const postTitle = form.title.value;
     const category = form.category.value;
     const location = form.location.value;
     const thumbnail = form.thumbnail.value;
     const noOfVolunteer = form.noOfVolunteer.value;
-    const deadline = startDate.toLocaleDateString();
+    const startTime = startDate.toLocaleDateString();
     const orgName = form.orgName.value;
     const orgEmail = form.orgEmail.value;
     const description = form.description.value;
     const updatedVolunteerPost = {
-      postTitle,
+      title: postTitle,
       category,
       location,
       thumbnail,
       noOfVolunteer,
-      deadline,
+      startTime,
       description,
       orgEmail,
       orgName
@@ -67,7 +67,7 @@ const UpdateMyPost = ({ title }) => {
   return (
     <div>
       <Helmet>
-        <title>{title}</title>
+        <title>{title2}</title>
       </Helmet>
       <div
         className="font-qs md:p-12 mb-12"
@@ -86,10 +86,10 @@ const UpdateMyPost = ({ title }) => {
                     Post Title
                   </label>
                   <input
-                    defaultValue={postTitle}
+                    defaultValue={title2}
                     placeholder="Enter your title of the post"
-                    name="postTitle"
-                    id="postTitle"
+                    name="title"
+                    id="title"
                     type="text"
                     className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                   />
@@ -164,7 +164,7 @@ const UpdateMyPost = ({ title }) => {
                 </div>
                 <div className="flex flex-col gap-2 ">
                   <label className="text-gray-800 font-semibold">
-                    Deadline
+                    Start Time
                   </label>
 
                   {/* Date Picker Input Field */}

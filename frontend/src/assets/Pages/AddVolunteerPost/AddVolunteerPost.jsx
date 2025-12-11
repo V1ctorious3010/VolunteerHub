@@ -17,7 +17,7 @@ const AddVolunteerPost = ({ title }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const postTitle = form.postTitle.value;
+    const postTitle = form.title.value;
     const category = form.category.value;
     const location = form.location.value;
     // Handle uploaded file (if any) and convert to base64 data URL
@@ -37,19 +37,19 @@ const AddVolunteerPost = ({ title }) => {
       }
     }
     const noOfVolunteer = parseInt(form.noOfVolunteer.value);
-    const deadline = startDate.toLocaleDateString();
+    const startTime = startDate.toLocaleDateString();
     const orgName = form.orgName.value;
     const orgEmail = form.orgEmail.value;
     const description = form.description.value;
     const id = Date.now();
     const newVolunteerPost = {
       id,
-      postTitle,
+      title: postTitle,
       category,
       location,
       thumbnail,
       noOfVolunteer,
-      deadline,
+      startTime,
       description,
       orgEmail,
       orgName,
@@ -94,8 +94,8 @@ const AddVolunteerPost = ({ title }) => {
                 </label>
                 <input
                   placeholder="Enter your title of the post"
-                  name="postTitle"
-                  id="postTitle"
+                  name="title"
+                  id="title"
                   type="text"
                   className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
@@ -176,7 +176,7 @@ const AddVolunteerPost = ({ title }) => {
                 />
               </div>
               <div className="flex flex-col gap-2 ">
-                <label className="text-gray-800 font-semibold">Deadline</label>
+                <label className="text-gray-800 font-semibold">Start Time</label>
 
                 {/* Date Picker Input Field */}
                 <DatePicker

@@ -82,9 +82,9 @@ const MyVolunteerRequest = ({ title }) => {
                 <thead>
                   <tr className="text-white raleway text-base bg-[#DE00DF]">
                     <th></th>
-                    <th>Post Title</th>
+                    <th>Title</th>
                     <th>Org Email </th>
-                    <th>Deadline </th>
+                    <th>Start Time </th>
                     <th>Location</th>
                     <th>Actions</th>
                   </tr>
@@ -94,9 +94,9 @@ const MyVolunteerRequest = ({ title }) => {
                   {myVolunteerRequest.map((post, idx) => (
                     <tr className="border border-gray-300" key={post.id}>
                       <th className="font-semibold">{idx + 1}</th>
-                      <td className="font-semibold">{post.postTitle}</td>
+                      <td className="font-semibold">{post.title}</td>
                       <td className="font-semibold">{post.category}</td>
-                      <td className="font-semibold">{post.deadline}</td>
+                      <td className="font-semibold">{post.startTime}</td>
                       <td className="font-semibold">{post.location}</td>
 
                       <td>
@@ -120,8 +120,8 @@ const MyVolunteerRequest = ({ title }) => {
                 {/* head */}
                 <thead>
                   <tr className="text-white raleway text-base bg-[#DE00DF]">
-                    <th>Post Title </th>
-                    <th>Deadline</th>
+                    <th>Title </th>
+                    <th>Start Time</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -129,8 +129,8 @@ const MyVolunteerRequest = ({ title }) => {
                   {/* row 1 */}
                   {myVolunteerRequest.map((post) => (
                     <tr className="border border-gray-300" key={post.id}>
-                      <td>{post.postTitle}</td>
-                      <td>{post.deadline}</td>
+                      <td>{post.title}</td>
+                      <td>{post.startTime}</td>
                       <td>
                         <div className="flex items-center gap-6">
                           <GiCancel

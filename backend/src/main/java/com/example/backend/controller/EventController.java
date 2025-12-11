@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController// Đánh dấu lớp này là một REST controller
@@ -23,5 +24,12 @@ public class EventController {
 
         // call service and return result (Page<Event>)
         return ResponseEntity.ok(eventService.getEvents(keyword, location, start, page, sortBy).getContent());
+    }
+
+    @GetMapping("/events/{id}")
+    public ResponseEntity<?> getEventById(@PathVariable Long id) {
+        var dto = eventService.getEventById(id);
+        if (dto == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(dto);
     }
 }

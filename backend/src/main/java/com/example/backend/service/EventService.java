@@ -37,8 +37,8 @@ public class EventService {
             dto.setDuration(event.getDuration());
             dto.setDescription(event.getDescription());
             dto.setStatus(event.getStatus().name());
-            dto.setManagerName(event.getManager() != null ? event.getManager().getName() : null);
-            dto.setManagerEmail(event.getManager() != null ? event.getManager().getEmail() : null);
+            dto.setOrgName(event.getOrganizer() != null ? event.getOrganizer().getName() : null);
+            dto.setOrgEmail(event.getOrganizer() != null ? event.getOrganizer().getEmail() : null);
 
             return dto;
         });
@@ -71,5 +71,25 @@ public class EventService {
                 return null;
             }
         }
+    }
+
+    @Transactional(readOnly = true)
+    public com.example.backend.dto.EventDto getEventById(Long id) {
+        Event event = eventRepository.findById(id).orElse(null);
+        if (event == null) return null;
+        com.example.backend.dto.EventDto dto = new com.example.backend.dto.EventDto();
+        dto.setId(event.getId());
+        dto.setTitle(event.getTitle());
+        dto.setLocation(event.getLocation());
+        dto.setThumbnail(event.getThumbnail());
+        dto.setNoOfVolunteer(event.getNoOfVolunteer());
+        dto.setRemaining(event.getRemaining());
+        dto.setStartTime(event.getStartTime());
+        dto.setDuration(event.getDuration());
+        dto.setDescription(event.getDescription());
+        dto.setStatus(event.getStatus() != null ? event.getStatus().name() : null);
+        dto.setOrgName(event.getOrganizer() != null ? event.getOrganizer().getName() : null);
+        dto.setOrgEmail(event.getOrganizer() != null ? event.getOrganizer().getEmail() : null);
+        return dto;
     }
 }

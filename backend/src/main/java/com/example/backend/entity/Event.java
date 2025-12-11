@@ -13,6 +13,8 @@ import java.util.List;
 public class Event {
 
     public enum EventStatus {
+        PENDING,
+        REJECTED,
         COMING,
         ONGOING,
         FINISHED,
@@ -51,11 +53,11 @@ public class Event {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private EventStatus status;
+    private EventStatus status = EventStatus.PENDING;
 
     @ManyToOne
-    @JoinColumn(name = "managerEmail")
-    private User manager;
+    @JoinColumn(name = "orgEmail")
+    private User organizer;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Registration> requests;

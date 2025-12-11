@@ -18,11 +18,11 @@ const BeAVolunteer = ({ title }) => {
       return isNaN(d) ? new Date() : d;
     } catch (_) { return new Date(); }
   };
-  const [startDate, setStartDate] = useState(parseDate(post?.deadline));
+  const [startDate, setStartDate] = useState(parseDate(post?.startTime || post?.deadline));
   const navigate = useNavigate();
   const user = useSelector(s => s.auth.user);
   const { id,
-    postTitle,
+    title: postTitle,
     category,
     location,
     thumbnail,
@@ -36,12 +36,12 @@ const BeAVolunteer = ({ title }) => {
   const handleRequest = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const postTitle = form.postTitle.value;
+    const postTitle = form.title.value;
     const category = form.category.value;
     const location = form.destination.value;
     const thumbnail = form.thumbnail.value;
     const noOfVolunteer = form.noOfVolunteer.value;
-    const deadline = startDate.toLocaleDateString();
+    const startTime = startDate.toLocaleDateString();
     const orgName = form.orgName.value;
     const orgEmail = form.orgEmail.value;
     const volunteerName = form.volunteerName.value;
@@ -50,12 +50,12 @@ const BeAVolunteer = ({ title }) => {
     const suggestion = form.suggestion.value;
     const status = form.status.value;
     const requestVolunteerPost = {
-      postTitle,
+      title: postTitle,
       category,
       location,
       thumbnail,
       noOfVolunteer,
-      deadline,
+      startTime,
       description,
       suggestion,
       status,
@@ -112,10 +112,10 @@ const BeAVolunteer = ({ title }) => {
                 </label>
                 <input
                   placeholder="Enter your title of the post"
-                  name="postTitle"
+                  name="title"
                   readOnly
                   defaultValue={postTitle}
-                  id="postTitle"
+                  id="title"
                   type="text"
                   className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
