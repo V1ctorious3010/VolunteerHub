@@ -64,7 +64,7 @@ const Home = ({ title }) => {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">Nền tảng cộng đồng thiện nguyện trực tuyến</h2>
           <p className="text-lg md:text-xl leading-relaxed text-gray-600">
-            “Volunteer Hub tạo cầu nối giữa tình nguyện viên và các cơ hội tình nguyện phù hợp tại Việt Nam, giúp mọi người phát huy tối đa khả năng đóng góp của mình cho xã hội.”
+            “GiveNow tạo cầu nối giữa tình nguyện viên và các cơ hội tình nguyện phù hợp tại Việt Nam, giúp mọi người phát huy tối đa khả năng đóng góp của mình cho xã hội.”
           </p>
         </div>
       </section>
@@ -73,7 +73,7 @@ const Home = ({ title }) => {
       <hr className="border-gray-300 mx-auto w-4/5" />
 
       {/* Our Impact Section */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4 bg-gray-100">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">
             Những con số biết nói

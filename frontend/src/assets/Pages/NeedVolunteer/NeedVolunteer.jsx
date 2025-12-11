@@ -105,12 +105,10 @@ const NeedVolunteer = ({ title }) => {
         className="container mx-auto mb-6"
       >
         <h2 className="text-2xl md:text-5xl font-bold text-center ">
-          Join Our Community: Volunteer Opportunities
+          Các dự án đang cần người
         </h2>
         <p className="w-2/3 mx-auto md:text-lg mt-4 text-center leading-relaxed ">
-          Discover meaningful ways to contribute to our mission. Explore diverse
-          volunteer roles and make a difference in your community. Join us in
-          creating positive change today.
+          Hãy chọn dự án mà các bạn quan tâm nhất
         </p>
       </div>
       <div className="flex flex-col md:flex-row items-center justify-between container mx-auto">
@@ -145,13 +143,13 @@ const NeedVolunteer = ({ title }) => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="">All Categories</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Education">Education</option>
-              <option value="Social Service">Social Service</option>
-              <option value="Animal Welfare">Animal Welfare</option>
-              <option value="Environment">Environment</option>
-              <option value="Food Security">Food Security</option>
+              <option value="">Tất cả</option>
+              <option value="Healthcare">Y tế</option>
+              <option value="Education">Giáo dục</option>
+              <option value="Social Service">Xã hội</option>
+              <option value="Animal Welfare">Động vật hoang dã</option>
+              <option value="Environment">Môi trường</option>
+              <option value="Food Security">Cứu trợ lương thực</option>
             </select>
           </div>
           <div>
@@ -162,9 +160,9 @@ const NeedVolunteer = ({ title }) => {
               value={sort}
               onChange={(e) => setSort(e.target.value)}
             >
-              <option value="">No Sorting</option>
-              <option value="asc">Deadline: Earliest First</option>
-              <option value="desc">Deadline: Latest First</option>
+              <option value="">Không sắp xếp</option>
+              <option value="asc">Mới nhất</option>
+              <option value="desc">Gần hết hạn</option>
             </select>
           </div>
         </div>
@@ -180,8 +178,8 @@ const NeedVolunteer = ({ title }) => {
               className="px-6 py-2 border-none text-gray-700 placeholder-gray-500 bg-white outline-none focus:placeholder-transparent"
               type="text"
               name="search"
-              placeholder="Enter the Post Title"
-              aria-label="Enter the Post Title"
+              placeholder="Tìm theo tên sự kiện"
+              aria-label=""
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
@@ -190,7 +188,7 @@ const NeedVolunteer = ({ title }) => {
               className="inline-block rounded-lg bg-warning px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-warning-3 transition duration-150 ease-in-out hover:bg-warning-accent-300 hover:shadow-warning-2 focus:bg-warning-accent-300 focus:shadow-warning-2 focus:outline-none focus:ring-0 active:bg-warning-600 active:shadow-warning-2 motion-reduce:transition-none"
               onClick={handleSearch}
             >
-              Search
+              Tìm kiếm
             </button>
           </div>
         </div>
@@ -216,15 +214,15 @@ const NeedVolunteer = ({ title }) => {
                   <table className="table border-collapse border border-gray-400">
                     {/* head */}
                     <thead>
-                      <tr className="text-white raleway text-base bg-[#DE00DF]">
+                      <tr className="text-white raleway text-base bg-[#2986cc]">
                         <th></th>
-                        <th>Post Title</th>
-                        <th>Posted By</th>
-                        <th>Category </th>
-                        <th>Deadline </th>
-                        <th>Location</th>
-                        <th>Volunteer Needed</th>
-                        <th>View Details</th>
+                        <th>Tên sự kiên</th>
+                        <th>Tổ chức</th>
+                        <th>Thể loại </th>
+                        <th>Hạn cuối </th>
+                        <th>Địa điểm</th>
+                        <th>Số lượng</th>
+                        <th>Chi tiết</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -244,7 +242,7 @@ const NeedVolunteer = ({ title }) => {
                           </td>
                           <td>
                             <Link to={`/post-details/${post.id}`}>
-                              <Button color="green">View Details</Button>
+                              <Button color="green">Chi tiết</Button>
                             </Link>
                           </td>
                         </tr>
@@ -262,9 +260,9 @@ const NeedVolunteer = ({ title }) => {
                       {/* head */}
                       <thead>
                         <tr className="text-white raleway text-base bg-[#DE00DF]">
-                          <th>Post Title </th>
-                          <th>Deadline</th>
-                          <th>View Details</th>
+                          <th>Tên </th>
+                          <th>Hạn cuối</th>
+                          <th>Chi tiết</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -275,7 +273,7 @@ const NeedVolunteer = ({ title }) => {
                             <td>{post.deadline}</td>
                             <td>
                               <Link to={`/post-details/${post.id}`}>
-                                <Button color="green">View Details</Button>
+                                <Button color="green">Chi tiết</Button>
                               </Link>
                             </td>
                           </tr>

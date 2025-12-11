@@ -12,7 +12,7 @@ const FeedCard = ({ post, liked, onToggleLike, onOpenComments, onShare }) => {
           </Link>
         </h4>
       </div>
-      <div className="mb-4 text-sm text-gray-500">by <span className="font-medium">{post.authorName || post.orgName || 'Unknown'}</span></div>
+      <div className="mb-4 text-sm text-gray-500">bởi <span className="font-medium">{post.authorName || post.orgName || 'Unknown'}</span></div>
 
       <p className="text-sm text-gray-600 mb-4">{post.description}</p>
 
@@ -23,9 +23,9 @@ const FeedCard = ({ post, liked, onToggleLike, onOpenComments, onShare }) => {
       )}
 
       <div className="flex justify-between text-sm text-gray-600 mb-2">
-        <div>{(post.likesBy || []).length} Likes</div>
-        <div>{(post.comments || []).length} Comments</div>
-        <div>{post.shares || 0} Shares</div>
+        <div>{(post.likesBy || []).length} Thích</div>
+        <div>{(post.comments || []).length} Bình luận</div>
+        <div>{post.shares || 0} Chia sẻ</div>
       </div>
 
       <div className="flex border-t pt-2">
@@ -33,19 +33,19 @@ const FeedCard = ({ post, liked, onToggleLike, onOpenComments, onShare }) => {
           className={`flex-1 py-2 text-center ${liked ? 'text-red-600 font-semibold' : 'text-gray-700'} transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 cursor-pointer`}
           onClick={() => onToggleLike(post.id)}
         >
-          {liked ? 'Liked' : 'Like'}
+          {liked ? 'Đã thích' : 'Thích'}
         </button>
         <button
           className="flex-1 py-2 text-center text-gray-700 border-l border-r transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
           onClick={() => onOpenComments(post.id)}
         >
-          Comment
+          Bình luận
         </button>
         <button
           className="flex-1 py-2 text-center text-gray-700 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
           onClick={() => onShare(post)}
         >
-          Share
+          Chia sẻ
         </button>
       </div>
     </div>

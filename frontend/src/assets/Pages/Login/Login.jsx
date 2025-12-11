@@ -22,13 +22,13 @@ const Login = ({ title }) => {
       const action = await dispatch(login({ email, password }));
       if (login.fulfilled.match(action)) {
         navigate(location?.state || "/");
-        toast.success("You've been Logged In Successfully");
+        toast.success("Đăng nhập thành công");
       } else {
-        toast.error(action.payload || "Invalid credentials !");
+        toast.error(action.payload || "Thông tin đăng nhập không hợp lệ");
       }
     } catch (err) {
       console.log(err);
-      toast.error("Invalid credentials !");
+      toast.error("Thông tin đăng nhập không hợp lệ");
     }
   };
   useEffect(() => {
@@ -51,7 +51,7 @@ const Login = ({ title }) => {
               <div className="text-center">
 
                 <p className="mt-3 font-bold text-gray-800">
-                  Log in to your account
+                  Đăng nhập vào tài khoản của bạn
                 </p>
               </div>
 
@@ -59,14 +59,14 @@ const Login = ({ title }) => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div>
                     <label className="block mb-2 text-sm font-bold text-gray-800">
-                      Email Address
+                      Địa chỉ email
                     </label>
                     <input
                       {...register("email", { required: true })}
                       type="email"
                       name="email"
                       id="email"
-                      placeholder="Enter your email address"
+                      placeholder="Hãy nhập địa chỉ email"
                       className="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
@@ -74,13 +74,13 @@ const Login = ({ title }) => {
                   <div className="mt-6">
                     <div className="flex justify-between mb-2">
                       <label className="font-bold text-sm text-gray-700">
-                        Password
+                        Mật khẩu
                       </label>
 
                     </div>
                     <div className="relative">
                       <input
-                        placeholder="Enter your password"
+                        placeholder="Hãy nhập mật khẩu"
                         className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                         type={showPassword ? "text" : "password"}
                         name="password"
@@ -100,19 +100,19 @@ const Login = ({ title }) => {
                     <input
                       className="w-full px-4 py-2 cursor-pointer font-bold tracking-wide text-white transition-colors duration-300 transform bg-green-500 rounded-lg hover:bg-gray-400 focus:outline-none focus:bg-gray-400 focus:ring focus:ring-blue-300 focus:ring-opacity-50 disabled:opacity-50"
                       type="submit"
-                      value={loading ? "Logging in..." : " Log in"}
+                      value={loading ? "Đang đăng nhập..." : " Đăng nhập"}
                       disabled={loading}
                     />
                   </div>
                 </form>
 
                 <p className="mt-6  text-center text-gray-800">
-                  Don&#x27;t have an account yet?{" "}
+                  Bạn chưa có tài khoản?{" "}
                   <Link
                     to="/register"
                     className="text-blue-500 focus:outline-none focus:underline hover:underline"
                   >
-                    Register
+                    Hãy đăng ký
                   </Link>
                   .
                 </p>

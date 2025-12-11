@@ -30,7 +30,7 @@ const PostComposer = ({ events, onCreate, initialDescription = '', initialThumbn
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!eventId) return toast.error('Please select an event to attach the post to.');
+    if (!eventId) return toast.error('Vui lòng chọn một sự kiện để đính kèm bài viết.');
     let thumbnail = '';
     if (file) {
       const toData = (f) => new Promise((res, rej) => {
@@ -58,11 +58,11 @@ const PostComposer = ({ events, onCreate, initialDescription = '', initialThumbn
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-4 rounded-md shadow mb-6">
-      <h3 className="font-bold mb-2">Create a post</h3>
-      <textarea placeholder="Share something..." value={text} onChange={(e) => setText(e.target.value)} className="w-full border p-2 rounded mb-2" />
+      <h3 className="font-bold mb-2">Tạo bài viết</h3>
+      <textarea placeholder="Chia sẻ điều gì đó..." value={text} onChange={(e) => setText(e.target.value)} className="w-full border p-2 rounded mb-2" />
       <div className="flex gap-2 items-center mb-2">
         <select value={eventId} onChange={(e) => setEventId(e.target.value)} className="border p-2 rounded">
-          <option value="">-- Select Event (required) --</option>
+          <option value="">-- Chọn sự kiện (bắt buộc) --</option>
           {events.map(ev => (
             <option key={ev.id} value={ev.id}>{ev.postTitle || ev.title}</option>
           ))}
@@ -72,8 +72,8 @@ const PostComposer = ({ events, onCreate, initialDescription = '', initialThumbn
       {filePreview && <img src={filePreview} alt="preview" className="mb-2 h-32 object-cover rounded" />}
       <div className="flex justify-end">
         <div className="flex gap-2">
-          {onCancel && <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>}
-          <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded">Post</button>
+          {onCancel && <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-200 rounded">Hủy</button>}
+          <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded">Đăng</button>
         </div>
       </div>
     </form>

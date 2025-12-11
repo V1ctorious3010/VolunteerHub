@@ -20,28 +20,28 @@ const Register = ({ title }) => {
     const { name, email, password, role } = data;
     // Basic password rules
     if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      toast.error("Mật khẩu phải có ít nhất 6 ký tự");
       return;
     }
     if (!/[A-Z]/.test(password)) {
-      toast.error("Password needs an uppercase letter");
+      toast.error("Mật khẩu cần ít nhất một chữ hoa");
       return;
     }
     if (!/[a-z]/.test(password)) {
-      toast.error("Password needs a lowercase letter");
+      toast.error("Mật khẩu cần ít nhất một chữ thường");
       return;
     }
     try {
       const action = await dispatch(registerUser({ name, email, role, password }));
       if (registerUser.fulfilled.match(action)) {
-        toast.success("Account created Successfully! Please login.");
+        toast.success("Tạo tài khoản thành công! Vui lòng đăng nhập.");
         navigate("/login");
       } else {
-        toast.error(action.payload || "Registration failed");
+        toast.error(action.payload || "Đăng ký thất bại");
       }
     } catch (err) {
       console.error(err);
-      toast.error("Registration failed due to an unexpected error.");
+      toast.error("Đăng ký thất bại do lỗi không mong muốn.");
     }
   };
 
@@ -57,44 +57,44 @@ const Register = ({ title }) => {
           <div className="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
             <div className="w-full">
               <h1 className="text-4xl font-semibold tracking-wider text-gray-800 capitalize">
-                Create Your Own Account.
+                Hãy tạo tài khoản của riêng bạn
               </h1>
               <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-4 mt-8">
                 <div>
-                  <label className="block mb-2 font-semibold  text-gray-800">Name</label>
+                  <label className="block mb-2 font-semibold  text-gray-800">Họ tên</label>
                   <input
                     type="text"
                     {...register("name", { required: true })}
-                    placeholder="Enter your name"
+                    placeholder=""
                     className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 font-semibold text-gray-800">Email address</label>
+                  <label className="block mb-2 font-semibold text-gray-800">Địa chỉ email</label>
                   <input
                     {...register("email", { required: true })}
                     type="email"
-                    placeholder="Enter your email address"
+                    placeholder=""
                     className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
                 <div className="flex flex-col gap-2 ">
-                  <label className="text-gray-800 font-semibold" htmlFor="role">Role</label>
+                  <label className="text-gray-800 font-semibold" htmlFor="role">Vai trò</label>
                   <select
                     {...register("role")}
                     name="role"
                     id="role"
                     className="border p-2 rounded-md"
                   >
-                    <option value={ROLE.VOLUNTEER}>Volunteer</option>
-                    <option value={ROLE.EVENT_ORGANIZER}>Event Organizer</option>
+                    <option value={ROLE.VOLUNTEER}>Tình nguyện viên</option>
+                    <option value={ROLE.EVENT_ORGANIZER}>Tổ chức sự kiện</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block mb-2 font-semibold text-gray-800">Password</label>
+                  <label className="block mb-2 font-semibold text-gray-800">Mật khẩu</label>
                   <div className="relative">
                     <input
-                      placeholder="Enter your password"
+                      placeholder=""
                       className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                       type={showPassword ? "text" : "password"}
                       name="password"
@@ -110,16 +110,16 @@ const Register = ({ title }) => {
                   </div>
                 </div>
                 <p className="text-center text-gray-800">
-                  Already have an account ?{" "}
+                  Bạn đã có tài khoản ?{" "}
                   <Link to="/login" className="text-blue-500 focus:outline-none focus:underline hover:underline">
-                    Login
+                    Đăng nhập
                   </Link>
                   .
                 </p>
                 <input
                   className=" w-full px-6 py-3  font-semibold tracking-wide cursor-pointer text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50 disabled:opacity-50"
                   type="submit"
-                  value={loading ? "Registering..." : "Register"}
+                  value={loading ? "Đang đăng ký..." : "Đăng ký"}
                   disabled={loading}
                 />
               </form>

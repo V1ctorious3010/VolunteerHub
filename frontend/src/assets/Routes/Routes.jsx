@@ -26,19 +26,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/feed",
-        element: <Feed title="Feed"></Feed>,
+        element: <Feed title="Diễn đàn"></Feed>,
       },
       {
         path: "/login",
-        element: <Login title="Login"></Login>,
+        element: <Login title="Đăng nhập"></Login>,
       },
       {
         path: "/register",
-        element: <Register title="Register"></Register>,
+        element: <Register title="Đăng ký"></Register>,
       },
       {
         path: "/need-volunteer",
-        element: <NeedVolunteer title="Need Volunteers"></NeedVolunteer>,
+        element: <NeedVolunteer title="Cần tình nguyện viên"></NeedVolunteer>,
         loader: async () => {
           const res = await fetch('/api/posts.json');
           return res.ok ? res.json() : [];
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
         path: "/add-volunteer-post",
         element: (
           <PrivateRoutes>
-            <AddVolunteerPost title="Add Volunteer Post"></AddVolunteerPost>
+            <AddVolunteerPost title="Tạo sự kiện"></AddVolunteerPost>
           </PrivateRoutes>
         ),
       },
@@ -64,7 +64,7 @@ const router = createBrowserRouter([
         path: "/post-details/:id",
         element: (
           <PrivateRoutes>
-            <PostDetails title='Post Details'></PostDetails>
+            <PostDetails title='Chi tiết bài viết'></PostDetails>
           </PrivateRoutes>
         ),
         loader: async ({ params }) => {
@@ -77,7 +77,7 @@ const router = createBrowserRouter([
         path: "/update-my-post/:id",
         element: (
           <PrivateRoutes>
-            <UpdateMyPost title="Update My Post"></UpdateMyPost>
+            <UpdateMyPost title="Cập nhật bài viết"></UpdateMyPost>
           </PrivateRoutes>
         ),
         loader: async ({ params }) => {
@@ -90,7 +90,7 @@ const router = createBrowserRouter([
         path: "/be-a-volunteer/:id",
         element: (
           <PrivateRoutes>
-            <BeAVolunteer title="Be A Volunteer"></BeAVolunteer>
+            <BeAVolunteer title="Đăng ký tham gia"></BeAVolunteer>
           </PrivateRoutes>
         ),
         loader: async ({ params }) => {
@@ -103,7 +103,7 @@ const router = createBrowserRouter([
         path: "/manage-volunteers",
         element: (
           <PrivateRoutes>
-            <ManageVolunteers title="Manage Volunteers"></ManageVolunteers>
+            <ManageVolunteers title="Quản lý người dùng"></ManageVolunteers>
           </PrivateRoutes>
         ),
       },

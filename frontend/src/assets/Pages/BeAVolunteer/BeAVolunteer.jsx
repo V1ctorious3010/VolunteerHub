@@ -80,12 +80,12 @@ const BeAVolunteer = ({ title }) => {
       // Save locally
       const { addLocalRequest } = await import('../../../utils/localApi');
       addLocalRequest(requestPost);
-      toast.success("Your Volunteer Request has been sent ");
+      toast.success("Yêu cầu tham gia đã được gửi");
       form.reset();
       navigate("/manage-my-post");
     } catch (err) {
       console.log(err);
-      toast.error("Failed to send request. Please try again.");
+      toast.error("Gửi yêu cầu thất bại. Vui lòng thử lại.");
     }
   };
   return (
@@ -314,7 +314,7 @@ const BeAVolunteer = ({ title }) => {
               <input
                 className="px-8 w-full py-4 leading-5 cursor-pointer text-white transition-colors duration-300 transhtmlForm bg-green-500 font-bold rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
                 type="submit"
-                value="Request"
+                value="Gửi yêu cầu"
               />
             </div>
           </form>

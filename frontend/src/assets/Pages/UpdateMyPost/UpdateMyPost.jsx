@@ -57,11 +57,11 @@ const UpdateMyPost = ({ title }) => {
 
     try {
       updateLocalPost(id, updatedVolunteerPost);
-      toast.success("Your Volunteer post has been Updated");
+      toast.success("Cập nhật bài viết thành công");
       navigate("/manage-my-post");
     } catch (err) {
       console.log(err);
-      toast.error('Failed to update post locally');
+      toast.error('Cập nhật bài viết thất bại');
     }
   };
   return (
@@ -76,7 +76,7 @@ const UpdateMyPost = ({ title }) => {
         <div className="md:w-3/5 mx-auto min-h-[calc(100vh-364px)] my-12">
           <section className="p-2 md:p-6 mx-auto bg-white rounded-md shadow-md ">
             <h2 className="text-2xl pt-6 text-center mb-8 font-body font-semibold text-gray-900 capitalize">
-              Update My Volunteer Post
+              Cập nhật bài sự kiện
             </h2>
 
             <form onSubmit={handleFormSubmit}>
@@ -221,7 +221,7 @@ const UpdateMyPost = ({ title }) => {
                 <input
                   className="px-8 w-full py-4 leading-5 cursor-pointer text-white transition-colors duration-300 transhtmlForm bg-green-500 font-bold rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
                   type="submit"
-                  value="Update"
+                  value="Cập nhật"
                 />
               </div>
             </form>

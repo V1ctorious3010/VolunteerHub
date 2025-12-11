@@ -56,7 +56,7 @@ const Navbar = () => {
 
             <div>
               <h2 className="hidden md:flex font-bold text-xl md:text-2xl">
-                <span className="text-yellow-200">Volunteer Hub</span>
+                <span className="text-yellow-200">GiveNow</span>
               </h2>
             </div>
           </Link>
@@ -68,7 +68,7 @@ const Navbar = () => {
               className={"font-bold text-white"
               }
             >
-              <button className="px-8 py-3 text-lg hover:bg-white/20 hover:scale-105 transition-all duration-200 rounded-lg">Trang chủ</button>
+              <button className="px-8 py-3 text-xl hover:bg-white/20 hover:scale-105 transition-all duration-200 rounded-lg">Trang chủ</button>
             </NavLink>
             <NavLink
               to="/need-volunteer"

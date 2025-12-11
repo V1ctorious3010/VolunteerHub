@@ -64,12 +64,12 @@ const Feed = ({ title }) => {
       setPosts(prev => [{ ...newFeedPost }, ...prev]);
     } catch (err) {
       console.error(err);
-      toast.error('Failed to save post');
+      toast.error('Không lưu được bài viết');
     }
   };
 
   const toggleLike = async (id) => {
-    if (!user?.email) return toast.error('Login to like');
+    if (!user?.email) return toast.error('Vui lòng đăng nhập để thích');
     // find post
     const p = posts.find(x => String(x.id) === String(id));
     if (!p) return;
@@ -135,8 +135,8 @@ const Feed = ({ title }) => {
   return (
     <div className="py-16 font-qs">
       <div className="container mx-auto mb-6" data-aos="fade-left" data-aos-anchor-placement="top-bottom" data-aos-easing="linear" data-aos-duration="1500">
-        <h2 className="text-2xl md:text-5xl font-bold text-center">Community Feed: Share updates & stories</h2>
-        <p className="w-2/3 mx-auto md:text-lg mt-4 text-center leading-relaxed">Stay connected — share event highlights, updates, and volunteer stories from our community.</p>
+        <h2 className="text-2xl md:text-5xl font-bold text-center">Diễn đàn: Nơi chia sẻ cảm nhận và câu chuyện</h2>
+        <p className="w-2/3 mx-auto md:text-lg mt-4 text-center leading-relaxed">Luôn kết nối — hãy chia sẻ những điểm nổi bật của sự kiện, các bản cập nhật và những câu chuyện tình nguyện từ cộng đồng của chúng ta.</p>
       </div>
 
       {posts.length === 0 && showLoader ? (
@@ -173,7 +173,7 @@ const Feed = ({ title }) => {
               <div className="absolute inset-0 bg-black opacity-40" onClick={closeShareModal}></div>
               <div className="relative z-10 w-full max-w-3xl p-4">
                 <div className="bg-white rounded-md shadow-lg p-4">
-                  <h3 className="text-lg font-semibold mb-2">Share to Feed</h3>
+                  <h3 className="text-lg font-semibold mb-2">Diễn đàn</h3>
                   <PostComposer
                     events={composerEvents}
                     onCreate={handleShareCreate}

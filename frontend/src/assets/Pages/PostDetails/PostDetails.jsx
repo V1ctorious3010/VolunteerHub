@@ -24,14 +24,14 @@ const PostDetails = ({ title }) => {
   } = post;
   // console.log(post);
   const handleVolunteer = () => {
-    console.log("I want to be a volunteer !");
+    // console.log("I want to be a volunteer !");
 
     if (noOfVolunteer <= 0) {
-      toast.error("The maximum number of volunteer is already filled !");
+      toast.error("Sự kiện đã đủ người !");
       return
     }
     if (user?.email == orgEmail) {
-      return toast.error("You can't be a volunteer for this post !");
+      return toast.error("Bạn không thể làm tình nguyện viên cho sự kiện này !");
     } else {
       navigate(`/be-a-volunteer/${id}`);
     }
@@ -56,7 +56,7 @@ const PostDetails = ({ title }) => {
               {postTitle}
             </Typography>
             <Typography variant="h4">
-              Category :{" "}
+              Thể loại :{" "}
               <span className="text-green-500 font-qs font-bold">
                 {category}
               </span>
@@ -66,7 +66,7 @@ const PostDetails = ({ title }) => {
             </Typography>
             <div className="my-4 flex items-center gap-2">
               <Typography className="text-xl font-semibold  ">
-                Location :{" "}
+                Địa điểm :{" "}
                 <span className="font-bold font-qs bg-yellow-300 px-4 py-2 rounded-md">
                   {location}
                 </span>
@@ -78,7 +78,7 @@ const PostDetails = ({ title }) => {
 
                   className="text-lg font-semibold "
                 >
-                  Deadline :
+                  Hạn cuối :
                 </Typography>
                 <Typography
 
@@ -92,7 +92,7 @@ const PostDetails = ({ title }) => {
 
                   className="text-lg font-semibold "
                 >
-                  Number of Volunteer Need :
+                  Số lượng tình nguyện viên cần :
                 </Typography>
                 <Typography
                   color="blue-gray"
@@ -107,7 +107,7 @@ const PostDetails = ({ title }) => {
 
                 className="text-lg font-qs font-bold pb-4"
               >
-                Organization Information :
+                Thông tin tổ chức :
               </Typography>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className=" flex items-center gap-2">
@@ -115,7 +115,7 @@ const PostDetails = ({ title }) => {
 
                     className="text-lg font-qs font-bold"
                   >
-                    Name :
+                    Tên :
                   </Typography>
                   <Typography
 
@@ -146,7 +146,7 @@ const PostDetails = ({ title }) => {
                 variant="gradient"
                 className="w-52"
               >
-                Be A Volunteer
+                Làm tình nguyện viên
               </Button>
             </div>
           </div>

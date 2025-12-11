@@ -25,7 +25,7 @@ const ManageVolunteers = ({ title }) => {
     // Kiểm tra quyền ADMIN
     useEffect(() => {
         if (!user || user.role !== ROLE.ADMIN) {
-            toast.error("You have no authority to access");
+            toast.error("Bạn không có quyền truy cập");
             navigate("/");
         }
     }, [user, navigate]);
@@ -37,7 +37,7 @@ const ManageVolunteers = ({ title }) => {
             const data = await fetchAllUsers();
             setUsers(data);
         } catch (error) {
-            toast.error("Failed to fetch users");
+            toast.error("Lấy danh sách người dùng thất bại");
         } finally {
             setLoading(false);
         }
@@ -54,13 +54,13 @@ const ManageVolunteers = ({ title }) => {
         try {
             setActionLoading(email);
             await banUser(email);
-            toast.success(`Ban succeed ${email}`);
+            toast.success(`Đã cấm ${email}`);
             // Cập nhật state local
             setUsers((prev) =>
                 prev.map((u) => (u.email === email ? { ...u, locked: true } : u))
             );
         } catch (error) {
-            toast.error("Failed to ban user");
+            toast.error("Cấm người dùng thất bại");
         } finally {
             setActionLoading(null);
         }
@@ -71,13 +71,13 @@ const ManageVolunteers = ({ title }) => {
         try {
             setActionLoading(email);
             await unbanUser(email);
-            toast.success(`Đã gỡ cấm người dùng ${email}`);
+            toast.success(`Đã gỡ cấm ${email}`);
             // Cập nhật state local
             setUsers((prev) =>
                 prev.map((u) => (u.email === email ? { ...u, locked: false } : u))
             );
         } catch (error) {
-            toast.error("Failed to unban user");
+            toast.error("Gỡ cấm người dùng thất bại");
         } finally {
             setActionLoading(null);
         }
@@ -116,13 +116,13 @@ const ManageVolunteers = ({ title }) => {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        toast.success('Exported file JSON');
+        toast.success('Đã xuất file JSON');
     };
 
     // Xuất danh sách users ra file CSV
     const exportToCSV = () => {
         if (users.length === 0) {
-            toast.error('No resources');
+            toast.error('Không có dữ liệu');
             return;
         }
         // Header
@@ -150,7 +150,7 @@ const ManageVolunteers = ({ title }) => {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        toast.success('Exported file CSV');
+        toast.success('Đã xuất file CSV');
     };
 
     // Hiển thị role badge
@@ -198,7 +198,7 @@ const ManageVolunteers = ({ title }) => {
             <div className="md:w-4/5 mx-auto min-h-[calc(100vh-364px)] my-12">
                 <section className="p-2 md:p-6 mx-auto bg-white rounded-md shadow-md">
                     <h2 className="text-2xl pt-6 text-center mb-8 font-body font-semibold text-gray-900 capitalize">
-                        Manage Volunteers
+                        Quản lý người dùng
                     </h2>
 
                     {/* Refresh button */}
@@ -208,21 +208,21 @@ const ManageVolunteers = ({ title }) => {
                             disabled={loading || users.length === 0}
                             className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 transition"
                         >
-                            Export JSON
+                            Xuất JSON
                         </button>
                         <button
                             onClick={exportToCSV}
                             disabled={loading || users.length === 0}
                             className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50 transition"
                         >
-                            Export CSV
+                            Xuất CSV
                         </button>
                         <button
                             onClick={loadUsers}
                             disabled={loading}
                             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition"
                         >
-                            {loading ? "Loading..." : "Refresh"}
+                            {loading ? "Đang tải..." : "Tải lại"}
                         </button>
                     </div>
 
@@ -233,7 +233,7 @@ const ManageVolunteers = ({ title }) => {
                         </div>
                     ) : users.length === 0 ? (
                         <div className="text-center py-12 text-gray-500">
-                            No users found
+                            Không có người dùng
                         </div>
                     ) : (
                         <div className="overflow-x-auto px-4">
@@ -241,19 +241,19 @@ const ManageVolunteers = ({ title }) => {
                                 <thead className="bg-gray-50">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Name
+                                            Họ tên
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Email
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Role
+                                            Vai trò
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Status
+                                            Trạng thái
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Action
+                                            Hành động
                                         </th>
                                     </tr>
                                 </thead>
@@ -279,9 +279,9 @@ const ManageVolunteers = ({ title }) => {
                                             <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                 {/* Không cho phép ban chính mình hoặc ADMIN khác */}
                                                 {volunteer.email === user.email ? (
-                                                    <span className="text-gray-400 italic">You</span>
+                                                    <span className="text-gray-400 italic">Bạn</span>
                                                 ) : volunteer.role === ROLE.ADMIN ? (
-                                                    <span className="text-gray-400 italic">Admin</span>
+                                                    <span className="text-gray-400 italic">Quản trị viên</span>
                                                 ) : volunteer.locked ? (
                                                     <button
                                                         onClick={() => openConfirmModal('unban', volunteer.email, volunteer.name)}
@@ -289,8 +289,8 @@ const ManageVolunteers = ({ title }) => {
                                                         className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 transition"
                                                     >
                                                         {actionLoading === volunteer.email
-                                                            ? "Processing..."
-                                                            : "Unban"}
+                                                            ? "Đang xử lý..."
+                                                            : "Gỡ cấm"}
                                                     </button>
                                                 ) : (
                                                     <button
@@ -299,8 +299,8 @@ const ManageVolunteers = ({ title }) => {
                                                         className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 transition"
                                                     >
                                                         {actionLoading === volunteer.email
-                                                            ? "Processing..."
-                                                            : "Ban"}
+                                                            ? "Đang xử lý..."
+                                                            : "Cấm"}
                                                     </button>
                                                 )}
                                             </td>
@@ -313,9 +313,9 @@ const ManageVolunteers = ({ title }) => {
 
                     {/* Summary */}
                     <div className="mt-6 px-4 text-sm text-gray-500">
-                        Total: {users.length} users |{" "}
-                        Active: {users.filter((u) => !u.locked).length} |{" "}
-                        Banned: {users.filter((u) => u.locked).length}
+                        Tổng: {users.length} người |{" "}
+                        Hoạt động: {users.filter((u) => !u.locked).length} |{" "}
+                        Bị cấm: {users.filter((u) => u.locked).length}
                     </div>
                 </section>
             </div>

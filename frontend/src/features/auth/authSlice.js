@@ -191,7 +191,7 @@ const authSlice = createSlice({
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload || 'Login failed';
+                state.error = action.payload || 'Đăng nhập thất bại';
             })
             // register
             .addCase(register.pending, (state) => {
@@ -205,7 +205,7 @@ const authSlice = createSlice({
             })
             .addCase(register.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload || 'Registration failed';
+                state.error = action.payload || 'Đăng ký thất bại';
             })
             // logout
             .addCase(logout.fulfilled, (state) => {
