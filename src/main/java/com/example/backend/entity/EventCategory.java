@@ -23,7 +23,6 @@ public class EventCategory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "eventId")
-    @JsonIgnore
     private Event event;
 
     @ManyToOne(fetch = FetchType.LAZY)
