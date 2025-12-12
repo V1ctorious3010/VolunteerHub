@@ -3,7 +3,6 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.CreateEventRequest;
 import com.example.backend.dto.EventDetailDto;
-import com.example.backend.dto.EventDto;
 import com.example.backend.dto.UpdateEventRequest;
 import com.example.backend.service.EventService;
 import jakarta.validation.Valid;
@@ -27,7 +26,7 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping("/events")
-    public ResponseEntity<Page<EventDto>> getEvents(
+    public ResponseEntity<Page<EventDetailDto>> getEvents(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "") String location,
             @RequestParam(defaultValue = "") String start,
@@ -119,7 +118,7 @@ public class EventController {
      */
     @GetMapping("/events/my-events")
     @PreAuthorize("hasAnyRole('EVENT_ORGANIZER')")
-    public ResponseEntity<Page<EventDto>> getMyEvents(
+    public ResponseEntity<Page<EventDetailDto>> getMyEvents(
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -129,7 +128,7 @@ public class EventController {
         log.info("GET /events/my-events by {} (status={}, page={}, size={})",
                 organizerEmail, status, page, size);
 
-        Page<EventDto> events = eventService.getMyEvents(organizerEmail, status, page, size);
+        Page<EventDetailDto> events = eventService.getMyEvents(organizerEmail, status, page, size);
         return ResponseEntity.ok(events);
     }
 }
