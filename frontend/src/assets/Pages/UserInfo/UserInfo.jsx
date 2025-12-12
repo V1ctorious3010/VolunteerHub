@@ -24,10 +24,10 @@ const UserInfo = ({ title }) => {
             // update local storage user copy so UI reflects new avatar
             try {
                 const raw = localStorage.getItem('vh_auth_user');
-                    const obj = raw ? JSON.parse(raw) : {};
-                    obj.avatar = url;
-                    obj.avatarUrl = url;
-                    localStorage.setItem('vh_auth_user', JSON.stringify(obj));
+                const obj = raw ? JSON.parse(raw) : {};
+                obj.avatar = url;
+                obj.avatarUrl = url;
+                localStorage.setItem('vh_auth_user', JSON.stringify(obj));
             } catch (_) { }
             // reload to ensure navbar and other components read updated avatar
             window.location.reload();
@@ -46,11 +46,11 @@ const UserInfo = ({ title }) => {
                 <h2 className="text-3xl font-bold mb-6">Thông tin người dùng</h2>
                 <div className="flex items-center gap-8">
                     <div className="relative w-36 h-36">
-                                {preview ? (
-                                    <img src={preview} alt="avatar" className="w-36 h-36 rounded-full object-cover" />
-                                ) : (
-                                    <div className="w-36 h-36 rounded-full bg-gray-300 flex items-center justify-center text-2xl font-bold">{initials}</div>
-                                )}
+                        {preview ? (
+                            <img src={preview} alt="avatar" className="w-36 h-36 rounded-full object-cover" />
+                        ) : (
+                            <div className="w-36 h-36 rounded-full bg-gray-300 flex items-center justify-center text-2xl font-bold">{initials}</div>
+                        )}
                         <label className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-black/30 rounded-full cursor-pointer transition-opacity">
                             <input type="file" accept="image/*" onChange={handleFile} className="hidden" />
                             <span className="text-white px-3 py-1 rounded bg-black/60">Chọn ảnh</span>

@@ -44,8 +44,8 @@ const VolunteerNeedsCard = ({ volunteer }) => {
         <CardFooter className="flex items-center gap-8 justify-between">
           <div className="flex items-center -space-x-3">
             <Link to={`/post-details/${id}`} state={{ event: volunteer }}>
-                <Button color="green">View Details</Button>
-              </Link>
+              <Button color="green">View Details</Button>
+            </Link>
           </div>
           <div>
             <h2 className="font-qs font-bold">Start : {startTime}</h2>
