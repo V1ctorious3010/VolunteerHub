@@ -48,7 +48,7 @@ public class Event {
     private LocalDateTime startTime; // Sử dụng LocalDateTime cho deadline
 
     @Column(name = "duration")
-    private String duration; // Thời gian dự kiến (format: " 2h30' " hoặc " 50' ")
+    private String duration; // Thời gian dự kiến (format: " 2h30m' " hoặc " 50m' ")
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
@@ -74,9 +74,7 @@ public class Event {
     @ToString.Exclude
     private List<Registration> requests;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    @ToString.Exclude
-    private List<EventCategory> categories;
+    @Column(name = "category")
+    private String category;
 
 }
