@@ -1,8 +1,10 @@
 package com.example.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import jakarta.persistence.*;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,14 +57,26 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventStatus status = EventStatus.PENDING;
 
-    @ManyToOne
+    @Column(name = "createdAt")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "approvedAt")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime approvedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orgEmail")
     private User organizer;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @ToString.Exclude
     private List<Registration> requests;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @ToString.Exclude
     private List<EventCategory> categories;
 
 }
