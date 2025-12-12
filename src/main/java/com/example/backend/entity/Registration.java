@@ -11,24 +11,23 @@ import java.time.LocalDateTime;
 @Data
 public class Registration {
 
-    enum RequestStatus {
+    public enum RequestStatus {
         PENDING,
         APPROVED,
         REJECTED,
-        CANCELLED
+        COMPLETED
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY) // Tải dữ liệu bài đăng khi cần
     @JoinColumn(name = "eventId", nullable = false) // Tên cột khóa ngoại trong DB
-    @JsonIgnore
     private Event event;
 
     @ManyToOne(fetch = FetchType.LAZY) // Tải dữ liệu user khi cần
     @JoinColumn(name = "userEmail", nullable = false) // Tên cột khóa ngoại trong DB
-    @JsonIgnore
     private User user;
 
     @Column(name = "createdAt")
