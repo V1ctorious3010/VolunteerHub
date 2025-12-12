@@ -1,6 +1,5 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.EventDto;
 import com.example.backend.entity.Event;
 import com.example.backend.repo.EventRepository;
 import com.example.backend.dto.*;
@@ -28,14 +27,14 @@ public class EventService {
     private final RegistrationRepository registrationRepository;
 
     @Transactional(readOnly = true)
-    public Page<EventDto> getEvents(String keyword, String location, String start, int page, String sortBy) {
+    public Page<EventDetailDto> getEvents(String keyword, String location, String start, int page, String sortBy) {
         int size = 24; // default page size or 24
         Sort sort = parseSort(sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         LocalDateTime startAt = parseDate(start);
 
         Page<Event> result = eventRepository.searchEvents(keyword, location, startAt, pageable);
-        return result.map(this::mapToEventDto);
+        return result.map(this::mapToDetailDto);
     }
     /**
      * Create new event
@@ -154,7 +153,7 @@ public class EventService {
      * GET /api/events/my-events
      */
     @Transactional(readOnly = true)
-    public Page<EventDto> getMyEvents(String organizerEmail, String status, int page, int size) {
+    public Page<EventDetailDto> getMyEvents(String organizerEmail, String status, int page, int size) {
         log.info("Fetching my events for organizer {} with status filter: {}", organizerEmail, status);
 
         Event.EventStatus eventStatus = null;
@@ -169,7 +168,7 @@ public class EventService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Event> events = eventRepository.findMyEvents(organizerEmail, eventStatus, pageable);
 
-        return events.map(this::mapToEventDto);
+        return events.map(this::mapToDetailDto);
     }
 
     /**
@@ -189,6 +188,81 @@ public class EventService {
         }
 
         return mapToDetailDto(event);
+    }
+
+    /**
+     * Get pending events for admin approval
+     * GET /api/admin/events
+     */
+    @Transactional(readOnly = true)
+    public Page<EventDetailDto> getPendingEventsForAdmin(int page, int size) {
+        log.info("Fetching pending events for admin (page={}, size={})", page, size);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
+        Page<Event> events = eventRepository.findByStatusOrderByCreatedAtAsc(Event.EventStatus.PENDING, pageable);
+
+        return events.map(this::mapToDetailDto);
+    }
+    /**
+     * Update event status (approve/reject)
+     * PATCH /api/admin/events/{eventId}/status
+     */
+    @Transactional
+    public EventDetailDto updateEventStatus(Long eventId, String newStatus) {
+        log.info("Admin updating event {} status to {}", eventId, newStatus);
+
+        // 1. Find event
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(eventId));
+
+        // 2. Validate current status is PENDING
+        if (event.getStatus() != Event.EventStatus.PENDING) {
+            throw new InvalidEventStatusException(
+                    "Can only approve/reject events with PENDING status. Current status: " + event.getStatus().name());
+        }
+
+        // 3. Parse and validate new status
+        Event.EventStatus status;
+        try {
+            status = Event.EventStatus.valueOf(newStatus.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidEventStatusException("Invalid status: " + newStatus);
+        }
+
+        if (status != Event.EventStatus.COMING && status != Event.EventStatus.REJECTED) {
+            throw new InvalidEventStatusException("Admin can only set status to COMING or REJECTED");
+        }
+
+        // 4. Update status
+        event.setStatus(status);
+
+        // 5. Set approvedAt if approved
+        if (status == Event.EventStatus.COMING) {
+            event.setApprovedAt(LocalDateTime.now());
+            log.info("Event {} approved at {}", eventId, event.getApprovedAt());
+        }
+
+        // 6. Save and return
+        Event updated = eventRepository.save(event);
+        log.info("Event {} status updated to {}", eventId, status);
+        return mapToDetailDto(updated);
+    }
+
+    /**
+     * Delete event by admin (any status allowed)
+     * DELETE /api/admin/events/{eventId}
+     */
+    @Transactional
+    public void deleteEventByAdmin(Long eventId) {
+        log.info("Admin deleting event {}", eventId);
+
+        // 1. Find event
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(eventId));
+
+        // 2. Delete event (admin has full permission, no status check)
+        eventRepository.delete(event);
+        log.info("Event {} deleted successfully by admin", eventId);
     }
 
     private Sort parseSort(String sortBy) {
@@ -217,24 +291,6 @@ public class EventService {
                 return null;
             }
         }
-    }
-
-    private EventDto mapToEventDto(Event event) {
-        EventDto dto = new EventDto();
-        dto.setId(event.getId());
-        dto.setTitle(event.getTitle());
-        dto.setLocation(event.getLocation());
-        dto.setThumbnail(event.getThumbnail());
-        dto.setNoOfVolunteer(event.getNoOfVolunteer());
-        dto.setRemaining(event.getRemaining());
-        dto.setStartTime(event.getStartTime());
-        dto.setDuration(event.getDuration());
-        dto.setDescription(event.getDescription());
-        dto.setStatus(event.getStatus().name());
-        dto.setOrgName(event.getOrganizer() != null ? event.getOrganizer().getName() : null);
-        dto.setOrgEmail(event.getOrganizer() != null ? event.getOrganizer().getEmail() : null);
-        dto.setCategory(event.getCategory());
-        return dto;
     }
 
     private EventDetailDto mapToDetailDto(Event event) {
