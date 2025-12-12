@@ -23,7 +23,6 @@ public class Registration {
 
     // THAY THẾ: volunteerEmail (String) bằng Entity AppUser
     // Many-to-One tới Người dùng/Tình nguyện viên
-    // Giả sử tên Entity User của bạn là AppUser
     @ManyToOne(fetch = FetchType.LAZY) // Tải dữ liệu user khi cần
     @JoinColumn(name = "userEmail", nullable = false) // Tên cột khóa ngoại trong DB
     @JsonIgnore
