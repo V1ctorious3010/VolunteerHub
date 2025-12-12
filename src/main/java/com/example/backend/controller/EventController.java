@@ -24,4 +24,6 @@ public class EventController {
         // call service and return result (Page<Event>)
         return ResponseEntity.ok(eventService.getEvents(keyword, location, start, page, sortBy).getContent());
     }
+
+
 }
