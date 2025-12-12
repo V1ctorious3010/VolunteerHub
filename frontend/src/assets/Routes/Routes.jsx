@@ -41,8 +41,9 @@ const router = createBrowserRouter([
         path: "/need-volunteer",
         element: <NeedVolunteer title="Cần tình nguyện viên"></NeedVolunteer>,
         loader: async () => {
-          const res = await fetch('http://localhost:5000/events?keyword=&location=&start=&page=0&sortBy=', { credentials: 'include' });
-          return res.ok ? res.json() : [];
+          const { default: api } = await import('../../utils/apiClient');
+          const res = await api.get('/events?keyword=&location=&start=&page=0&sortBy=');
+          return res?.data || [];
         },
       },
       {
@@ -69,9 +70,9 @@ const router = createBrowserRouter([
           </PrivateRoutes>
         ),
         loader: async ({ params }) => {
-          const res = await fetch('http://localhost:5000/events?keyword=&location=&start=&page=0&sortBy=', { credentials: 'include' });
-          const arr = res.ok ? await res.json() : [];
-          return arr.find(p => String(p.id) === String(params.id)) || null;
+          const { default: api } = await import('../../utils/apiClient');
+          const res = await api.get(`/events/${params.id}`);
+          return res?.data || null;
         },
       },
       {
@@ -82,9 +83,9 @@ const router = createBrowserRouter([
           </PrivateRoutes>
         ),
         loader: async ({ params }) => {
-          const res = await fetch('http://localhost:5000/events?keyword=&location=&start=&page=0&sortBy=');
-          const arr = res.ok ? await res.json() : [];
-          return arr.find(p => String(p.id) === String(params.id)) || null;
+          const { default: api } = await import('../../utils/apiClient');
+          const res = await api.get(`/events/${params.id}`);
+          return res?.data || null;
         },
       },
       {
@@ -95,9 +96,9 @@ const router = createBrowserRouter([
           </PrivateRoutes>
         ),
         loader: async ({ params }) => {
-          const res = await fetch('http://localhost:5000/events?keyword=&location=&start=&page=0&sortBy=', { credentials: 'include' });
-          const arr = res.ok ? await res.json() : [];
-          return arr.find(p => String(p.id) === String(params.id)) || null;
+          const { default: api } = await import('../../utils/apiClient');
+          const res = await api.get(`/events/${params.id}`);
+          return res?.data || null;
         }
       },
       {

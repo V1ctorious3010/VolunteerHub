@@ -1,11 +1,13 @@
 // Upload helper: fetch signature from backend, upload to cloud (Cloudinary), then notify backend with avatarUrl
+import api from './apiClient';
+
 export default async function handleUploadAnh(file) {
     if (!file) throw new Error('No file provided');
 
     // 1) get signature from backend
-    const sigRes = await fetch('http://localhost:5000/user/signature', { credentials: 'include' });
-    if (!sigRes.ok) throw new Error('Failed to get signature');
-    const sig = await sigRes.json();
+    const sigResp = await api.get('/user/signature');
+    if (!sigResp || !sigResp.data) throw new Error('Failed to get signature');
+    const sig = sigResp.data;
     // expected fields: folder, signature, api_key, cloud_name, timestamp
 
     const cloudName = sig.cloud_name;
@@ -30,16 +32,8 @@ export default async function handleUploadAnh(file) {
     if (!avatarUrl) throw new Error('No URL returned from cloud upload');
 
     // 3) notify backend with avatarUrl
-    const notify = await fetch('http://localhost:5000/user/avatar', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ avatarUrl })
-    });
-    if (!notify.ok) {
-        const txt = await notify.text().catch(() => 'notify failed');
-        throw new Error('Failed to save avatar on server: ' + txt);
-    }
+    const notifyResp = await api.post('/user/avatar', { avatarUrl });
+    if (!notifyResp || notifyResp.status >= 400) throw new Error('Failed to save avatar on server');
 
     return avatarUrl;
 }

@@ -23,6 +23,8 @@ const writeJSON = (key, value) => {
  * Use backend events API instead of local JSON posts.
  * Example endpoint: http://localhost:5000/events?keyword=&location=&start=&page=0&sortBy=
  */
+import api from './apiClient';
+
 export async function getEvents({ keyword = '', location = '', start = '', page = 0, sortBy = '' } = {}) {
     try {
         const qs = new URLSearchParams({
@@ -32,14 +34,11 @@ export async function getEvents({ keyword = '', location = '', start = '', page 
             page: String(page || 0),
             sortBy: sortBy || ''
         });
-        const url = `http://localhost:5000/events?${qs.toString()}`;
-        const res = await fetch(url, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include'
-        });
-        if (!res.ok) return [];
-        const data = await res.json();
+        const url = `/events?${qs.toString()}`;
+        console.log('[localApi] getEvents -> calling', url);
+        const res = await api.get(url);
+        console.log('[localApi] getEvents -> response status', res?.status);
+        const data = res?.data || [];
         return Array.isArray(data) ? data : [];
     } catch (e) {
         console.error('getEvents error', e);
@@ -132,10 +131,8 @@ export function deleteLocalRequest(id) {
 export async function getUsers() {
     // Try backend first, fallback to localStorage
     try {
-        const res = await fetch('http://localhost:5000/user/users', { credentials: 'include' });
-        if (res.ok) {
-            return await res.json();
-        }
+        const res = await api.get('/user/users');
+        return res?.data || [];
     } catch (e) {
         // ignore
     }

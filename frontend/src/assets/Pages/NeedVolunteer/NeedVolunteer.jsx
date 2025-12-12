@@ -236,7 +236,7 @@ const NeedVolunteer = ({ title }) => {
                             {post.noOfVolunteer}
                           </td>
                           <td>
-                            <Link to={`/post-details/${post.id}`}>
+                            <Link to={`/post-details/${post.id}`} state={{ event: post }}>
                               <Button color="green">Chi tiết</Button>
                             </Link>
                           </td>
@@ -267,7 +267,7 @@ const NeedVolunteer = ({ title }) => {
                             <td>{post.title}</td>
                             <td>{post.startTime}</td>
                             <td>
-                              <Link to={`/post-details/${post.id}`}>
+                              <Link to={`/post-details/${post.id}`} state={{ event: post }}>
                                 <Button color="green">Chi tiết</Button>
                               </Link>
                             </td>

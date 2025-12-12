@@ -1,5 +1,5 @@
 import { Button, Typography } from "@material-tailwind/react";
-import { ScrollRestoration, useLoaderData, useNavigate } from "react-router-dom";
+import { ScrollRestoration, useLoaderData, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet";
@@ -7,14 +7,17 @@ import PropTypes from "prop-types";
 
 
 const PostDetails = ({ title2 }) => {
-  const post = useLoaderData();
+  const loaderPost = useLoaderData();
+  const location = useLocation();
+  const statePost = location?.state?.event || location?.state?.post || null;
+  const post = loaderPost || statePost || {};
   const user = useSelector(s => s.auth.user);
   const navigate = useNavigate();
   const {
     id,
     title,
     category,
-    location,
+    location: postLocation,
     thumbnail,
     noOfVolunteer,
     remaining,
@@ -22,7 +25,7 @@ const PostDetails = ({ title2 }) => {
     description,
     orgEmail,
     orgName
-  } = post;
+  } = post || {};
   // console.log(post);
   const handleVolunteer = () => {
     // console.log("I want to be a volunteer !");
@@ -54,7 +57,7 @@ const PostDetails = ({ title2 }) => {
           />
           <div className="space-y-6">
             <Typography className="mb-4" variant="h2">
-              {title2}
+              {title2 || title}
             </Typography>
             <Typography variant="h4">
               Thể loại :{" "}

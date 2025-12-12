@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import api from '../../utils/apiClient';
 import { ROLE } from '../../constants/roles';
 
 const USER_KEY = 'vh_auth_user';
@@ -7,14 +7,6 @@ const USER_KEY = 'vh_auth_user';
 // Base API URL - điều chỉnh theo cấu hình backend của bạn
 const API_BASE_URL = 'http://localhost:5000';
 
-// Cấu hình axios để gửi cookies
-const api = axios.create({
-    baseURL: API_BASE_URL,
-    withCredentials: true, // Quan trọng: cho phép gửi cookies
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
 
 // Helpers to read/write localStorage safely
 const readJSON = (key, fallback = null) => {
@@ -43,21 +35,28 @@ export const login = createAsyncThunk(
         try {
             const response = await api.post('/auth/login', { email, password });
             const { message, name, email: userEmail } = response.data;
-            // Try to extract role from response in several possible shapes
+            // Try to extract role and avatar from response in several possible shapes
             let role = response.data.role || response.data.user?.role || null;
+            let avatarUrl = response.data.avatarUrl || response.data.avatar || response.data.user?.avatarUrl || response.data.user?.avatar || null;
 
             // If role not provided in login response, try to fetch current profile
-            if (!role) {
+            if (!role || !avatarUrl) {
                 try {
                     const meResp = await api.get('/auth/me');
-                    role = meResp.data?.role || meResp.data?.user?.role || null;
+                    role = role || meResp.data?.role || meResp.data?.user?.role || null;
+                    avatarUrl = avatarUrl || meResp.data?.avatarUrl || meResp.data?.avatar || meResp.data?.user?.avatarUrl || meResp.data?.user?.avatar || null;
                 } catch (e) {
                     // ignore — backend may not expose /auth/me
                 }
             }
 
-            // store role if known (required for ADMIN-only pages)
-            return { name, email: userEmail, message, role };
+            // normalize stored user: include avatarUrl and fallback avatar for older code
+            const userPayload = { name, email: userEmail, message, role };
+            if (avatarUrl) {
+                userPayload.avatarUrl = avatarUrl;
+                userPayload.avatar = avatarUrl;
+            }
+            return userPayload;
         } catch (error) {
             const errorMessage = error.response?.data?.message || error.response?.data || 'Đăng nhập thất bại';
             return rejectWithValue(errorMessage);
@@ -79,17 +78,20 @@ export const register = createAsyncThunk(
             });
             const { message, name: userName, email: userEmail } = response.data;
             let returnedRole = response.data.role || response.data.user?.role || null;
-            if (!returnedRole) {
-                // try to fetch profile after register if backend supports it
+            let avatarUrl = response.data.avatarUrl || response.data.avatar || response.data.user?.avatarUrl || response.data.user?.avatar || null;
+            if (!returnedRole || !avatarUrl) {
                 try {
                     const meResp = await api.get('/auth/me');
-                    returnedRole = meResp.data?.role || meResp.data?.user?.role || null;
+                    returnedRole = returnedRole || meResp.data?.role || meResp.data?.user?.role || null;
+                    avatarUrl = avatarUrl || meResp.data?.avatarUrl || meResp.data?.avatar || meResp.data?.user?.avatarUrl || meResp.data?.user?.avatar || null;
                 } catch (e) {
                     // ignore
                 }
             }
             const roleToStore = returnedRole || roleUpper;
-            return { name: userName, email: userEmail, message, role: roleToStore };
+            const userPayload = { name: userName, email: userEmail, message, role: roleToStore };
+            if (avatarUrl) { userPayload.avatarUrl = avatarUrl; userPayload.avatar = avatarUrl; }
+            return userPayload;
         } catch (error) {
             const errorMessage = error.response?.data?.message || error.response?.data || 'Đăng ký thất bại';
             return rejectWithValue(errorMessage);
@@ -127,8 +129,15 @@ export const refreshToken = createAsyncThunk(
 
 // Lấy danh sách tất cả users
 export const fetchAllUsers = async () => {
-    const response = await api.get('/user/users');
-    return response.data;
+    try {
+        console.log('[authSlice] fetchAllUsers -> calling /user/users');
+        const response = await api.get('/user/users');
+        console.log('[authSlice] fetchAllUsers -> status', response?.status);
+        return response.data;
+    } catch (e) {
+        console.error('[authSlice] fetchAllUsers error', e);
+        throw e;
+    }
 };
 
 // Ban user
@@ -143,33 +152,7 @@ export const unbanUser = async (email) => {
     return response.data;
 };
 
-// Axios interceptor để tự động refresh token khi access token hết hạn
-api.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
-
-        // Nếu lỗi 401 và chưa thử refresh
-        // Prevent infinite retry loop: do not attempt refresh for the refresh endpoint itself
-        const isRefreshCall = originalRequest && originalRequest.url && originalRequest.url.includes('/auth/refresh');
-        if (error.response?.status === 401 && !originalRequest._retry && !isRefreshCall) {
-            originalRequest._retry = true;
-
-            try {
-                await api.post('/auth/refresh');
-                // Thử lại request ban đầu
-                return api(originalRequest);
-            } catch (refreshError) {
-                // Refresh thất bại, cần đăng nhập lại
-                return Promise.reject(refreshError);
-            }
-        }
-
-        return Promise.reject(error);
-    }
-);
-
-export { api };
+// api client is provided by ../../utils/apiClient
 
 const authSlice = createSlice({
     name: 'auth',

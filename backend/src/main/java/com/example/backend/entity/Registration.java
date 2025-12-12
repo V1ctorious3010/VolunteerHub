@@ -11,26 +11,30 @@ import java.time.LocalDateTime;
 @Data
 public class Registration {
 
+    public enum RequestStatus {
+        PENDING,
+        APPROVED,
+        REJECTED,
+        COMPLETED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Many-to-One tới Bài đăng
     @ManyToOne(fetch = FetchType.LAZY) // Tải dữ liệu bài đăng khi cần
     @JoinColumn(name = "eventId", nullable = false) // Tên cột khóa ngoại trong DB
-    @JsonIgnore
     private Event event;
 
-    // THAY THẾ: volunteerEmail (String) bằng Entity AppUser
-    // Many-to-One tới Người dùng/Tình nguyện viên
+
     @ManyToOne(fetch = FetchType.LAZY) // Tải dữ liệu user khi cần
     @JoinColumn(name = "userEmail", nullable = false) // Tên cột khóa ngoại trong DB
-    @JsonIgnore
     private User user;
 
     @Column(name = "createdAt")
     private LocalDateTime createdAt = LocalDateTime.now(); // Thời gian request
 
     @Column(name = "status")
-    private String status = "Pending"; // Trạng thái của request (Pending, Approved, Rejected)
+    @Enumerated(EnumType.STRING)
+    private RequestStatus status = RequestStatus.PENDING; // Trạng thái ban đầu là PENDING
 }
