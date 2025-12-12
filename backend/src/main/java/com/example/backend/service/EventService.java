@@ -72,24 +72,4 @@ public class EventService {
             }
         }
     }
-
-    @Transactional(readOnly = true)
-    public com.example.backend.dto.EventDto getEventById(Long id) {
-        Event event = eventRepository.findById(id).orElse(null);
-        if (event == null) return null;
-        com.example.backend.dto.EventDto dto = new com.example.backend.dto.EventDto();
-        dto.setId(event.getId());
-        dto.setTitle(event.getTitle());
-        dto.setLocation(event.getLocation());
-        dto.setThumbnail(event.getThumbnail());
-        dto.setNoOfVolunteer(event.getNoOfVolunteer());
-        dto.setRemaining(event.getRemaining());
-        dto.setStartTime(event.getStartTime());
-        dto.setDuration(event.getDuration());
-        dto.setDescription(event.getDescription());
-        dto.setStatus(event.getStatus() != null ? event.getStatus().name() : null);
-        dto.setOrgName(event.getOrganizer() != null ? event.getOrganizer().getName() : null);
-        dto.setOrgEmail(event.getOrganizer() != null ? event.getOrganizer().getEmail() : null);
-        return dto;
-    }
 }

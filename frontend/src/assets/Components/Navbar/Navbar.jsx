@@ -10,6 +10,7 @@ const Navbar = () => {
   const { user } = useSelector(s => s.auth);
   const role = user?.role;
   // ensure the app always uses light theme
+  console.log(user);
   useEffect(() => {
     try {
       document.querySelector("html").setAttribute("data-theme", "light");
@@ -134,19 +135,24 @@ const Navbar = () => {
           <div className="md:navbar-end">
             {user?.email ? (
               <div className="flex items-center gap-4">
-                <div
-                  className="w-10 relative rounded-full"
-                >
-                  <div className=" font bold">{user.displayName}</div>
-                </div>
-
-                <div className="flex  font-bold">
-                  <button
-                    onClick={() => dispatch(logout())}
-                    className="btn btn-sm hover:scale-110 hover:bg-black-600 transition-all duration-200"
-                  >
-                    Đăng xuất
-                  </button>
+                <div className="dropdown dropdown-end">
+                  <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                    <div className="w-10 rounded-full overflow-hidden">
+                      {user?.avatar ? (
+                        <img src={user.avatar} alt={user.name || 'avatar'} />
+                      ) : (
+                        <div className="w-10 h-10 bg-gray-200 flex items-center justify-center text-sm font-bold">{(user.name || user.email || 'U').split(' ').map(s => s[0]).slice(0, 2).join('').toUpperCase()}</div>
+                      )}
+                    </div>
+                  </label>
+                  <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[50] p-2 shadow bg-base-100 rounded-box w-52">
+                    <li>
+                      <NavLink to="/user-info">Trang cá nhân</NavLink>
+                    </li>
+                    <li>
+                      <button onClick={() => dispatch(logout())}>Đăng xuất</button>
+                    </li>
+                  </ul>
                 </div>
               </div>
             ) : (

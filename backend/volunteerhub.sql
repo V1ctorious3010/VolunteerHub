@@ -125,7 +125,7 @@ CREATE TABLE `volunteer` (
                              `password` varchar(255) DEFAULT NULL,
                              `role` enum('ADMIN','EVENT_ORGANIZER','VOLUNTEER') DEFAULT NULL,
                               `is_locked` enum('0','1') DEFAULT '0',
-                                `events_num` int(11) DEFAULT '0'
+                              `events_num` int(11) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

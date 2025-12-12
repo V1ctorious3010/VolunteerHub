@@ -8,6 +8,7 @@ import ManageMyPost from "../Pages/ManageMyPost/ManageMyPost";
 import ManageVolunteers from "../Pages/ManageVolunteers/ManageVolunteers";
 import PrivateRoutes from "./PrivateRoutes";
 import PostDetails from "../Pages/PostDetails/PostDetails";
+import UserInfo from "../Pages/UserInfo/UserInfo";
 import BeAVolunteer from "../Pages/BeAVolunteer/BeAVolunteer";
 import NeedVolunteer from "../Pages/NeedVolunteer/NeedVolunteer";
 import Feed from "../Pages/Feed/Feed";
@@ -104,6 +105,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <ManageVolunteers title="Quản lý người dùng"></ManageVolunteers>
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/user-info",
+        element: (
+          <PrivateRoutes>
+            <UserInfo title="Thông tin người dùng"></UserInfo>
           </PrivateRoutes>
         ),
       },

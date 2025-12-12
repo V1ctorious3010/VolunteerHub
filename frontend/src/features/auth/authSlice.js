@@ -150,7 +150,9 @@ api.interceptors.response.use(
         const originalRequest = error.config;
 
         // Nếu lỗi 401 và chưa thử refresh
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        // Prevent infinite retry loop: do not attempt refresh for the refresh endpoint itself
+        const isRefreshCall = originalRequest && originalRequest.url && originalRequest.url.includes('/auth/refresh');
+        if (error.response?.status === 401 && !originalRequest._retry && !isRefreshCall) {
             originalRequest._retry = true;
 
             try {
