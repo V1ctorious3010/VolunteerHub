@@ -34,7 +34,6 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Sử dụng AllowedOriginPatterns cho tương thích tốt nhất với allowCredentials(true)
         configuration.setAllowedOriginPatterns(Arrays.asList(
             "http://localhost:5173"
         ));
