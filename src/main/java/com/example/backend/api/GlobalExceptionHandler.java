@@ -104,6 +104,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
+
+    @ExceptionHandler(com.example.backend.exception.EventNotOwnedException.class)
+    public ResponseEntity<ApiError> handleEventNotOwned(com.example.backend.exception.EventNotOwnedException ex,
+                                                        HttpServletRequest req) {
+        ApiError err = new ApiError();
+        err.setStatus(HttpStatus.FORBIDDEN.value());
+        err.setError("Forbidden");
+        err.setMessage(ex.getMessage());
+        err.setPath(req.getRequestURI());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+    }
+
+    @ExceptionHandler(com.example.backend.exception.EventCannotBeModifiedException.class)
+    public ResponseEntity<ApiError> handleEventCannotBeModified(com.example.backend.exception.EventCannotBeModifiedException ex,
+                                                                HttpServletRequest req) {
+        ApiError err = new ApiError();
+        err.setStatus(HttpStatus.BAD_REQUEST.value());
+        err.setError("Event Cannot Be Modified");
+        err.setMessage(ex.getMessage());
+        err.setPath(req.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenericException(Exception ex,
         HttpServletRequest req) {
