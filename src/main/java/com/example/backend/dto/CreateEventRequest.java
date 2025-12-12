@@ -33,9 +33,10 @@ public class CreateEventRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startTime;
 
-    @NotBlank(message = "Duration is required")
-    @Pattern(regexp = "^\\d+h(\\d+m)?$|^\\d+m$", message = "Duration format must be like '2h30m' or '90m'")
-    private String duration;
+    @NotNull(message = "End time is required")
+    @Future(message = "End time must be in the future")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime endTime;
 
     @NotBlank(message = "Description is required")
     @Size(min = 20, max = 5000, message = "Description must be between 20 and 5000 characters")

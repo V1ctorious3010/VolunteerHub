@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -54,7 +53,7 @@ public class EventService {
         event.setNoOfVolunteer(request.getNoOfVolunteer());
         event.setRemaining(request.getNoOfVolunteer());
         event.setStartTime(request.getStartTime());
-        event.setDuration(request.getDuration());
+        event.setEndTime(request.getEndTime());
         event.setDescription(request.getDescription());
         event.setCategory(request.getCategory());
         event.setStatus(Event.EventStatus.PENDING);
@@ -93,8 +92,8 @@ public class EventService {
         if (request.getThumbnail() != null) {
             event.setThumbnail(request.getThumbnail());
         }
-        if (request.getDuration() != null) {
-            event.setDuration(request.getDuration());
+        if (request.getEndTime() != null) {
+            event.setEndTime(request.getEndTime());
         }
         if (request.getDescription() != null) {
             event.setDescription(request.getDescription());
@@ -302,7 +301,7 @@ public class EventService {
         dto.setNoOfVolunteer(event.getNoOfVolunteer());
         dto.setRemaining(event.getRemaining());
         dto.setStartTime(event.getStartTime());
-        dto.setDuration(event.getDuration());
+        dto.setEndTime(event.getEndTime());
         dto.setDescription(event.getDescription());
         dto.setStatus(event.getStatus().name());
         dto.setOrgName(event.getOrganizer() != null ? event.getOrganizer().getName() : null);
