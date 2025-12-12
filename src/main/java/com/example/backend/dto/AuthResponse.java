@@ -7,12 +7,14 @@ public class AuthResponse {
     private String name;
     private String email;
     private Role role;
+    private String avatarUrl;
 
-    public AuthResponse(String message, String name, String email, Role role) {
+    public AuthResponse(String message, String name, String email, Role role, String avatarUrl) {
         this.message = message;
         this.name = name;
         this.email = email;
         this.role = role;
+        this.avatarUrl = avatarUrl;
     }
 
     public String getMessage() {
@@ -44,6 +46,12 @@ public class AuthResponse {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+    public String getAvatarUrl() {
+        return  avatarUrl;
+    }
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
 
