@@ -26,13 +26,13 @@ public class EventService {
     private final RegistrationRepository registrationRepository;
 
     @Transactional(readOnly = true)
-    public Page<EventDetailDto> getEvents(String keyword, String location, String start, int page, String sortBy) {
-        int size = 24; // default page size or 24
+    public Page<EventDetailDto> getEvents(String keyword, String category, String start, int page, String sortBy) {
+        int size = 9; // default page size or 9
         Sort sort = parseSort(sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         LocalDateTime startAt = parseDate(start);
 
-        Page<Event> result = eventRepository.searchEvents(keyword, location, startAt, pageable);
+        Page<Event> result = eventRepository.searchEvents(keyword, category, startAt, pageable);
         return result.map(this::mapToDetailDto);
     }
     /**

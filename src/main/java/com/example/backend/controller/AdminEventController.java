@@ -31,7 +31,7 @@ public class AdminEventController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<EventDetailDto>> getPendingEvents(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "12") int size) {
 
         log.info("Admin GET /admin/events (page={}, size={})", page, size);
 

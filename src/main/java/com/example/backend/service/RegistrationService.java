@@ -94,7 +94,7 @@ public class RegistrationService {
 
     /**
      * Get volunteer's own registrations with filtering and pagination
-     * GET /registrations?status=APPROVED&page=0&size=10
+     * GET /registrations?status=APPROVED&page=0&size=12
      */
     @Transactional(readOnly = true)
     public Page<MyRegistrationDto> getMyRegistrations(

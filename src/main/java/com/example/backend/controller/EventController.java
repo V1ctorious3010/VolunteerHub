@@ -28,15 +28,15 @@ public class EventController {
     @GetMapping("/events")
     public ResponseEntity<Page<EventDetailDto>> getEvents(
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam(defaultValue = "") String location,
+            @RequestParam(defaultValue = "") String category,
             @RequestParam(defaultValue = "") String start,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "approvedAt,asc") String sortBy
     ) {
-        log.info("GET /events (keyword={}, location={}, start={}, page={})",
-                keyword, location, start, page);
+        log.info("GET /events (keyword={}, category={}, start={}, page={})",
+                keyword, category, start, page);
 
-        return ResponseEntity.ok(eventService.getEvents(keyword, location, start, page, sortBy));
+        return ResponseEntity.ok(eventService.getEvents(keyword, category, start, page, sortBy));
     }
 
     /**
@@ -128,7 +128,7 @@ public class EventController {
     public ResponseEntity<Page<EventDetailDto>> getMyEvents(
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "12") int size,
             Authentication authentication) {
 
         String organizerEmail = authentication.getName();

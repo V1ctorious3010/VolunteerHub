@@ -16,13 +16,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("""
         SELECT e FROM Event e
         WHERE (:keyword IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
-          AND (:location IS NULL OR LOWER(e.location) LIKE LOWER(CONCAT('%', :location, '%')))
+          AND (:category IS NULL OR LOWER(e.category) LIKE LOWER(CONCAT('%', :category, '%')))
           AND (:approvedAt IS NULL OR e.startTime >= :approvedAt)
           AND e.status IN ('COMING', 'ONGOING', 'FINISHED', 'CANCELLED')
     """)
     Page<Event> searchEvents(
             @Param("keyword") String keyword,
-            @Param("location") String location,
+            @Param("category") String category,
             @Param("approvedAt") LocalDateTime approvedAt,
             Pageable pageable
     );
