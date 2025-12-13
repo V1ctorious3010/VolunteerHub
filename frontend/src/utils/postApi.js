@@ -34,8 +34,16 @@ export const getRegistrations = (params) => {
     return api.get('/registrations', { params });
 };
 
+export const getEventRegistrations = (eventId, params) => {
+    return api.get(`/events/${eventId}/registrations`, { params });
+};
+
+export const patchRegistrationStatus = (registrationId, statusBody) => {
+    return api.patch(`/registrations/${registrationId}/status`, statusBody);
+};
+
 export const deleteRegistration = (registrationId) => {
     return api.delete(`/registrations/${registrationId}`);
 };
 
-export default { createEvent, getMyEvents, updateEvent, deleteEvent, getAdminEvents, patchAdminEventStatus, registerEvent, getRegistrations, deleteRegistration };
+export default { createEvent, getMyEvents, updateEvent, deleteEvent, getAdminEvents, patchAdminEventStatus, registerEvent, getRegistrations, deleteRegistration, getEventRegistrations, patchRegistrationStatus };

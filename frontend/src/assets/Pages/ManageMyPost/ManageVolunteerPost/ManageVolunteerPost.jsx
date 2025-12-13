@@ -39,7 +39,7 @@ const ManageVolunteerPost = ({ title }) => {
 
     const changeStatus = async (id, status) => {
         const confirm = await Swal.fire({
-            title: `Are you sure you want to ${status === "COMING" ? 'approve' : 'reject'}?`,
+            title: `Bạn muốn ${status === "COMING" ? 'chấp nhận' : 'từ chối'} sự kiện này?`,
             showCancelButton: true,
             icon: 'question',
         });
@@ -47,7 +47,8 @@ const ManageVolunteerPost = ({ title }) => {
 
         try {
             await patchAdminEventStatus(id, { status });
-            Swal.fire('Updated', 'Event status updated', 'success');
+            Swal.fire('Cập nhật', 'trạng thái sự kiện', 'thành công');
+            // console.log(status);
             setEvents(prev => prev.map(ev => ev.id === id ? { ...ev, status } : ev));
         } catch (err) {
             console.error('Failed to change status', err);
@@ -65,7 +66,7 @@ const ManageVolunteerPost = ({ title }) => {
             <Helmet><title>{title}</title></Helmet>
             <h1 className="text-2xl font-bold mb-4 text-center">Duyệt sự kiện</h1>
             {events.length === 0 ? (
-                <div className="text-gray-600">Không có sự kiện cần duyệt.</div>
+                <div className="text-gray-600 text-center">Không có sự kiện cần duyệt.</div>
             ) : (
                 <div>
                     <div className="hidden md:block">
@@ -98,7 +99,7 @@ const ManageVolunteerPost = ({ title }) => {
                                             <td>
                                                 <div className="flex items-center gap-2">
                                                     <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, 'COMING')}>Duyệt</button>
-                                                    <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, 'REJECT')}>Từ chối</button>
+                                                    <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, 'REJECTED')}>Từ chối</button>
                                                 </div>
                                             </td>
                                         </tr>

@@ -45,7 +45,8 @@ const NeedVolunteer = ({ title }) => {
         title: e.title,
         orgName: e.orgName || e.orgEmail || '',
         category: e.category || 'General',
-        startTime: e.startTime || e.deadline,
+        startTime: e.startTime,
+        endTime: e.endTime,
         location: e.location || '',
         noOfVolunteer: e.noOfVolunteer || 0,
         remaining: e.remaining,
@@ -231,7 +232,8 @@ const NeedVolunteer = ({ title }) => {
                         <th>Tên sự kiên</th>
                         <th>Tổ chức</th>
                         <th>Thể loại </th>
-                        <th>Hạn cuối </th>
+                        <th>Bắt đầu </th>
+                        <th>Kết thúc </th>
                         <th>Địa điểm</th>
                         <th>Số lượng</th>
                         <th>Chi tiết</th>
@@ -248,6 +250,7 @@ const NeedVolunteer = ({ title }) => {
                           </td>
                           <td className="font-semibold">{post.category}</td>
                           <td className="font-semibold">{post.startTime}</td>
+                          <td className="font-semibold">{post.endTime}</td>
                           <td className="font-semibold">{post.location}</td>
                           <td className="font-semibold text-center">
                             {post.noOfVolunteer}

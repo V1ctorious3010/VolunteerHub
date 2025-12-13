@@ -3,6 +3,7 @@ import "react-tabs/style/react-tabs.css";
 import MyVolunteerPost from "./MyVolunteerPost/MyVolunteerPost";
 import MyVolunteerRequest from "./MyVolunteerRequest/MyVolunteerRequest";
 import ManageVolunteerPost from "./ManageVolunteerPost/ManageVolunteerPost";
+import ManageVolunteerRequest from "./ManageVolunteerPost/ManageVolunteerRequest";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
@@ -31,6 +32,7 @@ const ManageMyPost = ({ title }) => {
           <div className="mx-8 md:mx-0 flex items-center justify-center">
             <TabList>
               {isOrganizer && <Tab>My Need Volunteer Post</Tab>}
+              {isOrganizer && <Tab>Manage Volunteer Requests</Tab>}
               {isVolunteer && <Tab>My Volunteer Request Post</Tab>}
               {isAdmin && <Tab>Manage Volunteer Post</Tab>}
             </TabList>
@@ -40,6 +42,14 @@ const ManageMyPost = ({ title }) => {
             <TabPanel>
               <h2>
                 <MyVolunteerPost title="My Volunteer Post" />
+              </h2>
+            </TabPanel>
+          )}
+
+          {isOrganizer && (
+            <TabPanel>
+              <h2>
+                <ManageVolunteerRequest title="Manage Volunteer Requests" />
               </h2>
             </TabPanel>
           )}

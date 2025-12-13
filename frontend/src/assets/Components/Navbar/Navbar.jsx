@@ -118,11 +118,9 @@ const Navbar = () => {
                           </Link>
                         </li>
                       )}
-                      {role === ROLE.EVENT_ORGANIZER && (
-                        <li>
-                          <Link to="/manage-my-post">Quản lý sự kiện</Link>
-                        </li>
-                      )}
+                      <li>
+                        <Link to="/manage-my-post">Quản lý sự kiện</Link>
+                      </li>
                     </>
                   )}
                 </ul>
