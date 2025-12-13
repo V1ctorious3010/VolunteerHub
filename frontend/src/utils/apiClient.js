@@ -8,7 +8,6 @@ const api = axios.create({
     headers: { 'Content-Type': 'application/json' },
 });
 
-// Interceptor: auto refresh on 401 (skip refresh endpoint itself)
 api.interceptors.response.use(
     (response) => response,
     async (error) => {

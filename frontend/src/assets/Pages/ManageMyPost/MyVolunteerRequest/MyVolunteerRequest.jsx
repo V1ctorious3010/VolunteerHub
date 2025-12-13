@@ -74,7 +74,7 @@ const MyVolunteerRequest = ({ title }) => {
               <table className="table border-collapse border border-gray-400">
                 {/* head */}
                 <thead>
-                  <tr className="text-white raleway text-base bg-[#DE00DF]">
+                  <tr className="text-white raleway text-base bg-[#2986cc]">
                     <th></th>
                     <th>Sự kiện</th>
                     <th>Email tổ chức </th>

@@ -1,13 +1,5 @@
-// Upload helper: fetch signature from backend, upload to cloud (Cloudinary), then optionally notify backend with the uploaded URL
 import api from './apiClient';
 
-/**
- * Upload a file to Cloudinary using a server-signed signature and return the uploaded URL.
- * options:
- *  - signatureUrl: backend endpoint to request upload signature (default: '/user/signature')
- *  - notifyUrl: backend endpoint to POST the resulting URL to (default: '/user/avatar').
- *               Set to null/false to skip notifying the backend.
- */
 export default async function handleUploadAnh(file, options = {}) {
     if (!file) throw new Error('No file provided');
 

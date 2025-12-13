@@ -10,7 +10,7 @@ const Navbar = () => {
   const { user } = useSelector(s => s.auth);
   const role = user?.role;
   // ensure the app always uses light theme
-  console.log(user);
+  // console.log(user);
   useEffect(() => {
     try {
       document.querySelector("html").setAttribute("data-theme", "light");

@@ -47,8 +47,9 @@ public class Event {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startTime; // Sử dụng LocalDateTime cho deadline
 
-    @Column(name = "duration")
-    private String duration; // Thời gian dự kiến (format: " 2h30m' " hoặc " 50m' ")
+    @Column(name = "endTime")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime endTime; // Thời gian kết thúc sự kiện
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;

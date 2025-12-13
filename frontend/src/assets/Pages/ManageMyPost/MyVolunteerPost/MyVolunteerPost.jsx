@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import Loader from "../../../Components/Loader/Loader";
 import LoadingGif from "../../../Components/Loader/LoadingGif";
 import { Helmet } from "react-helmet";
-import { getMyEvents } from "../../../../utils/postApi";
+import { getMyEvents, deleteEvent } from "../../../../utils/postApi";
 
 const MyVolunteerPost = ({ title }) => {
   const user = useSelector(s => s.auth.user);
@@ -66,15 +66,16 @@ const MyVolunteerPost = ({ title }) => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        // No backend delete endpoint is implemented here — simulate removal from UI
-        Swal.fire({
-          title: "Deleted!",
-          text: "The item has been removed locally.",
-          icon: "success",
-        });
-        const remaining = myVolunteerPost.filter((post) => post.id !== id);
-        setMyVolunteerPost(remaining);
-        navigate(`/manage-my-post`);
+        try {
+          await deleteEvent(id);
+          Swal.fire({ title: 'Deleted!', text: 'The event has been deleted.', icon: 'success' });
+          const remaining = myVolunteerPost.filter((post) => post.id !== id);
+          setMyVolunteerPost(remaining);
+          navigate(`/manage-my-post`);
+        } catch (err) {
+          console.error('Delete failed', err);
+          Swal.fire({ title: 'Error', text: 'Failed to delete event', icon: 'error' });
+        }
       }
     });
   };
@@ -100,7 +101,7 @@ const MyVolunteerPost = ({ title }) => {
               <table className="table border-collapse border border-gray-400">
                 {/* head */}
                 <thead>
-                  <tr className="text-white raleway text-base bg-[#DE00DF]">
+                  <tr className="text-white raleway text-base bg-[#2986cc]">
                     <th></th>
                     <th>Tên sự kiện</th>
                     <th>Phân loại </th>

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,27 +17,29 @@ public class EventDetailDto {
     private String thumbnail;
     private Integer noOfVolunteer;
     private Integer remaining;
-    
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startTime;
-    
-    private String duration;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime endTime;
+
     private String description;
     private String status;
     private String orgName;
     private String orgEmail;
-    
+
     private String category;
-    
-//    private Integer totalRegistrations;
+
+    //    private Integer totalRegistrations;
 //    private Integer approvedCount;
     private Integer pendingCount;
 //    private Integer rejectedCount;
 //    private Integer completedCount;
-    
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime createdAt;
-    
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime approvedAt;
 }

@@ -328,7 +328,7 @@ public class RegistrationService {
         dto.setEventTitle(registration.getEvent().getTitle());
         dto.setEventLocation(registration.getEvent().getLocation());
         dto.setEventThumbnail(registration.getEvent().getThumbnail());
-        dto.setEventDuration(registration.getEvent().getDuration());
+        dto.setEventEndTime(registration.getEvent().getEndTime());
         dto.setEventStatus(registration.getEvent().getStatus().name());
         dto.setEventStartTime(registration.getEvent().getStartTime());
         dto.setOrganizerName(registration.getEvent().getOrganizer().getName());

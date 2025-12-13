@@ -1,8 +1,8 @@
 package com.example.backend.controller;
 
+
 import com.example.backend.dto.CreateEventRequest;
 import com.example.backend.dto.EventDetailDto;
-import com.example.backend.dto.EventDto;
 import com.example.backend.dto.UpdateEventRequest;
 import com.example.backend.service.EventService;
 import jakarta.validation.Valid;
@@ -22,15 +22,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class EventController {
-    
+
     private final EventService eventService;
 
-    /**
-     * Get all events (public)
-     * GET /events
-     */
     @GetMapping("/events")
-    public ResponseEntity<Page<EventDto>> getEvents(
+    public ResponseEntity<Page<EventDetailDto>> getEvents(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "") String location,
             @RequestParam(defaultValue = "") String start,
@@ -39,19 +35,26 @@ public class EventController {
     ) {
         log.info("GET /events (keyword={}, location={}, start={}, page={})",
                 keyword, location, start, page);
-        
+
         return ResponseEntity.ok(eventService.getEvents(keyword, location, start, page, sortBy));
     }
 
     /**
      * Get event detail
      * GET /events/{eventId}
+     * Public: only COMING, ONGOING, FINISHED
+     * Organizer: can view their own events (all status)
+     * Admin: can view all events (all status)
      */
     @GetMapping("/events/{eventId}")
-    public ResponseEntity<EventDetailDto> getEventDetail(@PathVariable Long eventId) {
-        log.info("GET /events/{}", eventId);
+    public ResponseEntity<EventDetailDto> getEventDetail(
+            @PathVariable Long eventId,
+            Authentication authentication) {
         
-        EventDetailDto event = eventService.getEventDetail(eventId);
+        String userEmail = authentication != null ? authentication.getName() : null;
+        log.info("GET /events/{} by user: {}", eventId, userEmail);
+
+        EventDetailDto event = eventService.getEventDetail(eventId, userEmail);
         return ResponseEntity.ok(event);
     }
 
@@ -65,10 +68,10 @@ public class EventController {
     public ResponseEntity<EventDetailDto> createEvent(
             @Valid @RequestBody CreateEventRequest request,
             Authentication authentication) {
-        
+
         String organizerEmail = authentication.getName();
         log.info("POST /events by {}", organizerEmail);
-        
+
         EventDetailDto event = eventService.createEvent(request, organizerEmail);
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
@@ -84,10 +87,10 @@ public class EventController {
             @PathVariable Long eventId,
             @Valid @RequestBody UpdateEventRequest request,
             Authentication authentication) {
-        
+
         String organizerEmail = authentication.getName();
         log.info("PUT /events/{} by {}", eventId, organizerEmail);
-        
+
         EventDetailDto event = eventService.updateEvent(eventId, request, organizerEmail);
         return ResponseEntity.ok(event);
     }
@@ -102,16 +105,16 @@ public class EventController {
     public ResponseEntity<Map<String, String>> deleteEvent(
             @PathVariable Long eventId,
             Authentication authentication) {
-        
+
         String organizerEmail = authentication.getName();
         log.info("DELETE /events/{} by {}", eventId, organizerEmail);
-        
+
         eventService.deleteEvent(eventId, organizerEmail);
-        
+
         Map<String, String> response = new HashMap<>();
         response.put("message", "Event deleted successfully");
         response.put("eventId", eventId.toString());
-        
+
         return ResponseEntity.ok(response);
     }
 
@@ -122,17 +125,17 @@ public class EventController {
      */
     @GetMapping("/events/my-events")
     @PreAuthorize("hasAnyRole('EVENT_ORGANIZER')")
-    public ResponseEntity<Page<EventDto>> getMyEvents(
+    public ResponseEntity<Page<EventDetailDto>> getMyEvents(
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             Authentication authentication) {
-        
+
         String organizerEmail = authentication.getName();
         log.info("GET /events/my-events by {} (status={}, page={}, size={})",
                 organizerEmail, status, page, size);
-        
-        Page<EventDto> events = eventService.getMyEvents(organizerEmail, status, page, size);
+
+        Page<EventDetailDto> events = eventService.getMyEvents(organizerEmail, status, page, size);
         return ResponseEntity.ok(events);
     }
 }

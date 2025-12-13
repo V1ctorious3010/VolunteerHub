@@ -61,14 +61,14 @@ const AddVolunteerPost = ({ title }) => {
 
     try {
       // POST to backend
-      console.log('request: ', newVolunteerPost);
+      // console.log('request: ', newVolunteerPost);
       await createEvent(newVolunteerPost);
       toast.success("Bạn đã tạo sự kiện thành công. Hãy chờ để được xét duyệt!");
       form.reset();
       setThumbnailPreview(null);
       navigate("/manage-my-post");
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       let re = err?.response?.data?.message;
       toast.error(re, 'Lỗi khi tạo sự kiện!');
     }

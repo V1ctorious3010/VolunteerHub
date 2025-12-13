@@ -19,7 +19,10 @@ public class MyRegistrationDto {
     private String eventTitle;
     private String eventLocation;
     private String eventThumbnail;
-    private String eventDuration;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime eventEndTime;
+    
     private String eventStatus; // COMING, ONGOING, FINISHED, CANCELLED
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")

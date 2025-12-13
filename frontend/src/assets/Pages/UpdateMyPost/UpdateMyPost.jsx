@@ -1,17 +1,20 @@
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useSelector } from 'react-redux';
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
+import { updateEvent } from "../../../utils/postApi";
+import handleUploadAnh from "../../../utils/handleUploadAnh";
 
 
 const UpdateMyPost = ({ title2 }) => {
   const navigate = useNavigate();
   const user = useSelector(s => s.auth.user);
+
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const post = useLoaderData();
   const {
     id,
@@ -21,6 +24,8 @@ const UpdateMyPost = ({ title2 }) => {
     thumbnail,
     noOfVolunteer,
     description,
+    startTime: postStartTime,
+    endTime: postEndTime,
   } = post;
 
   const parseDate = (v) => {
@@ -29,7 +34,8 @@ const UpdateMyPost = ({ title2 }) => {
       return isNaN(d) ? new Date() : d;
     } catch (_) { return new Date(); }
   };
-  const [startDate, setStartDate] = useState(parseDate(post?.startTime || post?.deadline));
+  const [startDate, setStartDate] = useState(parseDate(postStartTime));
+  const [endDate, setEndDate] = useState(parseDate(postEndTime));
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -37,31 +43,48 @@ const UpdateMyPost = ({ title2 }) => {
     const postTitle = form.title.value;
     const category = form.category.value;
     const location = form.location.value;
-    const thumbnail = form.thumbnail.value;
-    const noOfVolunteer = form.noOfVolunteer.value;
-    const startTime = startDate.toLocaleDateString();
-    const orgName = form.orgName.value;
-    const orgEmail = form.orgEmail.value;
-    const description = form.description.value;
+    const file = form.thumbnail.files && form.thumbnail.files[0];
+    let thumbnailUrl = thumbnail || "";
+    if (file) {
+      try {
+        thumbnailUrl = await handleUploadAnh(file, { notifyUrl: null });
+      } catch (err) {
+        console.error('Failed to upload file', err);
+        toast.error('Lỗi tải ảnh lên');
+      }
+    }
+    const noOfVolunteerVal = parseInt(form.noOfVolunteer.value);
+    const formatDate = (d) => {
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    };
+    const startTime = `${formatDate(startDate)} 00:00:00`;
+    const endTime = `${formatDate(endDate)} 00:00:00`;
+    const descriptionVal = form.description.value;
+
     const updatedVolunteerPost = {
       title: postTitle,
       category,
       location,
-      thumbnail,
-      noOfVolunteer,
+      thumbnail: thumbnailUrl,
+      noOfVolunteer: noOfVolunteerVal,
       startTime,
-      description,
-      orgEmail,
-      orgName
+      endTime,
+      description: descriptionVal,
     };
 
     try {
-      updateLocalPost(id, updatedVolunteerPost);
+      await updateEvent(id, updatedVolunteerPost);
+
+      setThumbnailPreview(null);
       toast.success("Cập nhật bài viết thành công");
       navigate("/manage-my-post");
     } catch (err) {
-      console.log(err);
-      toast.error('Cập nhật bài viết thất bại');
+      console.error('Update failed', err);
+      const re = err?.response?.data?.message;
+      toast.error(re || 'Cập nhật bài viết thất bại');
     }
   };
   return (
@@ -86,7 +109,7 @@ const UpdateMyPost = ({ title2 }) => {
                     Tên sự kiện
                   </label>
                   <input
-                    defaultValue={title2}
+                    defaultValue={title}
                     placeholder="Enter your title of the post"
                     name="title"
                     id="title"
@@ -121,19 +144,14 @@ const UpdateMyPost = ({ title2 }) => {
                   <label className="text-gray-800 font-semibold">
                     Địa điểm
                   </label>
-                  <select
+                  <input
                     defaultValue={location}
-                    name="location"
                     id="location"
-                    className="border p-2 rounded-md"
-                  >
-                    <option value="Hà Nội">Hà Nội</option>
-                    <option value="Hải Phòng">Hải Phòng</option>
-                    <option value="Đà Nẵng">Đà Nẵng</option>
-                    <option value="Nha Trang">Nha Trang</option>
-                    <option value="Huế">Huế</option>
-                    <option value="Hồ Chí Minh">Hồ Chí Minh</option>
-                  </select>
+                    name="location"
+                    placeholder="Enter the event location"
+                    type="text"
+                    className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                  />
                 </div>
 
                 <div>
@@ -141,13 +159,24 @@ const UpdateMyPost = ({ title2 }) => {
                     Ảnh
                   </label>
                   <input
-                    defaultValue={thumbnail}
                     id="thumbnail"
                     name="thumbnail"
-                    placeholder="Enter your thumbnail link"
-                    type="url"
+                    type="file"
+                    accept="image/*"
+
+                    onChange={(ev) => {
+                      const f = ev.target.files && ev.target.files[0];
+                      if (!f) return setThumbnailPreview(null);
+                      const reader = new FileReader();
+                      reader.onload = () => setThumbnailPreview(reader.result);
+                      reader.readAsDataURL(f);
+                    }}
                     className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                   />
+
+                  {thumbnailPreview && (
+                    <img src={thumbnailPreview} alt="preview" className="mt-2 h-28 object-cover rounded-md" />
+                  )}
                 </div>
                 <div>
                   <label className="text-gray-800 font-semibold">
@@ -163,43 +192,22 @@ const UpdateMyPost = ({ title2 }) => {
                   />
                 </div>
                 <div className="flex flex-col gap-2 ">
-                  <label className="text-gray-800 font-semibold">
-                    Bắt đầu vào:
-                  </label>
-
-                  {/* Date Picker Input Field */}
+                  <label className="text-gray-800 font-semibold">Ngày bắt đầu</label>
                   <DatePicker
                     className="border p-2 rounded-md w-full"
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
                   />
                 </div>
-                <div>
-                  <label className="text-gray-800 font-semibold">
-                    Tên tổ chức
-                  </label>
-                  <input
-                    id="orgName"
-                    name="orgName"
-                    defaultValue={user?.name}
-                    type="text"
-                    readOnly
-                    className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                <div className="flex flex-col gap-2 ">
+                  <label className="text-gray-800 font-semibold">Ngày kết thúc</label>
+                  <DatePicker
+                    className="border p-2 rounded-md w-full"
+                    selected={endDate}
+                    onChange={(date) => setEndDate(date)}
                   />
                 </div>
-                <div>
-                  <label className="text-gray-800 font-semibold">
-                    Email tổ chức
-                  </label>
-                  <input
-                    defaultValue={user?.email}
-                    id="orgEmail"
-                    name="orgEmail"
-                    readOnly
-                    type="email"
-                    className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
-                  />
-                </div>
+                {/* org fields removed — server will use authenticated user */}
                 <div className="flex flex-col gap-2 mt-4 md:col-span-2">
                   <label
                     className="text-gray-800 font-semibold"
