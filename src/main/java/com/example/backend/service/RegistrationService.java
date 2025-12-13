@@ -223,9 +223,14 @@ public class RegistrationService {
             Registration.RequestStatus newStatus,
             Event event) {
         
-        // Cannot change status if event has finished
-        if (event.getStatus() == Event.EventStatus.FINISHED || 
-            event.getStatus() == Event.EventStatus.CANCELLED) {
+        // Allow APPROVED -> COMPLETED even when event FINISHED
+        boolean isMarkingCompleted = (oldStatus == Registration.RequestStatus.APPROVED && 
+                                      newStatus == Registration.RequestStatus.COMPLETED);
+        
+        // Cannot change status if event has finished (except marking as COMPLETED)
+        if (!isMarkingCompleted && 
+            (event.getStatus() == Event.EventStatus.FINISHED || 
+             event.getStatus() == Event.EventStatus.CANCELLED)) {
             throw new InvalidEventStatusException(
                     "Cannot update registration for event with status: " + event.getStatus());
         }

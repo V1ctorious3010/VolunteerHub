@@ -18,7 +18,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         WHERE (:keyword IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
           AND (:location IS NULL OR LOWER(e.location) LIKE LOWER(CONCAT('%', :location, '%')))
           AND (:approvedAt IS NULL OR e.startTime >= :approvedAt)
-          AND e.status <> 'PENDING'
+          AND e.status IN ('COMING', 'ONGOING', 'FINISHED', 'CANCELLED')
     """)
     Page<Event> searchEvents(
             @Param("keyword") String keyword,
