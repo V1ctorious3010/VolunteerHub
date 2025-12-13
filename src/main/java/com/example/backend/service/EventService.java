@@ -3,6 +3,8 @@ package com.example.backend.service;
 import com.example.backend.entity.Event;
 import com.example.backend.repo.EventRepository;
 import com.example.backend.dto.*;
+import com.example.backend.dto.EventReportDto;
+import com.example.backend.dto.VolunteerReportDto;
 import com.example.backend.entity.*;
 import com.example.backend.exception.*;
 import com.example.backend.repo.*;
@@ -284,6 +286,59 @@ public class EventService {
         // 2. Delete event (admin has full permission, no status check)
         eventRepository.delete(event);
         log.info("Event {} deleted successfully by admin", eventId);
+    }
+
+    /**
+     * Get event report with volunteer list (paginated)
+     * GET /api/events/{eventId}/report
+     */
+    @Transactional(readOnly = true)
+    public EventReportDto getEventReport(
+            Long eventId,
+            String organizerEmail,
+            Registration.RequestStatus status,
+            int page,
+            int size
+    ) {
+        log.info("Getting event report for event {}, organizer {}, status {}", eventId, organizerEmail, status);
+
+        // 1. Find event and verify ownership
+        Event event = eventRepository.findByIdAndOrganizerEmail(eventId, organizerEmail)
+                .orElseThrow(() -> new EventNotOwnedException());
+
+        // 2. Calculate statistics
+        Long totalRegistrations = registrationRepository.countByEventId(eventId);
+        Long approvedCount = registrationRepository.countByEventIdAndStatus(eventId, Registration.RequestStatus.APPROVED);
+        Long completedCount = registrationRepository.countByEventIdAndStatus(eventId, Registration.RequestStatus.COMPLETED);
+        Long pendingCount = registrationRepository.countByEventIdAndStatus(eventId, Registration.RequestStatus.PENDING);
+        Long rejectedCount = registrationRepository.countByEventIdAndStatus(eventId, Registration.RequestStatus.REJECTED);
+
+        // 3. Get paginated volunteers filtered by status (default APPROVED)
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
+        Page<Registration> registrationPage = registrationRepository.findByEventIdAndStatus(eventId, status, pageable);
+
+        // 4. Map to VolunteerReportDto
+        Page<VolunteerReportDto> volunteerPage = registrationPage.map(registration -> {
+            User user = registration.getUser();
+            return VolunteerReportDto.builder()
+                    .userEmail(user.getEmail())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .avatar(user.getAvatar())
+                    .registeredAt(registration.getCreatedAt())
+                    .status(registration.getStatus().toString())
+                    .build();
+        });
+
+        // 5. Build EventReportDto
+        return EventReportDto.builder()
+                .totalRegistrations(totalRegistrations)
+                .approvedCount(approvedCount)
+                .completedCount(completedCount)
+                .pendingCount(pendingCount)
+                .rejectedCount(rejectedCount)
+                .volunteers(volunteerPage)
+                .build();
     }
 
     private Sort parseSort(String sortBy) {

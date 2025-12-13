@@ -3,7 +3,9 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.CreateEventRequest;
 import com.example.backend.dto.EventDetailDto;
+import com.example.backend.dto.EventReportDto;
 import com.example.backend.dto.UpdateEventRequest;
+import com.example.backend.entity.Registration;
 import com.example.backend.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -137,5 +139,27 @@ public class EventController {
 
         Page<EventDetailDto> events = eventService.getMyEvents(organizerEmail, status, page, size);
         return ResponseEntity.ok(events);
+    }
+
+    /**
+     * Get event report with volunteer list (paginated)
+     * GET /events/{eventId}/report
+     * Role: EVENT_ORGANIZER (must be event owner)
+     */
+    @GetMapping("/events/{eventId}/report")
+    @PreAuthorize("hasAnyRole('EVENT_ORGANIZER')")
+    public ResponseEntity<EventReportDto> getEventReport(
+            @PathVariable Long eventId,
+            @RequestParam(defaultValue = "APPROVED") Registration.RequestStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            Authentication authentication) {
+
+        String organizerEmail = authentication.getName();
+        log.info("GET /events/{}/report by {} (status={}, page={}, size={})",
+                eventId, organizerEmail, status, page, size);
+
+        EventReportDto report = eventService.getEventReport(eventId, organizerEmail, status, page, size);
+        return ResponseEntity.ok(report);
     }
 }
