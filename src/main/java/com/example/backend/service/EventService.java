@@ -171,19 +171,41 @@ public class EventService {
     }
 
     /**
-     * Get event detail
+     * Get event detail with role-based access control
      * GET /api/events/{eventId}
+     * 
+     * Public/Volunteer: Only COMING, ONGOING, FINISHED
+     * Organizer: Own events (all status)
+     * Admin: All events (all status)
      */
     @Transactional(readOnly = true)
-    public EventDetailDto getEventDetail(Long eventId) {
-        log.info("Fetching event detail for event {}", eventId);
+    public EventDetailDto getEventDetail(Long eventId, String userEmail) {
+        log.info("Fetching event detail for event {} by user {}", eventId, userEmail);
 
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
 
-        // Don't allow viewing PENDING events (not approved yet)
-        if (event.getStatus() == Event.EventStatus.PENDING) {
-            throw new EventNotFoundException("Event not found or not yet approved");
+        if (userEmail != null) {
+            User user = userRepository.findByEmail(userEmail).orElse(null);
+            
+            // Admin can view all events
+            if (user != null && user.getRole() == User.Role.ADMIN) {
+                log.debug("Admin {} viewing event {}", userEmail, eventId);
+                return mapToDetailDto(event);
+            }
+            
+            // Organizer can view their own events (all status)
+            if (event.getOrganizer() != null && event.getOrganizer().getEmail().equals(userEmail)) {
+                log.debug("Organizer {} viewing own event {}", userEmail, eventId);
+                return mapToDetailDto(event);
+            }
+        }
+        
+        // Public/Volunteer: Only approved events
+        if (event.getStatus() == Event.EventStatus.PENDING ||
+            event.getStatus() == Event.EventStatus.REJECTED ||
+            event.getStatus() == Event.EventStatus.CANCELLED) {
+            throw new EventNotFoundException("Event not found or not available");
         }
 
         return mapToDetailDto(event);

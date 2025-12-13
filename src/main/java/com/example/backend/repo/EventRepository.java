@@ -49,4 +49,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     // Find by status (for admin)
     Page<Event> findByStatusOrderByCreatedAtAsc(Event.EventStatus status, Pageable pageable);
+    
+    // For scheduler - auto update status
+    List<Event> findByStatusAndStartTimeBefore(Event.EventStatus status, LocalDateTime time);
+    List<Event> findByStatusAndEndTimeBefore(Event.EventStatus status, LocalDateTime time);
 }

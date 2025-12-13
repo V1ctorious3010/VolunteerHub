@@ -42,12 +42,19 @@ public class EventController {
     /**
      * Get event detail
      * GET /events/{eventId}
+     * Public: only COMING, ONGOING, FINISHED
+     * Organizer: can view their own events (all status)
+     * Admin: can view all events (all status)
      */
     @GetMapping("/events/{eventId}")
-    public ResponseEntity<EventDetailDto> getEventDetail(@PathVariable Long eventId) {
-        log.info("GET /events/{}", eventId);
+    public ResponseEntity<EventDetailDto> getEventDetail(
+            @PathVariable Long eventId,
+            Authentication authentication) {
+        
+        String userEmail = authentication != null ? authentication.getName() : null;
+        log.info("GET /events/{} by user: {}", eventId, userEmail);
 
-        EventDetailDto event = eventService.getEventDetail(eventId);
+        EventDetailDto event = eventService.getEventDetail(eventId, userEmail);
         return ResponseEntity.ok(event);
     }
 
