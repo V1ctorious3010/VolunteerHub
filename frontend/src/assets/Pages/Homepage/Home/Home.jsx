@@ -36,7 +36,7 @@ const Home = ({ title }) => {
           volunteerCount = users?.length || 0;
         } catch {
           // If not admin or API fails, use a default
-          volunteerCount = 50; // placeholder
+          volunteerCount = 0; // placeholder
         }
 
         setStats({

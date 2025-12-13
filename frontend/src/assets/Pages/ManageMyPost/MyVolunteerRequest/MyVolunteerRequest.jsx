@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { getRegistrations, deleteRegistration } from '../../../../utils/postApi';
 import { GiCancel } from "react-icons/gi";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
@@ -27,11 +27,15 @@ const MyVolunteerRequest = ({ title }) => {
   // console.log(myVolunteerRequest);
   useEffect(() => {
     const volunteers = async () => {
-      // const { getRequests } = await import('../../../../utils/localApi');
-      // const all = await getRequests();
-      // filter by volunteer email or user id if present
-      const mine = null;
-      setMyVolunteerRequest(mine);
+      try {
+        const resp = await getRegistrations();
+        const content = resp?.data?.content || [];
+        // backend should return registrations for current user; use content directly
+        const mine = content;
+        setMyVolunteerRequest(mine);
+      } catch (err) {
+        setMyVolunteerRequest([]);
+      }
     };
     volunteers();
   }, [user?.email, user?.id]);
@@ -47,11 +51,14 @@ const MyVolunteerRequest = ({ title }) => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        // simulate delete locally
-
-        const remaining = myVolunteerRequest.filter((post) => post.id !== id);
-        setMyVolunteerRequest(remaining);
-        navigate(`/manage-my-post`);
+        try {
+          await deleteRegistration(id);
+          const remaining = myVolunteerRequest.filter((post) => post.registrationId !== id && post.id !== id);
+          setMyVolunteerRequest(remaining);
+          navigate(`/manage-my-post`);
+        } catch (err) {
+          Swal.fire('Error', 'Unable to cancel registration', 'error');
+        }
       }
     });
   };
@@ -86,18 +93,18 @@ const MyVolunteerRequest = ({ title }) => {
                 <tbody>
                   {/* row 1 */}
                   {myVolunteerRequest.map((post, idx) => (
-                    <tr className="border border-gray-300" key={post.id}>
+                    <tr className="border border-gray-300" key={post.registrationId}>
                       <th className="font-semibold">{idx + 1}</th>
-                      <td className="font-semibold">{post.title}</td>
-                      <td className="font-semibold">{post.category}</td>
-                      <td className="font-semibold">{post.startTime}</td>
-                      <td className="font-semibold">{post.location}</td>
+                      <td className="font-semibold">{post.eventTitle}</td>
+                      <td className="font-semibold">{post.organizerEmail}</td>
+                      <td className="font-semibold">{post.eventStartTime}</td>
+                      <td className="font-semibold">{post.eventLocation}</td>
 
                       <td>
                         <div className="flex items-center gap-6">
                           <GiCancel
                             title="Cancel Request"
-                            onClick={() => handleCancel(post.id)}
+                            onClick={() => handleCancel(post.registrationId)}
                             className="size-6 cursor-pointer"
                           />
                         </div>
@@ -122,14 +129,14 @@ const MyVolunteerRequest = ({ title }) => {
                 <tbody>
                   {/* row 1 */}
                   {myVolunteerRequest.map((post) => (
-                    <tr className="border border-gray-300" key={post.id}>
-                      <td>{post.title}</td>
-                      <td>{post.startTime}</td>
+                    <tr className="border border-gray-300" key={post.registrationId}>
+                      <td>{post.eventTitle}</td>
+                      <td>{post.eventStartTime}</td>
                       <td>
                         <div className="flex items-center gap-6">
                           <GiCancel
                             title="Cancel Request"
-                            onClick={() => handleCancel(post.id)}
+                            onClick={() => handleCancel(post.registrationId)}
                             className="size-6 cursor-pointer"
                           />
                         </div>

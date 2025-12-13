@@ -7,7 +7,8 @@ const VolunteerNeeds = () => {
   const [volunteers, setVolunteers] = useState([]);
   useEffect(() => {
     const load = async () => {
-      const events = await getEvents();
+      const page = await getEvents();
+      const events = Array.isArray(page?.content) ? page.content : [];
       const mapped = events.map(e => ({
         id: e.id,
         thumbnail: e.thumbnail,

@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from 'react-redux';
 import toast from "react-hot-toast";
-import axios from "axios";
+import { registerEvent } from "../../../utils/postApi";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 
@@ -19,6 +19,7 @@ const BeAVolunteer = ({ title }) => {
     } catch (_) { return new Date(); }
   };
   const [startDate, setStartDate] = useState(parseDate(post?.startTime || post?.deadline));
+  const [endDate, setEndDate] = useState(parseDate(post?.endTime || post?.deadline));
   const navigate = useNavigate();
   const user = useSelector(s => s.auth.user);
   const { id,
@@ -42,13 +43,13 @@ const BeAVolunteer = ({ title }) => {
     const thumbnail = form.thumbnail.value;
     const noOfVolunteer = form.noOfVolunteer.value;
     const startTime = startDate.toLocaleDateString();
-    const orgName = form.orgName.value;
-    const orgEmail = form.orgEmail.value;
-    const volunteerName = form.volunteerName.value;
-    const volunteerEmail = form.volunteerEmail.value;
-    const description = form.description.value;
-    const suggestion = form.suggestion.value;
-    const status = form.status.value;
+    const orgName = form.orgName?.value || '';
+    const orgEmail = form.orgEmail?.value || '';
+    const volunteerName = form.volunteerName?.value || '';
+    const volunteerEmail = form.volunteerEmail?.value || '';
+    const description = form.description?.value || '';
+    const suggestion = form.suggestion?.value || '';
+    const status = form.status?.value || 'PENDING';
     const requestVolunteerPost = {
       title: postTitle,
       category,
@@ -67,21 +68,19 @@ const BeAVolunteer = ({ title }) => {
     };
     // console.log(requestVolunteerPost);
     try {
-      const requestPost = {
-        id: Date.now(),
-        postId: id,
-        volunteerEmail,
-        status,
-        suggestion,
-        orgEmail,
-        orgName,
+      const requestBody = {
         volunteerName,
+        volunteerEmail,
+        suggestion,
+        status,
       };
-
+      await registerEvent(id, requestBody);
+      toast.success('Gửi yêu cầu thành công');
       navigate("/manage-my-post");
     } catch (err) {
       console.log(err);
-      toast.error("Gửi yêu cầu thất bại. Vui lòng thử lại.");
+      const msg = err?.response?.data?.message || 'Gửi yêu cầu thất bại. Vui lòng thử lại.';
+      toast.error(msg);
     }
   };
   return (
@@ -191,14 +190,22 @@ const BeAVolunteer = ({ title }) => {
                 />
               </div>
               <div className="flex flex-col gap-2 ">
-                <label className="text-gray-800 font-semibold">Hạn cuối</label>
-
-                {/* Date Picker Input Field */}
+                <label className="text-gray-800 font-semibold">Bắt đầu</label>
                 <DatePicker
                   disabled
                   className="border p-2 rounded-md w-full"
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 ">
+                <label className="text-gray-800 font-semibold">Hạn cuối</label>
+                <DatePicker
+                  disabled
+                  className="border p-2 rounded-md w-full"
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
                 />
               </div>
               <div>

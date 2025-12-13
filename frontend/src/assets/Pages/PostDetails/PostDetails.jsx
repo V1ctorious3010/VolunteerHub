@@ -22,6 +22,7 @@ const PostDetails = ({ title2 }) => {
     noOfVolunteer,
     remaining,
     startTime,
+    endTime,
     description,
     orgEmail,
     orgName
@@ -82,7 +83,7 @@ const PostDetails = ({ title2 }) => {
 
                   className="text-lg font-semibold "
                 >
-                  Thời điểm bắt đầu :
+                  Bắt đầu :
                 </Typography>
                 <Typography
 
@@ -91,12 +92,27 @@ const PostDetails = ({ title2 }) => {
                   {startTime}
                 </Typography>
               </div>
+
               <div className=" flex items-center gap-2">
                 <Typography
 
                   className="text-lg font-semibold "
                 >
-                  Số lượng tình nguyện viên cần :
+                  Hạn cuối :
+                </Typography>
+                <Typography
+
+                  className="text-lg font-qs font-bold "
+                >
+                  {endTime}
+                </Typography>
+              </div>
+              <div className=" flex items-center gap-2">
+                <Typography
+
+                  className="text-lg font-semibold "
+                >
+                  Số lượng tình nguyện viên
                 </Typography>
                 <Typography
                   color="blue-gray"

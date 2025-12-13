@@ -16,4 +16,26 @@ export const deleteEvent = (eventId) => {
     return api.delete(`/events/${eventId}`);
 };
 
-export default { createEvent, getMyEvents, updateEvent, deleteEvent };
+export const getAdminEvents = (params) => {
+    // params can include pagination or filters
+    return api.get('/admin/events', { params });
+};
+
+export const patchAdminEventStatus = (eventId, statusBody) => {
+    return api.patch(`/admin/events/${eventId}/status`, statusBody);
+};
+
+export const registerEvent = (eventId, registrationBody) => {
+    return api.post(`/events/${eventId}/registration`, registrationBody);
+};
+
+export const getRegistrations = (params) => {
+    // params optional for pagination
+    return api.get('/registrations', { params });
+};
+
+export const deleteRegistration = (registrationId) => {
+    return api.delete(`/registrations/${registrationId}`);
+};
+
+export default { createEvent, getMyEvents, updateEvent, deleteEvent, getAdminEvents, patchAdminEventStatus, registerEvent, getRegistrations, deleteRegistration };
