@@ -72,7 +72,7 @@ const PostDetails = ({ title2 }) => {
               <Typography className="text-xl font-semibold  ">
                 Địa điểm :{" "}
                 <span className="font-bold font-qs bg-yellow-300 px-4 py-2 rounded-md">
-                  {location}
+                  {postLocation}
                 </span>
               </Typography>
             </div>
@@ -82,7 +82,7 @@ const PostDetails = ({ title2 }) => {
 
                   className="text-lg font-semibold "
                 >
-                  Hạn cuối :
+                  Thời điểm bắt đầu :
                 </Typography>
                 <Typography
 

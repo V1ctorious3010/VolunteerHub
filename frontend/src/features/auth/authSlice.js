@@ -2,32 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../../utils/apiClient';
 import { ROLE } from '../../constants/roles';
 
-const USER_KEY = 'vh_auth_user';
-
 // Base API URL - điều chỉnh theo cấu hình backend của bạn
 const API_BASE_URL = 'http://localhost:5000';
-
-
-// Helpers to read/write localStorage safely
-const readJSON = (key, fallback = null) => {
-    try {
-        const raw = localStorage.getItem(key);
-        return raw ? JSON.parse(raw) : fallback;
-    } catch {
-        return fallback;
-    }
-};
-
-const writeJSON = (key, value) => {
-    try {
-        localStorage.setItem(key, JSON.stringify(value));
-    } catch {
-        // ignore
-    }
-};
-
-// Load user session from localStorage on init
-const initialUser = readJSON(USER_KEY, null);
 
 export const login = createAsyncThunk(
     'auth/login',
@@ -125,8 +101,6 @@ export const refreshToken = createAsyncThunk(
     }
 );
 
-// ============ User Management APIs (Admin only) ============
-
 // Lấy danh sách tất cả users
 export const fetchAllUsers = async () => {
     try {
@@ -157,7 +131,7 @@ export const unbanUser = async (email) => {
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
-        user: initialUser,
+        user: null,
         loading: false,
         error: null,
     },
@@ -172,7 +146,6 @@ const authSlice = createSlice({
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false;
                 state.user = action.payload;
-                writeJSON(USER_KEY, action.payload);
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false;
@@ -186,7 +159,6 @@ const authSlice = createSlice({
             .addCase(register.fulfilled, (state, action) => {
                 state.loading = false;
                 state.user = action.payload;
-                writeJSON(USER_KEY, action.payload);
             })
             .addCase(register.rejected, (state, action) => {
                 state.loading = false;
@@ -196,13 +168,11 @@ const authSlice = createSlice({
             .addCase(logout.fulfilled, (state) => {
                 state.user = null;
                 state.error = null;
-                writeJSON(USER_KEY, null);
             })
             // refreshToken
             .addCase(refreshToken.rejected, (state) => {
                 state.user = null;
                 state.error = null;
-                writeJSON(USER_KEY, null);
             });
     },
 });

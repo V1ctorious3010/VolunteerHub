@@ -14,6 +14,8 @@ import LoadingGif from "../../Components/Loader/LoadingGif";
 
 const NeedVolunteer = ({ title }) => {
   const [volunteers, setVolunteers] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState("");
@@ -34,7 +36,8 @@ const NeedVolunteer = ({ title }) => {
       if (sort === 'asc') sortBy = 'startTime,ASC';
       else if (sort === 'desc') sortBy = 'startTime,DESC';
 
-      const events = await getEvents({ keyword: search || '', location: '', start: '', page: 0, sortBy });
+      const page = await getEvents({ keyword: search || '', location: '', start: '', page: pageNumber, sortBy });
+      const events = Array.isArray(page?.content) ? page.content : [];
       // normalize events to shape used by UI
       const mapped = events.map(e => ({
         thumbnail: e.thumbnail,
@@ -50,9 +53,18 @@ const NeedVolunteer = ({ title }) => {
       }));
 
       setVolunteers(mapped);
+      setTotalPages(page?.totalPages || 0);
     };
     getData();
   }, [search, category, sort]);
+
+  const handlePrev = () => {
+    setPageNumber(p => Math.max(0, p - 1));
+  };
+
+  const handleNext = () => {
+    setPageNumber(p => Math.min((totalPages || 1) - 1, p + 1));
+  };
   const [view, setView] = useState("module");
 
   const [gridView, setGridView] = useState(true);
@@ -192,6 +204,11 @@ const NeedVolunteer = ({ title }) => {
         <LoadingGif></LoadingGif>
       ) : (
         <div>
+          <div className="flex justify-center gap-3 my-4">
+            <button onClick={handlePrev} className="px-3 py-2 bg-gray-200 rounded" disabled={pageNumber <= 0}>Prev</button>
+            <div className="px-3 py-2">Page {pageNumber + 1} / {totalPages || 1}</div>
+            <button onClick={handleNext} className="px-3 py-2 bg-gray-200 rounded" disabled={pageNumber >= (totalPages - 1)}>Next</button>
+          </div>
           <div className={gridView ? "block" : "hidden"}>
             <div className=" container mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 md:gap-y-12">
               {volunteers.map((volunteer) => (

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useNavigation } from "react-router-dom";
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -9,6 +8,7 @@ import PropTypes from "prop-types";
 import Loader from "../../../Components/Loader/Loader";
 import LoadingGif from "../../../Components/Loader/LoadingGif";
 import { Helmet } from "react-helmet";
+import { getMyEvents } from "../../../../utils/postApi";
 
 const MyVolunteerPost = ({ title }) => {
   const user = useSelector(s => s.auth.user);
@@ -26,21 +26,31 @@ const MyVolunteerPost = ({ title }) => {
   // console.log(myVolunteerPost);
   useEffect(() => {
     const volunteers = async () => {
-      // load events from backend and filter by organizer matching current user
-      const { getEvents } = await import('../../../../utils/localApi');
-      const all = await getEvents();
-      const mine = all.filter(e => (user?.email && e.orgEmail === user.email) || (user?.name && e.orgName === user.name));
-      // normalize to previous post shape where possible
-      const normalized = mine.map(e => ({
-        id: e.id,
-        title: e.title,
-        category: e.category || 'General',
-        startTime: e.startTime,
-        location: e.location,
-        orgEmail: e.orgEmail,
-        orgName: e.orgName,
-      }));
-      setMyVolunteerPost(normalized);
+      try {
+        const resp = await getMyEvents();
+        console.log(resp);
+        let data = resp?.data;
+        // Normalize response to an array regardless of server shape
+        if (!Array.isArray(data)) {
+          if (data && Array.isArray(data.content)) data = data.content;
+          else if (data && Array.isArray(data.data)) data = data.data;
+          else if (data && typeof data === 'object') data = [data];
+          else data = [];
+        }
+        const normalized = data.map(e => ({
+          id: e.id,
+          title: e.title,
+          category: e.category || 'General',
+          startTime: e.startTime,
+          endTime: e.endTime,
+          location: e.location,
+          status: e.status,
+        }));
+        setMyVolunteerPost(normalized);
+      } catch (err) {
+        console.error('Failed to load my events', err);
+        setMyVolunteerPost([]);
+      }
     };
     volunteers();
   }, [user?.id, user?.name]);
@@ -83,7 +93,7 @@ const MyVolunteerPost = ({ title }) => {
       {myVolunteerPost.length > 0 ? (
         <div>
           <h2 className="text-5xl font-bold my-6 text-center mt-6">
-            Total Posts: {myVolunteerPost.length}
+            Tổng số sự kiện: {myVolunteerPost.length}
           </h2>
           <div className="hidden md:block">
             <div className="overflow-x-auto ">
@@ -92,11 +102,13 @@ const MyVolunteerPost = ({ title }) => {
                 <thead>
                   <tr className="text-white raleway text-base bg-[#DE00DF]">
                     <th></th>
-                    <th>Title</th>
-                    <th>Category </th>
-                    <th>Start Time </th>
-                    <th>Location</th>
-                    <th>Actions</th>
+                    <th>Tên sự kiện</th>
+                    <th>Phân loại </th>
+                    <th>Thời gian bắt đầu </th>
+                    <th>Thời gian kết thúc</th>
+                    <th>Địa điểm</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -107,21 +119,19 @@ const MyVolunteerPost = ({ title }) => {
                       <td className="font-semibold">{post.title}</td>
                       <td className="font-semibold">{post.category}</td>
                       <td className="font-semibold">{post.startTime}</td>
+                      <td className="font-semibold">{post.endTime}</td>
                       <td className="font-semibold">{post.location}</td>
+                      <td className="font-semibold">{post.status}</td>
 
                       <td>
-                        {((post.orgEmail && post.orgEmail === user?.email) || (post.orgName && post.orgName === user?.name)) ? (
-                          <div className="flex items-center gap-6">
-                            <Link to={`/update-my-post/${post.id}`}>
-                              <MdEdit className="size-6" />
-                            </Link>
-                            <button onClick={() => handleDelete(post.id)}>
-                              <MdDelete className="size-6" />
-                            </button>
-                          </div>
-                        ) : (
-                          <span className="text-sm text-gray-500">—</span>
-                        )}
+                        <div className="flex items-center gap-6">
+                          <Link to={`/update-my-post/${post.id}`}>
+                            <MdEdit className="size-6" />
+                          </Link>
+                          <button onClick={() => handleDelete(post.id)}>
+                            <MdDelete className="size-6" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -136,9 +146,9 @@ const MyVolunteerPost = ({ title }) => {
                   {/* head */}
                   <thead>
                     <tr className="text-white raleway text-base bg-[#DE00DF]">
-                      <th>Post Title </th>
-                      <th>Category</th>
-                      <th>Actions</th>
+                      <th>Tên sự kiện </th>
+                      <th>Phân loại</th>
+                      <th>Hành dộng</th>
                     </tr>
                   </thead>
                   <tbody>

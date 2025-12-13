@@ -83,7 +83,7 @@ const UpdateMyPost = ({ title2 }) => {
               <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 p-12">
                 <div>
                   <label className="text-gray-800 font-semibold">
-                    Post Title
+                    Tên sự kiện
                   </label>
                   <input
                     defaultValue={title2}
@@ -100,7 +100,7 @@ const UpdateMyPost = ({ title2 }) => {
                     className="text-gray-800 font-semibold"
                     htmlFor="category"
                   >
-                    Category
+                    Phân loại
                   </label>
                   <select
                     defaultValue={category}
@@ -108,18 +108,18 @@ const UpdateMyPost = ({ title2 }) => {
                     id="category"
                     className="border p-2 rounded-md"
                   >
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Education">Education</option>
-                    <option value="Social Service">Social Service</option>
-                    <option value="Animal Welfare">Animal Welfare</option>
-                    <option value="Environment">Environment</option>
-                    <option value="Food Security">Food Security</option>
+                    <option value="Y tế">Y tế</option>
+                    <option value="Giáo dục">Giáo dục</option>
+                    <option value="Xã hội">Xã hội</option>
+                    <option value="Động vật hoang dã">Động vật hoang dã</option>
+                    <option value="Môi trường">Môi trường</option>
+                    <option value="Cứu trợ lương thực">Cứu trợ lương thực</option>
                   </select>
                 </div>
 
                 <div className="flex flex-col gap-2 ">
                   <label className="text-gray-800 font-semibold">
-                    Location
+                    Địa điểm
                   </label>
                   <select
                     defaultValue={location}
@@ -127,18 +127,18 @@ const UpdateMyPost = ({ title2 }) => {
                     id="location"
                     className="border p-2 rounded-md"
                   >
-                    <option value="Dhaka">Dhaka</option>
-                    <option value="Chittagong">Chittagong</option>
-                    <option value="Sylhet">Sylhet</option>
-                    <option value="Rajshahi">Rajshahi</option>
-                    <option value="Khulna">Khulna</option>
-                    <option value="Cox's Bazar">Cox&apos;s Bazar</option>
+                    <option value="Hà Nội">Hà Nội</option>
+                    <option value="Hải Phòng">Hải Phòng</option>
+                    <option value="Đà Nẵng">Đà Nẵng</option>
+                    <option value="Nha Trang">Nha Trang</option>
+                    <option value="Huế">Huế</option>
+                    <option value="Hồ Chí Minh">Hồ Chí Minh</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="text-gray-800 font-semibold">
-                    Thumbnail
+                    Ảnh
                   </label>
                   <input
                     defaultValue={thumbnail}
@@ -151,7 +151,7 @@ const UpdateMyPost = ({ title2 }) => {
                 </div>
                 <div>
                   <label className="text-gray-800 font-semibold">
-                    No. of Volunteer Needed
+                    Số lượng tình nguyện viên cần
                   </label>
                   <input
                     defaultValue={noOfVolunteer}
@@ -164,7 +164,7 @@ const UpdateMyPost = ({ title2 }) => {
                 </div>
                 <div className="flex flex-col gap-2 ">
                   <label className="text-gray-800 font-semibold">
-                    Start Time
+                    Bắt đầu vào:
                   </label>
 
                   {/* Date Picker Input Field */}
@@ -176,7 +176,7 @@ const UpdateMyPost = ({ title2 }) => {
                 </div>
                 <div>
                   <label className="text-gray-800 font-semibold">
-                    Organizer name
+                    Tên tổ chức
                   </label>
                   <input
                     id="orgName"
@@ -189,7 +189,7 @@ const UpdateMyPost = ({ title2 }) => {
                 </div>
                 <div>
                   <label className="text-gray-800 font-semibold">
-                    Organizer email
+                    Email tổ chức
                   </label>
                   <input
                     defaultValue={user?.email}
@@ -205,7 +205,7 @@ const UpdateMyPost = ({ title2 }) => {
                     className="text-gray-800 font-semibold"
                     htmlFor="description"
                   >
-                    Description
+                    Mô tả
                   </label>
                   <textarea
                     defaultValue={description}

@@ -9,8 +9,6 @@ const PrivateRoutes = ({ children }) => {
     return (
       <div className=" h-[70vh] flex items-center justify-center">
         <div><Loader></Loader>
-          {/* <img src={loader} /> */}
-          {/* <h2><img src={loader} alt="" /></h2> */}
         </div>
       </div>
     );

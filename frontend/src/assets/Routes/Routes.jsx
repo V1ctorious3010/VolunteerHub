@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home title="VolunteerHub"></Home>,
+        element: <Home title="GiveNow"></Home>,
       },
       {
         path: "/feed",
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
         loader: async () => {
           const { default: api } = await import('../../utils/apiClient');
           const res = await api.get('/events?keyword=&location=&start=&page=0&sortBy=');
-          return res?.data || [];
+          return res || [];
         },
       },
       {

@@ -26,7 +26,7 @@ const VolunteerNeedsCard = ({ volunteer }) => {
             <img className="w-full h-60" src={thumbnail} alt={title} />
           ) : (
             <div className="w-full h-60 bg-gray-200 flex items-center justify-center">
-              <span className="text-gray-500">No image</span>
+              <span className="text-gray-500">Chưa có ảnh</span>
             </div>
           )}
         </CardHeader>
@@ -44,11 +44,11 @@ const VolunteerNeedsCard = ({ volunteer }) => {
         <CardFooter className="flex items-center gap-8 justify-between">
           <div className="flex items-center -space-x-3">
             <Link to={`/post-details/${id}`} state={{ event: volunteer }}>
-              <Button color="green">View Details</Button>
+              <Button color="green">Chi tiết</Button>
             </Link>
           </div>
           <div>
-            <h2 className="font-qs font-bold">Start : {startTime}</h2>
+            <h2 className="font-qs font-bold">Bắt đầu vào : {startTime}</h2>
           </div>
         </CardFooter>
       </Card>

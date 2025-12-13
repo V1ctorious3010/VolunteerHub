@@ -14,7 +14,7 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
         const isRefreshCall = originalRequest && originalRequest.url && originalRequest.url.includes('/auth/refresh');
-        if (error.response?.status === 401 && !originalRequest._retry && !isRefreshCall) {
+        if ((error.response?.status === 403 || error.response?.status === 401) && !originalRequest._retry && !isRefreshCall) {
             originalRequest._retry = true;
             try {
                 await api.post('/auth/refresh');

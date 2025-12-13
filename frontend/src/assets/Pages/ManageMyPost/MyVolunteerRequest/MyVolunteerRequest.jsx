@@ -27,10 +27,10 @@ const MyVolunteerRequest = ({ title }) => {
   // console.log(myVolunteerRequest);
   useEffect(() => {
     const volunteers = async () => {
-      const { getRequests } = await import('../../../../utils/localApi');
-      const all = await getRequests();
+      // const { getRequests } = await import('../../../../utils/localApi');
+      // const all = await getRequests();
       // filter by volunteer email or user id if present
-      const mine = all.filter(r => (r.volunteerEmail && r.volunteerEmail === user?.email) || (r.userId && r.userId === user?.id));
+      const mine = null;
       setMyVolunteerRequest(mine);
     };
     volunteers();
@@ -48,13 +48,7 @@ const MyVolunteerRequest = ({ title }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         // simulate delete locally
-        const { deleteLocalRequest } = await import('../../../../utils/localApi');
-        deleteLocalRequest(id);
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your volunteer request has been removed.",
-          icon: "success",
-        });
+
         const remaining = myVolunteerRequest.filter((post) => post.id !== id);
         setMyVolunteerRequest(remaining);
         navigate(`/manage-my-post`);
@@ -82,11 +76,11 @@ const MyVolunteerRequest = ({ title }) => {
                 <thead>
                   <tr className="text-white raleway text-base bg-[#DE00DF]">
                     <th></th>
-                    <th>Title</th>
-                    <th>Org Email </th>
-                    <th>Start Time </th>
-                    <th>Location</th>
-                    <th>Actions</th>
+                    <th>Sự kiện</th>
+                    <th>Email tổ chức </th>
+                    <th>Thời gian bắt đầu </th>
+                    <th>Địa điểm</th>
+                    <th>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>

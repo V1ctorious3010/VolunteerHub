@@ -3,7 +3,7 @@ const PageError = () => {
   return (
     <div>
       <section
- 
+
       >
         <div className="container">
           <div className="row">
@@ -24,7 +24,7 @@ const PageError = () => {
                     href=""
                     className="btn bg-green-600 hover:bg-purple-500 text-lg text-white "
                   >
-                    Go to Home
+                    Về trang chủ
                   </Link>
                 </div>
               </div>
