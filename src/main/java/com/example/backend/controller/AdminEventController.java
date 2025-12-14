@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -74,5 +75,19 @@ public class AdminEventController {
         response.put("eventId", eventId.toString());
 
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Export all events as JSON
+     * GET /admin/events/export
+     * Role: ADMIN
+     */
+    @GetMapping("/events/export")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<EventDetailDto>> exportEvents() {
+        log.info("Admin GET /admin/events/export");
+
+        List<EventDetailDto> events = eventService.exportAllEvents();
+        return ResponseEntity.ok(events);
     }
 }

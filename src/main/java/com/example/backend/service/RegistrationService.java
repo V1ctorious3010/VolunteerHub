@@ -229,8 +229,7 @@ public class RegistrationService {
         
         // Cannot change status if event has finished (except marking as COMPLETED)
         if (!isMarkingCompleted && 
-            (event.getStatus() == Event.EventStatus.FINISHED || 
-             event.getStatus() == Event.EventStatus.CANCELLED)) {
+            event.getStatus() == Event.EventStatus.FINISHED) {
             throw new InvalidEventStatusException(
                     "Cannot update registration for event with status: " + event.getStatus());
         }

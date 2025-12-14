@@ -19,8 +19,7 @@ public class Event {
         REJECTED,
         COMING,
         ONGOING,
-        FINISHED,
-        CANCELLED
+        FINISHED
     }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
