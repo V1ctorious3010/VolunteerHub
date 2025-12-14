@@ -10,6 +10,19 @@ import { Link } from "react-router-dom";
 
 const VolunteerNeedsCard = ({ volunteer }) => {
   const { id, thumbnail, title, category, startTime, description } = volunteer;
+  const formatDateOnly = (v) => {
+    if (!v) return "";
+    const s = String(v).trim();
+    const datePart = s.split(" ")[0];
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(datePart)) return datePart;
+    const d = new Date(s);
+    if (isNaN(d)) return datePart;
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  };
+  const formattedStart = formatDateOnly(startTime);
   return (
     <div data-aos="fade-down"
       data-aos-anchor-placement="top-bottom"
@@ -48,7 +61,7 @@ const VolunteerNeedsCard = ({ volunteer }) => {
             </Link>
           </div>
           <div>
-            <h2 className="font-qs font-bold">Bắt đầu vào : {startTime}</h2>
+            <h2 className="font-qs font-bold">Bắt đầu vào : {formattedStart}</h2>
           </div>
         </CardFooter>
       </Card>

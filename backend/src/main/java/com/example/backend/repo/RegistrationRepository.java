@@ -43,6 +43,9 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     // Count registrations by event and status
     long countByEventIdAndStatus(Long eventId, Registration.RequestStatus status);
     
+    // Count all registrations by event
+    long countByEventId(Long eventId);
+    
     // Find registration by id and user email (for authorization check)
     Optional<Registration> findByIdAndUserEmail(Long id, String userEmail);
     
@@ -57,4 +60,7 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
         @Param("organizerEmail") String organizerEmail,
         Pageable pageable
     );
+    
+    // Find registrations by event and status with pagination (for report)
+    Page<Registration> findByEventIdAndStatus(Long eventId, Registration.RequestStatus status, Pageable pageable);
 }

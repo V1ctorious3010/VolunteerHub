@@ -27,6 +27,20 @@ const PostDetails = ({ title2 }) => {
     orgEmail,
     orgName
   } = post || {};
+  const formatDateOnly = (v) => {
+    if (!v) return "";
+    const s = String(v).trim();
+    const datePart = s.split(" ")[0];
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(datePart)) return datePart;
+    const d = new Date(s);
+    if (isNaN(d)) return datePart;
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  };
+  const formattedStart = formatDateOnly(startTime);
+  const formattedEnd = formatDateOnly(endTime);
   // console.log(post);
   const handleVolunteer = () => {
     // console.log("I want to be a volunteer !");
@@ -89,7 +103,7 @@ const PostDetails = ({ title2 }) => {
 
                   className="text-lg font-qs font-bold "
                 >
-                  {startTime}
+                  {formattedStart}
                 </Typography>
               </div>
 
@@ -104,7 +118,7 @@ const PostDetails = ({ title2 }) => {
 
                   className="text-lg font-qs font-bold "
                 >
-                  {endTime}
+                  {formattedEnd}
                 </Typography>
               </div>
               <div className=" flex items-center gap-2">

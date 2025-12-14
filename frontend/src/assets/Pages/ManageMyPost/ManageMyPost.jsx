@@ -1,9 +1,10 @@
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import MyVolunteerPost from "./MyVolunteerPost/MyVolunteerPost";
+import MyVolunteerPost from "./EventOrgTab/MyVolunteerPost";
 import MyVolunteerRequest from "./MyVolunteerRequest/MyVolunteerRequest";
 import ManageVolunteerPost from "./ManageVolunteerPost/ManageVolunteerPost";
-import ManageVolunteerRequest from "./ManageVolunteerPost/ManageVolunteerRequest";
+import ManageVolunteerRequest from "./EventOrgTab/ManageVolunteerRequest";
+import EventList from "./EventOrgTab/EventList";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
@@ -31,17 +32,18 @@ const ManageMyPost = ({ title }) => {
         <Tabs>
           <div className="mx-8 md:mx-0 flex items-center justify-center">
             <TabList>
-              {isOrganizer && <Tab>My Need Volunteer Post</Tab>}
-              {isOrganizer && <Tab>Manage Volunteer Requests</Tab>}
-              {isVolunteer && <Tab>My Volunteer Request Post</Tab>}
-              {isAdmin && <Tab>Manage Volunteer Post</Tab>}
+              {isOrganizer && <Tab>Quản lý sự kiện</Tab>}
+              {isOrganizer && <Tab>Quản lý yêu cầu</Tab>}
+              {isOrganizer && <Tab>Danh sách tham gia sự kiện</Tab>}
+              {isVolunteer && <Tab>Đăng ký sự kiện</Tab>}
+              {isAdmin && <Tab>Quản lý sự kiện</Tab>}
             </TabList>
           </div>
 
           {isOrganizer && (
             <TabPanel>
               <h2>
-                <MyVolunteerPost title="My Volunteer Post" />
+                <MyVolunteerPost title="Quản lý sự kiện" />
               </h2>
             </TabPanel>
           )}
@@ -49,7 +51,15 @@ const ManageMyPost = ({ title }) => {
           {isOrganizer && (
             <TabPanel>
               <h2>
-                <ManageVolunteerRequest title="Manage Volunteer Requests" />
+                <ManageVolunteerRequest title="Xử lý yêu cầu" />
+              </h2>
+            </TabPanel>
+          )}
+
+          {isOrganizer && (
+            <TabPanel>
+              <h2>
+                <EventList title="Danh sách tham gia sự kiện" />
               </h2>
             </TabPanel>
           )}
@@ -57,14 +67,14 @@ const ManageMyPost = ({ title }) => {
           {isVolunteer && (
             <TabPanel>
               <h2>
-                <MyVolunteerRequest title="My Volunteer Request" />
+                <MyVolunteerRequest title="Đăng ký yêu cầu" />
               </h2>
             </TabPanel>
           )}
           {user?.role === ROLE.ADMIN && (
             <TabPanel>
               <h2>
-                <ManageVolunteerPost title="Manage Volunteer Post" />
+                <ManageVolunteerPost title="Quản lý sự kiện" />
               </h2>
             </TabPanel>
           )}

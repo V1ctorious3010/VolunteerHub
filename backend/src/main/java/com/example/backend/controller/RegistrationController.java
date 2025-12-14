@@ -67,7 +67,7 @@ public class RegistrationController {
 
     /**
      * Get volunteer's own registrations with filtering
-     * GET /registrations?status=APPROVED&page=0&size=10
+     * GET /registrations?status=APPROVED&page=0&size=12
      * Role: VOLUNTEER, EVENT_ORGANIZER, ADMIN
      */
     @GetMapping("/registrations")
@@ -75,7 +75,7 @@ public class RegistrationController {
     public ResponseEntity<Page<MyRegistrationDto>> getMyRegistrations(
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "12") int size,
             Authentication authentication) {
         
         String userEmail = authentication.getName();
@@ -90,7 +90,7 @@ public class RegistrationController {
 
     /**
      * Get registrations for a specific event (for organizer)
-     * GET /events/{eventId}/registrations?page=0&size=10
+     * GET /events/{eventId}/registrations?page=0&size=12
      * Role: EVENT_ORGANIZER, ADMIN
      */
     @GetMapping("/events/{eventId}/registrations")
@@ -98,7 +98,7 @@ public class RegistrationController {
     public ResponseEntity<Page<RegistrationDto>> getEventRegistrations(
             @PathVariable Long eventId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "12") int size,
             Authentication authentication) {
         
         String organizerEmail = authentication.getName();

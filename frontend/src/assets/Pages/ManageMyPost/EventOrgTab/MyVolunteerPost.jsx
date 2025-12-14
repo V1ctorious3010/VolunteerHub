@@ -79,7 +79,11 @@ const MyVolunteerPost = ({ title }) => {
       }
     });
   };
-
+  const STATUS_LABELS = {
+    PENDING: 'Chờ duyệt',
+    COMING: 'Chấp nhận',
+    REJECTED: 'Từ chối',
+  };
   // Loading:
   const navigation = useNavigation();
   if (navigation.state === "loading") return <Loader />;
@@ -122,7 +126,7 @@ const MyVolunteerPost = ({ title }) => {
                       <td className="font-semibold">{post.startTime}</td>
                       <td className="font-semibold">{post.endTime}</td>
                       <td className="font-semibold">{post.location}</td>
-                      <td className="font-semibold">{post.status}</td>
+                      <td className="font-semibold">{STATUS_LABELS[post.status] || post.status}</td>
 
                       <td>
                         <div className="flex items-center gap-6">

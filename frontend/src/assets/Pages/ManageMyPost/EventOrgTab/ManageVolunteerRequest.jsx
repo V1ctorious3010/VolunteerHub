@@ -83,14 +83,15 @@ const ManageVolunteerRequest = ({ title }) => {
             <Helmet>
                 <title>{title}</title>
             </Helmet>
+            <h2 className="text-xl font-semibold mb-4 text-center">Danh sách tình nguyện viên đăng ký sự kiện</h2>
             <div className="flex items-center gap-4">
-                <label className="font-semibold">Select Event:</label>
+                <label className="font-semibold">Chọn sự kiện:</label>
                 <select
                     value={selectedEvent ?? ''}
                     onChange={(e) => { setSelectedEvent(Number(e.target.value)); setPage(0); }}
                     className="border rounded p-2"
                 >
-                    <option value="">-- Select --</option>
+                    <option value="">-- Lựa chọn --</option>
                     {events.map(ev => (
                         <option key={ev.id} value={ev.id}>{ev.title || ev.eventTitle || `Event ${ev.id}`}</option>
                     ))}
@@ -101,18 +102,18 @@ const ManageVolunteerRequest = ({ title }) => {
                 <LoadingGif />
             ) : registrations && registrations.length > 0 ? (
                 <div>
-                    <h2 className="text-3xl my-4">Total Requests: {registrations.length}</h2>
+                    <h2 className="text-3xl my-4">Tổng số đăng ký: {registrations.length}</h2>
                     <div className="overflow-x-auto">
                         <table className="table border-collapse border border-gray-400">
                             <thead>
                                 <tr className="text-white raleway text-base bg-[#2986cc]">
                                     <th></th>
-                                    <th>Volunteer</th>
+                                    <th>Tình nguyện viên</th>
                                     <th>Email</th>
-                                    <th>Start Time</th>
-                                    <th>Location</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
+                                    <th>Thời gian bắt đầu</th>
+                                    <th>Địa điểm</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>

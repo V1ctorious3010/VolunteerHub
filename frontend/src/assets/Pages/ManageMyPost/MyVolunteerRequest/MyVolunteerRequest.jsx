@@ -74,7 +74,7 @@ const MyVolunteerRequest = ({ title }) => {
       {myVolunteerRequest.length > 0 ? (
         <div>
           <h2 className="text-5xl my-6 font-bold text-center mt-6">
-            Total Requests: {myVolunteerRequest.length}
+            Tổng số yêu cầu: {myVolunteerRequest.length}
           </h2>
           <div className="hidden md:block">
             <div className="overflow-x-auto ">

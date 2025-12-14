@@ -17,7 +17,6 @@ export const deleteEvent = (eventId) => {
 };
 
 export const getAdminEvents = (params) => {
-    // params can include pagination or filters
     return api.get('/admin/events', { params });
 };
 
@@ -30,7 +29,6 @@ export const registerEvent = (eventId, registrationBody) => {
 };
 
 export const getRegistrations = (params) => {
-    // params optional for pagination
     return api.get('/registrations', { params });
 };
 
@@ -40,6 +38,10 @@ export const getEventRegistrations = (eventId, params) => {
 
 export const patchRegistrationStatus = (registrationId, statusBody) => {
     return api.patch(`/registrations/${registrationId}/status`, statusBody);
+};
+
+export const getEventReport = (eventId, params) => {
+    return api.get(`/events/${eventId}/report`, { params });
 };
 
 export const deleteRegistration = (registrationId) => {

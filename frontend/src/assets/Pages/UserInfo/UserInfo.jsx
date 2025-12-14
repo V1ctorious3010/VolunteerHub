@@ -33,7 +33,7 @@ const UserInfo = ({ title }) => {
             window.location.reload();
         } catch (err) {
             console.error(err);
-            alert('Upload thất bại: ' + (err.message || ''));
+            // alert('Upload thất bại: ' + (err.message || ''));
         }
     };
 
