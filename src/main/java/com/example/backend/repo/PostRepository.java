@@ -37,4 +37,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // Count comments for a post
     @Query("SELECT COUNT(c) FROM Comment c WHERE c.post.id = :postId")
     Long countCommentsByPostId(@Param("postId") Long postId);
+
+    // Count posts by event status (for statistics)
+    @Query("SELECT COUNT(p) FROM Post p WHERE p.event.status IN :statuses")
+    Long countByEventStatusIn(@Param("statuses") com.example.backend.entity.Event.EventStatus... statuses);
 }

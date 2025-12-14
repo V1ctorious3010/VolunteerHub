@@ -354,6 +354,19 @@ public class EventService {
                 .build();
     }
 
+    /**
+     * Export all events as EventDetailDto list
+     * GET /admin/events/export
+     */
+    @Transactional(readOnly = true)
+    public List<EventDetailDto> exportAllEvents() {
+        log.info("Exporting all events");
+        List<Event> events = eventRepository.findAll();
+        return events.stream()
+                .map(this::mapToDetailDto)
+                .toList();
+    }
+    
     private Sort parseSort(String sortBy) {
         String field = "startTime";//if reuse
         Sort.Direction dir = Sort.Direction.ASC;
@@ -381,6 +394,7 @@ public class EventService {
             }
         }
     }
+
 
     private EventDetailDto mapToDetailDto(Event event) {
         EventDetailDto dto = new EventDetailDto();

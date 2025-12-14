@@ -10,4 +10,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Phương thức tìm kiếm Tình nguyện viên theo Email
     Optional<User> findByEmail(String email);
 
+    // Count users by role (not locked) for statistics
+    long countByRoleInAndIsLockedFalse(User.Role... roles);
 }

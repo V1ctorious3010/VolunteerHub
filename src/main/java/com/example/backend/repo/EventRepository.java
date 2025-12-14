@@ -53,4 +53,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     // For scheduler - auto update status
     List<Event> findByStatusAndStartTimeBefore(Event.EventStatus status, LocalDateTime time);
     List<Event> findByStatusAndEndTimeBefore(Event.EventStatus status, LocalDateTime time);
+
+    // Count events by status (for statistics)
+    long countByStatusIn(Event.EventStatus... statuses);
 }
