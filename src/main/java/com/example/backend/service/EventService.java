@@ -124,6 +124,19 @@ public class EventService {
             event.setCategory(request.getCategory());
         }
 
+        //only allow PENDING → CANCELLED
+        if (request.getStatus() != null) {
+            if (!"CANCELLED".equals(request.getStatus())) {
+                throw new EventCannotBeModifiedException("Can only update status to CANCELLED");
+            }
+            if (event.getStatus() != Event.EventStatus.PENDING) {
+                throw new EventCannotBeModifiedException(
+                        "Can only cancel PENDING events. Current status: " + event.getStatus().name());
+            }
+            event.setStatus(Event.EventStatus.CANCELLED);
+            log.info("Event {} status updated to CANCELLED by organizer", eventId);
+        }
+
         Event updated = eventRepository.save(event);
         log.info("Event {} updated successfully", eventId);
         return mapToDetailDto(updated);
