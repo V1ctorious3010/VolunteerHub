@@ -80,8 +80,7 @@ public class EventService {
         Event event = eventRepository.findByIdAndOrganizerEmail(eventId, organizerEmail)
                 .orElseThrow(() -> new EventNotOwnedException(eventId, organizerEmail));
 
-        if (event.getStatus() == Event.EventStatus.FINISHED ||
-                event.getStatus() == Event.EventStatus.CANCELLED) {
+        if (event.getStatus() == Event.EventStatus.FINISHED) {
             throw new EventCannotBeModifiedException("Cannot modify event with status: " + event.getStatus().name());
         }
 
@@ -122,19 +121,6 @@ public class EventService {
 
         if (request.getCategory() != null) {
             event.setCategory(request.getCategory());
-        }
-
-        //only allow PENDING → CANCELLED
-        if (request.getStatus() != null) {
-            if (!"CANCELLED".equals(request.getStatus())) {
-                throw new EventCannotBeModifiedException("Can only update status to CANCELLED");
-            }
-            if (event.getStatus() != Event.EventStatus.PENDING) {
-                throw new EventCannotBeModifiedException(
-                        "Can only cancel PENDING events. Current status: " + event.getStatus().name());
-            }
-            event.setStatus(Event.EventStatus.CANCELLED);
-            log.info("Event {} status updated to CANCELLED by organizer", eventId);
         }
 
         Event updated = eventRepository.save(event);
@@ -218,8 +204,7 @@ public class EventService {
         
         // Public/Volunteer: Only approved events
         if (event.getStatus() == Event.EventStatus.PENDING ||
-            event.getStatus() == Event.EventStatus.REJECTED ||
-            event.getStatus() == Event.EventStatus.CANCELLED) {
+            event.getStatus() == Event.EventStatus.REJECTED) {
             throw new EventNotFoundException("Event not found or not available");
         }
 
@@ -366,7 +351,7 @@ public class EventService {
                 .map(this::mapToDetailDto)
                 .toList();
     }
-    
+
     private Sort parseSort(String sortBy) {
         String field = "startTime";//if reuse
         Sort.Direction dir = Sort.Direction.ASC;

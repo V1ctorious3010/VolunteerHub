@@ -38,7 +38,4 @@ public class UpdateEventRequest {
 
     @Size(max = 100, message = "Category must not exceed 100 characters")
     private String category; // Optional
-
-    @Pattern(regexp = "CANCELLED", message = "Only CANCELLED status is allowed for update")
-    private String status; // Optional - only allow setting to CANCELLED
 }

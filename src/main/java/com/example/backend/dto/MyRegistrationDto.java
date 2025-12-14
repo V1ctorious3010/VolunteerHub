@@ -23,7 +23,7 @@ public class MyRegistrationDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime eventEndTime;
     
-    private String eventStatus; // COMING, ONGOING, FINISHED, CANCELLED
+    private String eventStatus; // COMING, ONGOING, FINISHED
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime eventStartTime;
