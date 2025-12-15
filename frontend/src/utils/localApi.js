@@ -1,10 +1,10 @@
 import api from './apiClient';
 
-export async function getEvents({ keyword = '', location = '', start = '', page = 0, sortBy = '' } = {}) {
+export async function getEvents({ keyword = '', category = '', start = '', page = 0, sortBy = '' } = {}) {
     try {
         const qs = new URLSearchParams({
             keyword: keyword || '',
-            location: location || '',
+            category: category || '',
             start: start || '',
             page: String(page || 0),
             sortBy: sortBy || ''

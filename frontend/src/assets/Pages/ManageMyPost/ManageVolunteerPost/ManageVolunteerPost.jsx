@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
-import { getAdminEvents, patchAdminEventStatus } from '../../../../utils/postApi';
+import { getAdminEvents, patchAdminEventStatus, exportAdminEvents } from '../../../../utils/postApi';
 import { useSelector } from 'react-redux';
 import ROLE from '../../../../constants/roles';
 import Loader from '../../../Components/Loader/Loader';
@@ -37,6 +37,26 @@ const ManageVolunteerPost = ({ title }) => {
         else setLoading(false);
     }, [isAdmin]);
 
+    const handleExport = async (format) => {
+        try {
+            const resp = await exportAdminEvents(format);
+            const blob = resp.data;
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            const ext = format === 'json' ? 'json' : 'csv';
+            link.setAttribute('download', `events_export.${ext}`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            Swal.fire('Thành công', 'Đã tải xuống danh sách sự kiện', 'success');
+        } catch (err) {
+            console.error('Export failed', err);
+            Swal.fire('Lỗi', 'Không thể tải danh sách sự kiện', 'error');
+        }
+    };
+
     const changeStatus = async (id, status) => {
         const confirm = await Swal.fire({
             title: `Bạn muốn ${status === "COMING" ? 'chấp nhận' : 'từ chối'} sự kiện này?`,
@@ -64,7 +84,23 @@ const ManageVolunteerPost = ({ title }) => {
     return (
         <div className="container mx-auto p-6">
             <Helmet><title>{title}</title></Helmet>
-            <h1 className="text-2xl font-bold mb-4 text-center">Duyệt sự kiện</h1>
+            <div className="flex items-center justify-center gap-4 mb-4">
+                <h1 className="text-2xl font-bold">Duyệt sự kiện</h1>
+                <div className="flex gap-2">
+                    <button
+                        className="px-3 py-1 bg-green-600 text-white rounded"
+                        onClick={() => handleExport('csv')}
+                    >
+                        Tải CSV
+                    </button>
+                    <button
+                        className="px-3 py-1 bg-blue-600 text-white rounded"
+                        onClick={() => handleExport('json')}
+                    >
+                        Tải JSON
+                    </button>
+                </div>
+            </div>
             {events.length === 0 ? (
                 <div className="text-gray-600 text-center">Không có sự kiện cần duyệt.</div>
             ) : (

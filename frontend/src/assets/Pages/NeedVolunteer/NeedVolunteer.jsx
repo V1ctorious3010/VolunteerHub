@@ -36,7 +36,7 @@ const NeedVolunteer = ({ title }) => {
       if (sort === 'asc') sortBy = 'startTime,ASC';
       else if (sort === 'desc') sortBy = 'startTime,DESC';
 
-      const page = await getEvents({ keyword: search || '', location: '', start: '', page: pageNumber, sortBy });
+      const page = await getEvents({ keyword: search || '', category: category || '', location: '', start: '', page: pageNumber, sortBy });
       const events = Array.isArray(page?.content) ? page.content : [];
       // normalize events to shape used by UI
       const mapped = events.map(e => ({
@@ -57,7 +57,7 @@ const NeedVolunteer = ({ title }) => {
       setTotalPages(page?.totalPages || 0);
     };
     getData();
-  }, [search, category, sort]);
+  }, [search, category, sort, pageNumber]);
 
   const handlePrev = () => {
     setPageNumber(p => Math.max(0, p - 1));
@@ -152,12 +152,11 @@ const NeedVolunteer = ({ title }) => {
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="">Tất cả</option>
-              <option value="Healthcare">Y tế</option>
-              <option value="Education">Giáo dục</option>
-              <option value="Social Service">Xã hội</option>
-              <option value="Animal Welfare">Động vật hoang dã</option>
-              <option value="Environment">Môi trường</option>
-              <option value="Food Security">Cứu trợ lương thực</option>
+              <option value="Y tế">Y tế</option>
+              <option value="Giáo dục">Giáo dục</option>
+              <option value="Xã hội">Xã hội</option>
+              <option value="Động vật hoang dã">Động vật hoang dã</option>
+              <option value="Môi trường">Môi trường</option>
             </select>
           </div>
           <div>
