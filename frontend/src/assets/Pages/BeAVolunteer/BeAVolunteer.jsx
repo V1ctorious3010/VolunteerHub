@@ -140,23 +140,15 @@ const BeAVolunteer = ({ title }) => {
               </div>
 
               <div className="flex flex-col gap-2 ">
-                <label className="text-gray-800 font-semibold">
-                  Địa điểm
-                </label>
-                <select
-                  name="destination"
+                <label className="text-gray-800 font-semibold">Địa điểm</label>
+                <input
                   id="location"
+                  name="destination"
                   defaultValue={location}
-                  disabled
-                  className="border p-2 rounded-md"
-                >
-                  <option value="Hà Nội">Hà Nội</option>
-                  <option value="Hải Phòng">Hải Phòng</option>
-                  <option value="Đà Nẵng">Đà Nẵng</option>
-                  <option value="Nha Trang">Nha Trang</option>
-                  <option value="Huế">Huế</option>
-                  <option value="Hồ Chí Minh">Hồ Chí Minh</option>
-                </select>
+                  readOnly
+                  type="text"
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-gray-50 border border-gray-200 rounded-md"
+                />
               </div>
 
               <div>

@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { motion, useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
-import { getEvents } from "../../../../utils/localApi";
+import { getEvents, getStatistics } from "../../../../utils/localApi";
 import { fetchAllUsers } from "../../../../features/auth/authSlice";
 
 // Import icons
@@ -24,26 +24,14 @@ const Home = ({ title }) => {
   useEffect(() => {
     const loadStats = async () => {
       try {
-        // Get posts count
-        const events = await getEvents();
-        const postCount = events?.length || 0;
-        const eventCount = postCount;
-
-        // Get users count
-        let volunteerCount = 0;
-        try {
-          const users = await fetchAllUsers();
-          volunteerCount = users?.length || 0;
-        } catch {
-          // If not admin or API fails, use a default
-          volunteerCount = 0; // placeholder
-        }
-
+        // Prefer statistics endpoint if available
+        const statsResp = await getStatistics();
         setStats({
-          posts: postCount,
-          events: eventCount,
-          volunteers: volunteerCount,
+          posts: statsResp.totalPosts || 0,
+          events: statsResp.totalEvents || 0,
+          volunteers: statsResp.totalVolunteers || 0,
         });
+        console.log(statsResp);
       } catch (error) {
         console.error("Failed to load stats:", error);
       }

@@ -7,7 +7,7 @@ import ManageVolunteerRequest from "./EventOrgTab/ManageVolunteerRequest";
 import EventList from "./EventOrgTab/EventList";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader";
 import ROLE from "../../../constants/roles";
 import { useSelector } from 'react-redux';
@@ -21,6 +21,16 @@ const ManageMyPost = ({ title }) => {
   const isVolunteer = derivedRole === ROLE.VOLUNTEER;
   const isOrganizer = derivedRole === ROLE.EVENT_ORGANIZER;
   const isAdmin = derivedRole === ROLE.ADMIN;
+  const location = useLocation();
+  // determine initial tab index from location.state.tab for organizers
+  const tabFromState = location?.state?.tab;
+  let initialTabIndex = 0;
+  if (isOrganizer) {
+    if (tabFromState === 'requests') initialTabIndex = 1;
+    else if (tabFromState === 'list') initialTabIndex = 2;
+    else initialTabIndex = 0;
+  }
+  const forcedSelectedEvent = location?.state?.selectedEvent ?? null;
   return (
     <div className="mt-16">
       <div>
@@ -29,12 +39,12 @@ const ManageMyPost = ({ title }) => {
             {title}
           </title>
         </Helmet>
-        <Tabs>
+        <Tabs defaultIndex={initialTabIndex}>
           <div className="mx-8 md:mx-0 flex items-center justify-center">
             <TabList>
               {isOrganizer && <Tab>Quản lý sự kiện</Tab>}
               {isOrganizer && <Tab>Quản lý yêu cầu</Tab>}
-              {isOrganizer && <Tab>Danh sách tham gia sự kiện</Tab>}
+              {isOrganizer && <Tab>Danh sách tham gia</Tab>}
               {isVolunteer && <Tab>Đăng ký sự kiện</Tab>}
               {isAdmin && <Tab>Quản lý sự kiện</Tab>}
             </TabList>
@@ -51,7 +61,7 @@ const ManageMyPost = ({ title }) => {
           {isOrganizer && (
             <TabPanel>
               <h2>
-                <ManageVolunteerRequest title="Xử lý yêu cầu" />
+                <ManageVolunteerRequest title="Xử lý yêu cầu" forcedSelectedEvent={forcedSelectedEvent} />
               </h2>
             </TabPanel>
           )}
@@ -59,7 +69,7 @@ const ManageMyPost = ({ title }) => {
           {isOrganizer && (
             <TabPanel>
               <h2>
-                <EventList title="Danh sách tham gia sự kiện" />
+                <EventList title="Danh sách tham gia sự kiện" forcedSelectedEvent={forcedSelectedEvent} />
               </h2>
             </TabPanel>
           )}

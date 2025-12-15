@@ -23,6 +23,7 @@ const MyVolunteerPost = ({ title }) => {
     return () => clearTimeout(timer);
   }, []);
   const [myVolunteerPost, setMyVolunteerPost] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
   // console.log(myVolunteerPost);
   useEffect(() => {
     const volunteers = async () => {
@@ -30,14 +31,26 @@ const MyVolunteerPost = ({ title }) => {
         const resp = await getMyEvents();
         console.log(resp);
         let data = resp?.data;
-        // Normalize response to an array regardless of server shape
-        if (!Array.isArray(data)) {
-          if (data && Array.isArray(data.content)) data = data.content;
-          else if (data && Array.isArray(data.data)) data = data.data;
-          else if (data && typeof data === 'object') data = [data];
-          else data = [];
+        // If server returns paginated object with `content`, use it and capture totalElements
+        let items = [];
+        if (data && Array.isArray(data.content)) {
+          items = data.content;
+          setTotalCount(data.totalElements || items.length);
+        } else if (data && Array.isArray(data.data)) {
+          items = data.data;
+          setTotalCount(items.length);
+        } else if (Array.isArray(data)) {
+          items = data;
+          setTotalCount(items.length);
+        } else if (data && typeof data === 'object') {
+          items = [data];
+          setTotalCount(1);
+        } else {
+          items = [];
+          setTotalCount(0);
         }
-        const normalized = data.map(e => ({
+
+        const normalized = items.map(e => ({
           id: e.id,
           title: e.title,
           category: e.category || 'General',
@@ -98,7 +111,7 @@ const MyVolunteerPost = ({ title }) => {
       {myVolunteerPost.length > 0 ? (
         <div>
           <h2 className="text-5xl font-bold my-6 text-center mt-6">
-            Tổng số sự kiện: {myVolunteerPost.length}
+            Tổng số sự kiện: {totalCount || myVolunteerPost.length}
           </h2>
           <div className="hidden md:block">
             <div className="overflow-x-auto ">

@@ -16,6 +16,13 @@ const Register = ({ title }) => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
+  const onError = (errors) => {
+    if (errors?.name) toast.error('Họ tên không được để trống');
+    if (errors?.email) toast.error('Email không được để trống');
+    if (errors?.role) toast.error('Vai trò phải được chọn');
+    if (errors?.password) toast.error('Mật khẩu không được để trống');
+  };
+
   const onSubmit = async (data) => {
     const { name, email, password, role } = data;
     // Basic password rules
@@ -59,29 +66,32 @@ const Register = ({ title }) => {
               <h1 className="text-4xl font-semibold tracking-wider text-gray-800 capitalize">
                 Hãy tạo tài khoản của riêng bạn
               </h1>
-              <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-4 mt-8">
+              <form onSubmit={handleSubmit(onSubmit, onError)} className="grid grid-cols-1 gap-4 mt-8">
                 <div>
-                  <label className="block mb-2 font-semibold  text-gray-800">Họ tên</label>
+                  <label className="block mb-2 font-semibold  text-gray-800">Họ tên <span className="text-red-600 ml-1" aria-hidden="true">*</span></label>
                   <input
                     type="text"
                     {...register("name", { required: true })}
+                    aria-required="true"
                     placeholder="Nguyen Van A"
                     className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 font-semibold text-gray-800">Địa chỉ email</label>
+                  <label className="block mb-2 font-semibold text-gray-800">Địa chỉ email <span className="text-red-600 ml-1" aria-hidden="true">*</span></label>
                   <input
                     {...register("email", { required: true })}
+                    aria-required="true"
                     type="email"
                     placeholder="example@gmail.com"
                     className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
                 <div className="flex flex-col gap-2 ">
-                  <label className="text-gray-800 font-semibold" htmlFor="role">Vai trò</label>
+                  <label className="text-gray-800 font-semibold" htmlFor="role">Vai trò <span className="text-red-600 ml-1" aria-hidden="true">*</span></label>
                   <select
-                    {...register("role")}
+                    {...register("role", { required: true })}
+                    aria-required="true"
                     name="role"
                     id="role"
                     className="border p-2 rounded-md"
@@ -91,7 +101,7 @@ const Register = ({ title }) => {
                   </select>
                 </div>
                 <div>
-                  <label className="block mb-2 font-semibold text-gray-800">Mật khẩu</label>
+                  <label className="block mb-2 font-semibold text-gray-800">Mật khẩu <span className="text-red-600 ml-1" aria-hidden="true">*</span></label>
                   <div className="relative">
                     <input
                       placeholder="123aA"
@@ -99,6 +109,7 @@ const Register = ({ title }) => {
                       type={showPassword ? "text" : "password"}
                       name="password"
                       {...register("password", { required: true })}
+                      aria-required="true"
                     />
                     <span onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? (

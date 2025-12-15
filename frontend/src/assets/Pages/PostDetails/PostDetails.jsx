@@ -1,6 +1,7 @@
 import { Button, Typography } from "@material-tailwind/react";
 import { ScrollRestoration, useLoaderData, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from 'react-redux';
+import { ROLE } from "../../../constants/roles";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
@@ -13,6 +14,7 @@ const PostDetails = ({ title2 }) => {
   const post = loaderPost || statePost || {};
   const user = useSelector(s => s.auth.user);
   const navigate = useNavigate();
+  const isVolunteer = user?.role === ROLE.VOLUNTEER || (Array.isArray(user?.roles) && user.roles.includes(ROLE.VOLUNTEER));
   const {
     id,
     title,
@@ -174,14 +176,16 @@ const PostDetails = ({ title2 }) => {
               </div>
             </div>
             <div className="mb-4 flex w-full items-center gap-3 md:w-1/2 ">
-              <Button
-                onClick={handleVolunteer}
-                color="red"
-                variant="gradient"
-                className="w-52"
-              >
-                Làm tình nguyện viên
-              </Button>
+              {isVolunteer ? (
+                <Button
+                  onClick={handleVolunteer}
+                  color="red"
+                  variant="gradient"
+                  className="w-52"
+                >
+                  Làm tình nguyện viên
+                </Button>
+              ) : null}
             </div>
           </div>
         </div>

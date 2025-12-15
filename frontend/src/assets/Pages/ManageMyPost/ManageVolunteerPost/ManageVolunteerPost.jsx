@@ -133,10 +133,12 @@ const ManageVolunteerPost = ({ title }) => {
                                             <td className="font-semibold">{ev.orgName || ev.orgEmail}</td>
                                             <td className="font-semibold">{ev.status}</td>
                                             <td>
-                                                <div className="flex items-center gap-2">
-                                                    <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, 'COMING')}>Duyệt</button>
-                                                    <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, 'REJECTED')}>Từ chối</button>
-                                                </div>
+                                                {ev.status === 'PENDING' ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, 'COMING')}>Duyệt</button>
+                                                        <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, 'REJECTED')}>Từ chối</button>
+                                                    </div>
+                                                ) : null}
                                             </td>
                                         </tr>
                                     ))}
@@ -161,10 +163,12 @@ const ManageVolunteerPost = ({ title }) => {
                                             <td>{ev.title}</td>
                                             <td>{ev.startTime}</td>
                                             <td>
-                                                <div className="flex items-center gap-2">
-                                                    <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, "COMING")}>Duyệt</button>
-                                                    <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, "REJECT")}>Từ chối</button>
-                                                </div>
+                                                {ev.status === 'PENDING' ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, "COMING")}>Duyệt</button>
+                                                        <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, "REJECT")}>Từ chối</button>
+                                                    </div>
+                                                ) : null}
                                             </td>
                                         </tr>
                                     ))}

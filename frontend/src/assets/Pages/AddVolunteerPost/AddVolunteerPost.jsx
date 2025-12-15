@@ -19,7 +19,20 @@ const AddVolunteerPost = ({ title }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const postTitle = form.title.value;
+    const postTitle = (form.title.value || '').trim();
+    const description = (form.description.value || '').trim();
+
+    // Client-side validation (title >5 chars, description >20 chars)
+    if (postTitle.length < 6) {
+      toast.error('Tiêu đề phải có hơn 5 ký tự');
+      form.title.focus();
+      return;
+    }
+    if (description.length < 21) {
+      toast.error('Mô tả phải có hơn 20 ký tự');
+      form.description.focus();
+      return;
+    }
     const category = form.category.value;
     const location = form.location.value;
     // Handle uploaded file (if any) via cloud upload helper and get public URL
@@ -35,6 +48,22 @@ const AddVolunteerPost = ({ title }) => {
       }
     }
     const noOfVolunteer = parseInt(form.noOfVolunteer.value);
+    // Validate location and number
+    if (!(location || '').toString().trim()) {
+      toast.error('Địa điểm không được để trống');
+      form.location.focus();
+      return;
+    }
+    if (isNaN(noOfVolunteer) || noOfVolunteer <= 0) {
+      toast.error('Số lượng tình nguyện viên phải là số lớn hơn 0');
+      form.noOfVolunteer.focus();
+      return;
+    }
+    if (noOfVolunteer > 10000) {
+      toast.error('Số lượng tình nguyện viên không được vượt quá 10000');
+      form.noOfVolunteer.focus();
+      return;
+    }
     const startTimeInput = '00:00'; // default midnight
     const endTimeInput = '00:00'; // default midnight
 
@@ -47,7 +76,7 @@ const AddVolunteerPost = ({ title }) => {
 
     const startTime = `${formatDate(startDate)} ${startTimeInput}:00`;
     const endTime = `${formatDate(endDate)} ${endTimeInput}:00`;
-    const description = form.description.value;
+    // description already read above (trimmed)
     const newVolunteerPost = {
       title: postTitle,
       category,
@@ -95,7 +124,7 @@ const AddVolunteerPost = ({ title }) => {
             <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 p-12">
               <div>
                 <label className="text-gray-800 font-semibold">
-                  Tên sự kiện
+                  Tên sự kiện <span className="text-red-600 ml-1" aria-hidden="true">*</span>
                 </label>
                 <input
                   placeholder="Enter your title of the post"
@@ -111,7 +140,7 @@ const AddVolunteerPost = ({ title }) => {
                   className="text-gray-800 font-semibold"
                   htmlFor="category"
                 >
-                  Phân loại
+                  Phân loại <span className="text-red-600 ml-1" aria-hidden="true">*</span>
                 </label>
                 <select
                   name="category"
@@ -129,7 +158,7 @@ const AddVolunteerPost = ({ title }) => {
 
               <div className="flex flex-col gap-2 ">
                 <label className="text-gray-800 font-semibold">
-                  Địa điểm
+                  Địa điểm <span className="text-red-600 ml-1" aria-hidden="true">*</span>
                 </label>
                 <input
                   id="location"
@@ -165,7 +194,7 @@ const AddVolunteerPost = ({ title }) => {
               </div>
               <div>
                 <label className="text-gray-800 font-semibold">
-                  Số lượng tình nguyện viên
+                  Số lượng tình nguyện viên <span className="text-red-600 ml-1" aria-hidden="true">*</span>
                 </label>
                 <input
                   id="noOfVolunteer"
@@ -176,7 +205,7 @@ const AddVolunteerPost = ({ title }) => {
                 />
               </div>
               <div className="flex flex-col gap-2 ">
-                <label className="text-gray-800 font-semibold">Ngày bắt đầu</label>
+                <label className="text-gray-800 font-semibold">Ngày bắt đầu <span className="text-red-600 ml-1" aria-hidden="true">*</span></label>
 
                 {/* Date Picker Input Field */}
                 <DatePicker
@@ -186,7 +215,7 @@ const AddVolunteerPost = ({ title }) => {
                 />
               </div>
               <div className="flex flex-col gap-2 ">
-                <label className="text-gray-800 font-semibold">Ngày kết thúc</label>
+                <label className="text-gray-800 font-semibold">Ngày kết thúc <span className="text-red-600 ml-1" aria-hidden="true">*</span></label>
                 <DatePicker
                   className="border p-2 rounded-md w-full"
                   selected={endDate}
@@ -198,7 +227,7 @@ const AddVolunteerPost = ({ title }) => {
                   className="text-gray-800 font-semibold"
                   htmlFor="description"
                 >
-                  Mô tả
+                  Mô tả <span className="text-red-600 ml-1" aria-hidden="true">*</span>
                 </label>
                 <textarea
                   placeholder="Enter the description"

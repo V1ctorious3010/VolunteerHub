@@ -31,6 +31,10 @@ const Login = ({ title }) => {
       toast.error("Thông tin đăng nhập không hợp lệ");
     }
   };
+  const onError = (errors) => {
+    if (errors?.email) toast.error('Email không được để trống');
+    if (errors?.password) toast.error('Mật khẩu không được để trống');
+  };
   useEffect(() => {
     if (user) {
       navigate("/");
@@ -56,11 +60,9 @@ const Login = ({ title }) => {
               </div>
 
               <div className="mt-8">
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit, onError)}>
                   <div>
-                    <label className="block mb-2 text-sm font-bold text-gray-800">
-                      Địa chỉ email
-                    </label>
+                    <label className="block mb-2 text-sm font-bold text-gray-800">Địa chỉ email <span className="text-red-600 ml-1" aria-hidden="true">*</span></label>
                     <input
                       {...register("email", { required: true })}
                       type="email"
@@ -73,9 +75,7 @@ const Login = ({ title }) => {
 
                   <div className="mt-6">
                     <div className="flex justify-between mb-2">
-                      <label className="font-bold text-sm text-gray-700">
-                        Mật khẩu
-                      </label>
+                      <label className="font-bold text-sm text-gray-700">Mật khẩu <span className="text-red-600 ml-1" aria-hidden="true">*</span></label>
 
                     </div>
                     <div className="relative">
