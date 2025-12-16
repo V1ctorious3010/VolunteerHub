@@ -4,6 +4,7 @@ import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.RegisterRequest;
 import com.example.backend.entity.User;
 import com.example.backend.exception.BadCredentialsAppException;
+import com.example.backend.repo.NotificationRepository;
 import com.example.backend.repo.UserRepository;
 import com.example.backend.security.JwtService;
 import java.util.Map;
@@ -22,6 +23,10 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private NotificationProducer notificationProducer;
+    @Autowired
+    private UserService userService;
     @Transactional
     public User register(RegisterRequest req) {
         userRepository.findByEmail(req.getEmail())
@@ -49,6 +54,17 @@ public class AuthService {
         }
         if (v.isLocked()) {
             throw new BadCredentialsAppException("This account has been locked.");
+        }
+        try {
+            notificationProducer.send(
+                v.getEmail(),
+                "Security Bot",
+                "LOGIN_ALERT",
+                "Phát hiện đăng nhập mới vào tài khoản của bạn.",
+                "/profile/security"
+            );
+        } catch (Exception e) {
+            throw new BadCredentialsAppException("Loi gui thong bao");
         }
         return v;
     }
