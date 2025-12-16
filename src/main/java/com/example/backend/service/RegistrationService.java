@@ -88,6 +88,12 @@ public class RegistrationService {
                     registration.getStatus());
         }
 
+        // Restore event.remaining if registration was APPROVED
+        // Use updateEventRemainingSlots to handle slot restoration
+        if (registration.getStatus() == Registration.RequestStatus.APPROVED) {
+            updateEventRemainingSlots(event, Registration.RequestStatus.APPROVED, Registration.RequestStatus.REJECTED);
+        }
+
         registrationRepository.delete(registration);
         log.info("Registration {} cancelled successfully by {}", registrationId, userEmail);
     }
