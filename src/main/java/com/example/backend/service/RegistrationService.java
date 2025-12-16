@@ -89,11 +89,9 @@ public class RegistrationService {
         }
 
         // Restore event.remaining if registration was APPROVED
+        // Use updateEventRemainingSlots to handle slot restoration
         if (registration.getStatus() == Registration.RequestStatus.APPROVED) {
-            event.setRemaining(event.getRemaining() + 1);
-            eventRepository.save(event);
-            log.info("Restored 1 slot to event {}. New remaining: {}", 
-                    event.getId(), event.getRemaining());
+            updateEventRemainingSlots(event, Registration.RequestStatus.APPROVED, Registration.RequestStatus.REJECTED);
         }
 
         registrationRepository.delete(registration);

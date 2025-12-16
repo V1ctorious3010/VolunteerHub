@@ -80,7 +80,8 @@ public class EventService {
         Event event = eventRepository.findByIdAndOrganizerEmail(eventId, organizerEmail)
                 .orElseThrow(() -> new EventNotOwnedException(eventId, organizerEmail));
 
-        if (event.getStatus() == Event.EventStatus.FINISHED) {
+        if (event.getStatus() == Event.EventStatus.FINISHED ||
+                event.getStatus() == Event.EventStatus.ONGOING) {
             throw new EventCannotBeModifiedException("Cannot modify event with status: " + event.getStatus().name());
         }
 
