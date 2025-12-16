@@ -42,13 +42,14 @@ const MyVolunteerRequest = ({ title }) => {
 
   const handleCancel = (id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Bạn chắc chưa?",
+      text: "Bạn sẽ không thể thay đổi lựa chọn này!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Hãy xóa đi!",
+      cancelButtonText: "Không",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {

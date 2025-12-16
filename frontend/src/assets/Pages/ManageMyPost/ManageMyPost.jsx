@@ -1,10 +1,7 @@
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import MyVolunteerPost from "./EventOrgTab/MyVolunteerPost";
 import MyVolunteerRequest from "./MyVolunteerRequest/MyVolunteerRequest";
 import ManageVolunteerPost from "./ManageVolunteerPost/ManageVolunteerPost";
-import ManageVolunteerRequest from "./EventOrgTab/ManageVolunteerRequest";
-import EventList from "./EventOrgTab/EventList";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -42,37 +39,10 @@ const ManageMyPost = ({ title }) => {
         <Tabs defaultIndex={initialTabIndex}>
           <div className="mx-8 md:mx-0 flex items-center justify-center">
             <TabList>
-              {isOrganizer && <Tab>Quản lý sự kiện</Tab>}
-              {isOrganizer && <Tab>Quản lý yêu cầu</Tab>}
-              {isOrganizer && <Tab>Danh sách tham gia</Tab>}
               {isVolunteer && <Tab>Đăng ký sự kiện</Tab>}
               {isAdmin && <Tab>Quản lý sự kiện</Tab>}
             </TabList>
           </div>
-
-          {isOrganizer && (
-            <TabPanel>
-              <h2>
-                <MyVolunteerPost title="Quản lý sự kiện" />
-              </h2>
-            </TabPanel>
-          )}
-
-          {isOrganizer && (
-            <TabPanel>
-              <h2>
-                <ManageVolunteerRequest title="Xử lý yêu cầu" forcedSelectedEvent={forcedSelectedEvent} />
-              </h2>
-            </TabPanel>
-          )}
-
-          {isOrganizer && (
-            <TabPanel>
-              <h2>
-                <EventList title="Danh sách tham gia sự kiện" forcedSelectedEvent={forcedSelectedEvent} />
-              </h2>
-            </TabPanel>
-          )}
 
           {isVolunteer && (
             <TabPanel>

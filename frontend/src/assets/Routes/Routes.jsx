@@ -14,6 +14,8 @@ import NeedVolunteer from "../Pages/NeedVolunteer/NeedVolunteer";
 import Feed from "../Pages/Feed/Feed";
 import UpdateMyPost from "../Pages/UpdateMyPost/UpdateMyPost";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+import EvOrgPost from "../Pages/EvOrgPost/EvOrgPost";
+import EvOrgTabs from "../Pages/EvOrgPost/EvOrgTabs";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +61,22 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <ManageMyPost ></ManageMyPost>
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/manage-event-list",
+        element: (
+          <PrivateRoutes>
+            <EvOrgPost title="Quản lý sự kiện"></EvOrgPost>
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/manage-event-list/tabs",
+        element: (
+          <PrivateRoutes>
+            <EvOrgTabs title="Quản lý sự kiện"></EvOrgTabs>
           </PrivateRoutes>
         ),
       },

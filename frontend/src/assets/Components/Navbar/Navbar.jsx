@@ -46,6 +46,11 @@ const Navbar = () => {
                       <a>Tạo sự kiện mới</a>
                     </Link>
                   )}
+                  {role === ROLE.EVENT_ORGANIZER && (
+                    <Link to='/manage-event-list'>
+                      <a>Quản lý sự kiện (Org)</a>
+                    </Link>
+                  )}
                   <Link to='/manage-my-post'>
                     <a>Quản lý sự kiện</a>
                   </Link>
@@ -111,6 +116,13 @@ const Navbar = () => {
                           </Link>
                         </li>
                       )}
+                      {(role === ROLE.EVENT_ORGANIZER) && (
+                        <li>
+                          <Link to="/manage-event-list" className="justify-between">
+                            Quản lý sự kiện (Org)
+                          </Link>
+                        </li>
+                      )}
                       {role === ROLE.ADMIN && (
                         <li>
                           <Link to="/manage-volunteers" className="justify-between text">
@@ -118,9 +130,13 @@ const Navbar = () => {
                           </Link>
                         </li>
                       )}
-                      <li>
-                        <Link to="/manage-my-post">Quản lý sự kiện</Link>
-                      </li>
+                      {role !== ROLE.EVENT_ORGANIZER && (
+                        <li>
+                          <Link to="/manage-my-post" className="justify-between text">
+                            Quản lý sự kiện
+                          </Link>
+                        </li>
+                      )}
                     </>
                   )}
                 </ul>
