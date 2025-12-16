@@ -88,6 +88,14 @@ public class RegistrationService {
                     registration.getStatus());
         }
 
+        // Restore event.remaining if registration was APPROVED
+        if (registration.getStatus() == Registration.RequestStatus.APPROVED) {
+            event.setRemaining(event.getRemaining() + 1);
+            eventRepository.save(event);
+            log.info("Restored 1 slot to event {}. New remaining: {}", 
+                    event.getId(), event.getRemaining());
+        }
+
         registrationRepository.delete(registration);
         log.info("Registration {} cancelled successfully by {}", registrationId, userEmail);
     }
