@@ -24,21 +24,32 @@ const MyVolunteerRequest = ({ title }) => {
   const user = useSelector(s => s.auth.user);
   const navigate = useNavigate();
   const [myVolunteerRequest, setMyVolunteerRequest] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [page, setPage] = useState(0);
+  const [size] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
   // console.log(myVolunteerRequest);
   useEffect(() => {
     const volunteers = async () => {
+      setLoading(true);
       try {
-        const resp = await getRegistrations();
+        const params = { page, size };
+        if (statusFilter) params.status = statusFilter;
+        const resp = await getRegistrations(params);
         const content = resp?.data?.content || [];
-        // backend should return registrations for current user; use content directly
-        const mine = content;
-        setMyVolunteerRequest(mine);
+        const tp = resp?.data?.totalPages ?? 0;
+        setMyVolunteerRequest(content);
+        setTotalPages(tp);
       } catch (err) {
         setMyVolunteerRequest([]);
+        setTotalPages(0);
+      } finally {
+        setLoading(false);
       }
     };
     volunteers();
-  }, [user?.email, user?.id]);
+  }, [user?.email, user?.id, page, size, statusFilter]);
 
   const handleCancel = (id) => {
     Swal.fire({
@@ -53,12 +64,15 @@ const MyVolunteerRequest = ({ title }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await deleteRegistration(id);
+          const resp = await deleteRegistration(id);
+          const msg = resp?.data?.message;
           const remaining = myVolunteerRequest.filter((post) => post.registrationId !== id && post.id !== id);
           setMyVolunteerRequest(remaining);
+          if (msg) Swal.fire('Thông báo', msg, 'success');
           navigate(`/manage-my-post`);
         } catch (err) {
-          Swal.fire('Error', 'Unable to cancel registration', 'error');
+          const emsg = err?.response?.data?.message || 'Unable to cancel registration';
+          Swal.fire('Error', emsg, 'error');
         }
       }
     });
@@ -72,7 +86,24 @@ const MyVolunteerRequest = ({ title }) => {
           {title}
         </title>
       </Helmet>
-      {myVolunteerRequest.length > 0 ? (
+      <div className="flex items-center gap-4">
+        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(0); }} className="border p-3 input input-bordered rounded-md">
+          <option value="">Tất cả trạng thái</option>
+          <option value="PENDING">Chờ duyệt</option>
+          <option value="APPROVED">Chấp nhận</option>
+          <option value="REJECTED">Từ chối</option>
+          <option value="COMPLETED">Hoàn thành</option>
+        </select>
+        <div className="ml-auto">
+          <span className="text-sm">Trang {page + 1} / {totalPages || 1}</span>
+          <button className="btn btn-sm ml-2" disabled={page <= 0} onClick={() => setPage(p => Math.max(0, p - 1))}>Prev</button>
+          <button className="btn btn-sm ml-2" disabled={page + 1 >= (totalPages || 1)} onClick={() => setPage(p => p + 1)}>Next</button>
+        </div>
+      </div>
+
+      {loading ? (
+        <LoadingGif />
+      ) : myVolunteerRequest.length > 0 ? (
         <div>
           <h2 className="text-5xl my-6 font-bold text-center mt-6">
             Tổng số yêu cầu: {myVolunteerRequest.length}
@@ -122,9 +153,9 @@ const MyVolunteerRequest = ({ title }) => {
                 {/* head */}
                 <thead>
                   <tr className="text-white raleway text-base bg-[#DE00DF]">
-                    <th>Title </th>
-                    <th>Start Time</th>
-                    <th>Actions</th>
+                    <th>Sự kiện </th>
+                    <th>Thời gian bắt đầu</th>
+                    <th>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -150,9 +181,9 @@ const MyVolunteerRequest = ({ title }) => {
           </div>
         </div>
       ) : showLoader ? (
-        <LoadingGif></LoadingGif>
+        <LoadingGif />
       ) : (
-        <PageError></PageError>
+        <PageError />
       )}
     </div>
   );

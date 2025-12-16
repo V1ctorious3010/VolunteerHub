@@ -18,7 +18,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         WHERE (:keyword IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
           AND (:category IS NULL OR LOWER(e.category) LIKE LOWER(CONCAT('%', :category, '%')))
           AND (:approvedAt IS NULL OR e.startTime >= :approvedAt)
-          AND e.status IN ('COMING', 'ONGOING', 'FINISHED', 'CANCELLED')
+          AND e.status IN ('COMING', 'ONGOING', 'FINISHED')
     """)
     Page<Event> searchEvents(
             @Param("keyword") String keyword,
@@ -53,4 +53,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     // For scheduler - auto update status
     List<Event> findByStatusAndStartTimeBefore(Event.EventStatus status, LocalDateTime time);
     List<Event> findByStatusAndEndTimeBefore(Event.EventStatus status, LocalDateTime time);
+
+    // Count events by status (for statistics)
+    long countByStatusIn(Event.EventStatus... statuses);
 }

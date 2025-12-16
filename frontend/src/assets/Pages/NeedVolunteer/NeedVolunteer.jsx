@@ -151,7 +151,7 @@ const NeedVolunteer = ({ title }) => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="">Tất cả</option>
+              <option value="">Tất cả danh mục</option>
               <option value="Y tế">Y tế</option>
               <option value="Giáo dục">Giáo dục</option>
               <option value="Xã hội">Xã hội</option>

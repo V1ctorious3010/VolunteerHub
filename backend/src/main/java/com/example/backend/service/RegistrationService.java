@@ -88,6 +88,12 @@ public class RegistrationService {
                     registration.getStatus());
         }
 
+        // Restore event.remaining if registration was APPROVED
+        // Use updateEventRemainingSlots to handle slot restoration
+        if (registration.getStatus() == Registration.RequestStatus.APPROVED) {
+            updateEventRemainingSlots(event, Registration.RequestStatus.APPROVED, Registration.RequestStatus.REJECTED);
+        }
+
         registrationRepository.delete(registration);
         log.info("Registration {} cancelled successfully by {}", registrationId, userEmail);
     }
@@ -229,8 +235,7 @@ public class RegistrationService {
         
         // Cannot change status if event has finished (except marking as COMPLETED)
         if (!isMarkingCompleted && 
-            (event.getStatus() == Event.EventStatus.FINISHED || 
-             event.getStatus() == Event.EventStatus.CANCELLED)) {
+            event.getStatus() == Event.EventStatus.FINISHED) {
             throw new InvalidEventStatusException(
                     "Cannot update registration for event with status: " + event.getStatus());
         }
