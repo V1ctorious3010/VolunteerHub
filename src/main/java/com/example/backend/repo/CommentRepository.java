@@ -11,20 +11,22 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    // Find all comments by post with user info
+    // Find all comments by post with user info (filter locked users)
     @Query("""
         SELECT c FROM Comment c
-        LEFT JOIN FETCH c.user
+        LEFT JOIN FETCH c.user u
         WHERE c.post.id = :postId
+        AND u.isLocked = false
         ORDER BY c.createdAt DESC
     """)
     Page<Comment> findByPostIdOrderByCreatedAtDesc(@Param("postId") Long postId, Pageable pageable);
 
-    // Find latest comment for a post
+    // Find latest comment for a post (filter locked users)
     @Query("""
         SELECT c FROM Comment c
-        LEFT JOIN FETCH c.user
+        LEFT JOIN FETCH c.user u
         WHERE c.post.id = :postId
+        AND u.isLocked = false
         ORDER BY c.createdAt DESC
         LIMIT 1
     """)
@@ -38,6 +40,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     """)
     Optional<Comment> findByIdWithUser(@Param("commentId") Long commentId);
 
-    // Count comments for post
-    long countByPostId(Long postId);
+    // Count comments for post (filter locked users)
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.post.id = :postId AND c.user.isLocked = false")
+    long countByPostId(@Param("postId") Long postId);
 }
