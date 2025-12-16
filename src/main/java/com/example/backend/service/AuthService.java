@@ -55,17 +55,6 @@ public class AuthService {
         if (v.isLocked()) {
             throw new BadCredentialsAppException("This account has been locked.");
         }
-        try {
-            notificationProducer.send(
-                v.getEmail(),
-                "Security Bot",
-                "LOGIN_ALERT",
-                "Phát hiện đăng nhập mới vào tài khoản của bạn.",
-                "/profile/security"
-            );
-        } catch (Exception e) {
-            throw new BadCredentialsAppException("Loi gui thong bao");
-        }
         return v;
     }
 

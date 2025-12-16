@@ -39,7 +39,6 @@ public class NotificationConsumer {
             .actorName(msg.getActorName())
             .type(msg.getType())
             .content(msg.getContent())
-            .targetUrl(msg.getTargetUrl())
             .isRead(false)
             .build();
         notiRepo.save(entity);
@@ -56,7 +55,6 @@ public class NotificationConsumer {
         ObjectNode payload = objectMapper.createObjectNode();
         payload.put("title", "Thông báo mới");
         payload.put("body", msg.getActorName() + ": " + msg.getContent());
-        payload.put("url", msg.getTargetUrl());
         payload.put("type", "UPDATE_UI");
 
         for (PushSubscription sub : subs) {

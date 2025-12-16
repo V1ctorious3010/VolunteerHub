@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NotificationProducer {
     private final RabbitTemplate rabbitTemplate;
-    public void send(String toEmail, String actorName, String type, String content, String url) {
-        NotificationEventDTO dto = new NotificationEventDTO(toEmail, actorName, type, content, url);
+    public void send(String toEmail, String actorName, String type, String content) {
+        NotificationEventDTO dto = new NotificationEventDTO(toEmail, actorName, type, content);
         rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY, dto);
     }
 }

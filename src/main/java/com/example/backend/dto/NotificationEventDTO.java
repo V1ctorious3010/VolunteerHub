@@ -10,5 +10,4 @@ public class NotificationEventDTO {
     private String actorName;      // Người gửi
     private String type;
     private String content;
-    private String targetUrl;
 }
