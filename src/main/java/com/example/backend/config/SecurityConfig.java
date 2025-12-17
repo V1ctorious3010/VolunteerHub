@@ -82,10 +82,14 @@ public class SecurityConfig {
                     "/auth/refresh",
                     "auth/logout",
                     "/error",
-                    "statistics"
+                    "/statistics"
                 ).permitAll()
-                .requestMatchers(HttpMethod.GET, "/events").permitAll()
+                
+                // Cho phép GET /events và các endpoints public
+                .requestMatchers(HttpMethod.GET, "/events", "/events/recent-activity", "/events/featured").permitAll()
                 .requestMatchers(new RegexRequestMatcher("/events/\\d+", "GET")).permitAll()
+                
+                .requestMatchers(HttpMethod.GET, "/posts/for-you").permitAll()
 
                 // Mọi request khác đều phải được xác thực
                 .anyRequest().authenticated()

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -251,6 +252,28 @@ public class PostService {
         response.put("message", "Post unliked successfully");
         response.put("likeCount", likeCount);
         return response;
+    }
+
+    /**
+     * Get for you posts (trending or recent from all events)
+     * GET /posts/for-you?sort=trending
+     * Auth: Public
+     */
+    @Transactional(readOnly = true)
+    public Page<PostDto> getForYouPosts(String sort, int page, int size, String currentUserEmail) {
+        log.info("Getting for-you posts (sort={}, page={}, size={})", sort, page, size);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postPage;
+        if ("trending".equalsIgnoreCase(sort)) {
+            // Trending: high engagement in last 3 days
+            LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+            postPage = postRepository.findTrendingPosts(threeDaysAgo, pageable);
+        } else {
+            // Recent: latest posts from all events
+            postPage = postRepository.findRecentPosts(pageable);
+        }
+
+        return postPage.map(post -> mapToPostDto(post, currentUserEmail));
     }
 
     private PostDto mapToPostDto(Post post, String currentUserEmail) {

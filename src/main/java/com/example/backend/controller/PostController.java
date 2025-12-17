@@ -42,6 +42,25 @@ public class PostController {
     }
 
     /**
+     * Get for you posts (trending or recent from all events)
+     * GET /posts/for-you?sort=trending&page=0&size=20
+     * Auth: Public
+     */
+    @GetMapping("/posts/for-you")
+    public ResponseEntity<Page<PostDto>> getForYouPosts(
+            @RequestParam(defaultValue = "trending") String sort,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9") int size,
+            Authentication authentication) {
+
+        String userEmail = authentication != null ? authentication.getName() : null;
+        log.info("GET /posts/for-you (sort={}, page={}, size={}) by user: {}", sort, page, size, userEmail);
+
+        Page<PostDto> posts = postService.getForYouPosts(sort, page, size, userEmail);
+        return ResponseEntity.ok(posts);
+    }
+
+    /**
      * Get post detail
      * GET /posts/{id}
      * Auth: Public

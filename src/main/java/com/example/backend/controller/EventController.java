@@ -42,6 +42,38 @@ public class EventController {
     }
 
     /**
+     * Get events with recent activity (has posts)
+     * GET /events/recent-activity?page=0&size=9
+     * Public
+     */
+    @GetMapping("/events/recent-activity")
+    public ResponseEntity<Page<EventDetailDto>> getRecentActivityEvents(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9") int size) {
+        
+        log.info("GET /events/recent-activity (page={}, size={})", page, size);
+        
+        Page<EventDetailDto> events = eventService.getRecentActivityEvents(page, size);
+        return ResponseEntity.ok(events);
+    }
+
+    /**
+     * Get featured events (high engagement in last 3 days)
+     * GET /events/featured?page=0&size=9
+     * Public
+     */
+    @GetMapping("/events/featured")
+    public ResponseEntity<Page<EventDetailDto>> getFeaturedEvents(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9") int size) {
+        
+        log.info("GET /events/featured (page={}, size={})", page, size);
+        
+        Page<EventDetailDto> events = eventService.getFeaturedEvents(page, size);
+        return ResponseEntity.ok(events);
+    }
+
+    /**
      * Get event detail
      * GET /events/{eventId}
      * Public: only COMING, ONGOING, FINISHED

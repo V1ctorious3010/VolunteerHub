@@ -43,4 +43,32 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // Count posts by event status (for statistics)
     @Query("SELECT COUNT(p) FROM Post p WHERE p.event.status IN :statuses")
     Long countByEventStatusIn(@Param("statuses") com.example.backend.entity.Event.EventStatus... statuses);
+
+    // Find trending posts (high engagement in last 3 days, from all events)
+    @Query("""
+        SELECT p
+        FROM Post p
+        WHERE p.event.status IN ('COMING', 'ONGOING', 'FINISHED')
+        AND p.author.isLocked = false
+        ORDER BY (
+            (SELECT COUNT(l) FROM PostLike l 
+             WHERE l.post.id = p.id 
+             AND l.createdAt >= :threeDaysAgo 
+             AND l.user.isLocked = false) +
+            (SELECT COUNT(c) FROM Comment c 
+             WHERE c.post.id = p.id 
+             AND c.createdAt >= :threeDaysAgo 
+             AND c.user.isLocked = false)
+        ) DESC, p.createdAt DESC
+    """)
+    Page<Post> findTrendingPosts(@Param("threeDaysAgo") java.time.LocalDateTime threeDaysAgo, Pageable pageable);
+
+    // Find recent posts from all events
+    @Query("""
+        SELECT p FROM Post p
+        WHERE p.event.status IN ('COMING', 'ONGOING', 'FINISHED')
+        AND p.author.isLocked = false
+        ORDER BY p.createdAt DESC
+    """)
+    Page<Post> findRecentPosts(Pageable pageable);
 }
