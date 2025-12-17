@@ -5,12 +5,14 @@ import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.RegisterRequest;
 import com.example.backend.entity.User;
 import com.example.backend.exception.BadCredentialsAppException;
+import com.example.backend.repo.UserRepository;
 import com.example.backend.service.AuthService;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +27,7 @@ public class AuthController {
     private static final String ACCESS_TOKEN_COOKIE = "accessToken";
     private static final String REFRESH_TOKEN_COOKIE = "refreshToken";
     private static final String REFRESH_PATH = "/auth";
+    private final UserRepository userRepository;
 
     private ResponseCookie createCookie(String name, String value, String path, Duration duration) {
         return ResponseCookie.from(name, value)
@@ -93,5 +96,18 @@ public class AuthController {
             .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
             .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
             .body(resp);
+    }
+
+    @GetMapping("/me")
+    public AuthResponse me(
+        @CookieValue(name = ACCESS_TOKEN_COOKIE, required = false) String accessToken
+    ) {
+        if (accessToken == null || accessToken.isBlank()) {
+            throw new BadCredentialsAppException("Access token is missing or empty.");
+        }
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User u = userRepository.findByEmail(email)
+            .orElseThrow(() -> new BadCredentialsAppException("User not found"));
+        return new AuthResponse("INFO", u.getName(), u.getEmail(), u.getRole(), u.getAvatar());
     }
 }

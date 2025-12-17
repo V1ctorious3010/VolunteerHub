@@ -133,6 +133,31 @@ export const refreshToken = createAsyncThunk(
     }
 );
 
+// Fetch current user info (for session restoration)
+export const fetchMe = createAsyncThunk(
+    'auth/fetchMe',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.get('/auth/me');
+            const userData = response.data;
+            let role = userData.role || userData.user?.role || null;
+            let avatarUrl = userData.avatarUrl || userData.avatar || userData.user?.avatarUrl || userData.user?.avatar || null;
+            const userPayload = {
+                name: userData.name || userData.user?.name,
+                email: userData.email || userData.user?.email,
+                role
+            };
+            if (avatarUrl) {
+                userPayload.avatarUrl = avatarUrl;
+                userPayload.avatar = avatarUrl;
+            }
+            return userPayload;
+        } catch (error) {
+            return rejectWithValue('Không thể khôi phục phiên đăng nhập');
+        }
+    }
+);
+
 // Lấy danh sách tất cả users
 export const fetchAllUsers = async () => {
     try {
@@ -205,6 +230,19 @@ const authSlice = createSlice({
             .addCase(refreshToken.rejected, (state) => {
                 state.user = null;
                 state.error = null;
+            })
+            // fetchMe
+            .addCase(fetchMe.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchMe.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload;
+                state.error = null;
+            })
+            .addCase(fetchMe.rejected, (state) => {
+                state.loading = false;
+                state.user = null;
             });
     },
 });

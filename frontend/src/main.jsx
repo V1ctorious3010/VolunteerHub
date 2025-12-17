@@ -8,6 +8,7 @@ import store from './store/store';
 import { Toaster } from "react-hot-toast";
 import { registerAndSubscribe } from "./pushRegistration";
 import { getVapidPublicKey, sendSubscriptionToServer } from "./utils/pushApi";
+import { fetchMe } from "./features/auth/authSlice";
 
 // Initialize Web Push Notifications after successful login
 const startPushWhenLoggedIn = () => {
@@ -36,6 +37,9 @@ const startPushWhenLoggedIn = () => {
 };
 
 startPushWhenLoggedIn();
+
+// Restore user session on app startup
+store.dispatch(fetchMe());
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

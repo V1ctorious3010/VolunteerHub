@@ -212,10 +212,10 @@ public class RegistrationService {
                 content = "Bạn đã được xác nhận hoàn thành sự kiện " + eventName;
             }
             else if(newStatus.equals(Registration.RequestStatus.APPROVED)) {
-                content += "bị từ chối.";
+                content += " được chấp nhận";
             }
             else {
-                content += "được chấp nhận";
+                content += " bị từ chối.";
             }
             notificationProducer.send(
                 userEmail,
