@@ -23,6 +23,23 @@ public class PostController {
     private final PostService postService;
 
     /**
+     * Check if user can create post in event
+     * GET /events/{eventId}/posts/can-create
+     * Auth: Required
+     */
+    @GetMapping("/events/{eventId}/posts/can-create")
+    public ResponseEntity<Map<String, Boolean>> canCreatePost(
+            @PathVariable Long eventId,
+            Authentication authentication) {
+
+        String userEmail = authentication.getName();
+        log.info("GET /events/{}/posts/can-create by user: {}", eventId, userEmail);
+
+        boolean canCreate = postService.canUserCreatePost(eventId, userEmail);
+        return ResponseEntity.ok(Map.of("canCreate", canCreate));
+    }
+
+    /**
      * Get all posts for an event
      * GET /events/{eventId}/posts
      * Auth: Public (any user can view)

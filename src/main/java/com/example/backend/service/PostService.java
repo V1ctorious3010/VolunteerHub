@@ -30,6 +30,41 @@ public class PostService {
     private final RegistrationRepository registrationRepository;
 
     /**
+     * Check if user can create post in event
+     * Used by frontend to show/hide create post button
+     */
+    @Transactional(readOnly = true)
+    public boolean canUserCreatePost(Long eventId, String userEmail) {
+        log.info("Checking post permission for user {} in event {}", userEmail, eventId);
+
+        // 1. Verify event exists
+        Event event = eventRepository.findById(eventId).orElse(null);
+        if (event == null) {
+            return false;
+        }
+
+        // 2. Check event status (cannot post in PENDING/REJECTED)
+        if (event.getStatus() == Event.EventStatus.PENDING || 
+            event.getStatus() == Event.EventStatus.REJECTED) {
+            return false;
+        }
+
+        // 3. Check if user is organizer
+        boolean isOrganizer = event.getOrganizer().getEmail().equals(userEmail);
+        if (isOrganizer) {
+            return true;
+        }
+
+        // 4. Check if user is approved member
+        Registration registration = registrationRepository
+                .findByEventIdAndUserEmail(eventId, userEmail)
+                .orElse(null);
+        
+        return registration != null && 
+               registration.getStatus() == Registration.RequestStatus.APPROVED;
+    }
+
+    /**
      * Get all posts for an event with pagination
      * GET /api/events/{eventId}/posts
      * Auth: Public (read-only)
