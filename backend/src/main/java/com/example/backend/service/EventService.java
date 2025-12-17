@@ -140,9 +140,10 @@ public class EventService {
         Event event = eventRepository.findByIdAndOrganizerEmail(eventId, organizerEmail)
                 .orElseThrow(() -> new EventNotOwnedException(eventId, organizerEmail));
 
-        if (event.getStatus() != Event.EventStatus.PENDING) {
+        if (event.getStatus() != Event.EventStatus.PENDING && 
+                event.getStatus() != Event.EventStatus.COMING) {
             throw new EventCannotBeModifiedException(
-                    "Can only delete events with PENDING status. Current status: " + event.getStatus().name());
+                    "Can only delete events with PENDING or COMING status. Current status: " + event.getStatus().name());
         }
 
         eventRepository.delete(event);

@@ -36,6 +36,9 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
         @Param("status") Registration.RequestStatus status,
         Pageable pageable
     );
+
+    // Get all registrations by user email and status (no pagination)
+    List<Registration> findByUserEmailAndStatus(String userEmail, Registration.RequestStatus status);
     
     // Get all registrations for a user (simple version)
     List<Registration> findByUserEmailOrderByCreatedAtDesc(String userEmail);

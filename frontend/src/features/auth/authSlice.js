@@ -16,7 +16,7 @@ export const login = createAsyncThunk(
             let avatarUrl = response.data.avatarUrl || response.data.avatar || response.data.user?.avatarUrl || response.data.user?.avatar || null;
 
             // If role not provided in login response, try to fetch current profile
-            if (!role || !avatarUrl) {
+            if (!role) {
                 try {
                     const meResp = await api.get('/auth/me');
                     role = role || meResp.data?.role || meResp.data?.user?.role || null;
@@ -79,6 +79,38 @@ export const logout = createAsyncThunk(
     'auth/logout',
     async (_, { rejectWithValue }) => {
         try {
+            // Unsubscribe from push notifications before logout
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+                try {
+                    const registration = await navigator.serviceWorker.ready;
+                    const subscription = await registration.pushManager.getSubscription();
+
+                    if (subscription) {
+                        const token = localStorage.getItem('token');
+                        // Try to notify server
+                        try {
+                            const subscriptionJSON = subscription.toJSON();
+                            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+                            await fetch(`${apiUrl}/notifications/unsubscribe`, {
+                                method: 'POST',
+                                credentials: 'include',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ endpoint: subscriptionJSON.endpoint })
+                            });
+                        } catch (e) {
+                            console.log('Could not notify server about unsubscription');
+                        }
+
+                        // Unsubscribe locally
+                        await subscription.unsubscribe();
+                    }
+                } catch (error) {
+                    console.error('Error unsubscribing from push:', error);
+                }
+            }
+
             await api.post('/auth/logout');
             return true;
         } catch (error) {

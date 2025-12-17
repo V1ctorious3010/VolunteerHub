@@ -17,7 +17,7 @@ const VolunteerNeeds = () => {
         startTime: e.startTime || e.deadline,
         description: e.description || '',
       }));
-      setVolunteers(mapped);
+      setVolunteers(mapped.slice(0, 3));
     };
     load();
   }, []);

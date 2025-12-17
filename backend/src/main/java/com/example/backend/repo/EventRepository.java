@@ -32,6 +32,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     // Find events by organizer
     List<Event> findByOrganizerEmail(String organizerEmail);
+    List<Event> findByOrganizerEmailAndStatus(String organizerEmail, Event.EventStatus status);
     Page<Event> findByOrganizerEmailOrderByCreatedAtDesc(String organizerEmail, Pageable pageable);
 
     // Find my events with status filter

@@ -77,6 +77,20 @@ const MyVolunteerRequest = ({ title }) => {
       }
     });
   };
+  const getStatusFromPost = (post) => {
+    return post?.status ?? post?.registrationStatus ?? post?.statusName ?? '';
+  };
+
+  const renderStatus = (post) => {
+    const s = getStatusFromPost(post);
+    const map = {
+      PENDING: 'Chờ duyệt',
+      APPROVED: 'Chấp nhận',
+      REJECTED: 'Từ chối',
+      COMPLETED: 'Hoàn thành',
+    };
+    return map[s] || (s ? s : 'Chưa xác định');
+  };
   const navigation = useNavigate();
   if (navigation.state === "loading") return <Loader />;
   return (
@@ -116,6 +130,7 @@ const MyVolunteerRequest = ({ title }) => {
                   <tr className="text-white raleway text-base bg-[#2986cc]">
                     <th></th>
                     <th>Sự kiện</th>
+                    <th>Trạng thái</th>
                     <th>Email tổ chức </th>
                     <th>Thời gian bắt đầu </th>
                     <th>Địa điểm</th>
@@ -128,6 +143,7 @@ const MyVolunteerRequest = ({ title }) => {
                     <tr className="border border-gray-300" key={post.registrationId}>
                       <th className="font-semibold">{idx + 1}</th>
                       <td className="font-semibold">{post.eventTitle}</td>
+                      <td className="font-semibold">{renderStatus(post)}</td>
                       <td className="font-semibold">{post.organizerEmail}</td>
                       <td className="font-semibold">{post.eventStartTime}</td>
                       <td className="font-semibold">{post.eventLocation}</td>
@@ -154,6 +170,7 @@ const MyVolunteerRequest = ({ title }) => {
                 <thead>
                   <tr className="text-white raleway text-base bg-[#DE00DF]">
                     <th>Sự kiện </th>
+                    <th>Trạng thái</th>
                     <th>Thời gian bắt đầu</th>
                     <th>Hành động</th>
                   </tr>
@@ -163,6 +180,7 @@ const MyVolunteerRequest = ({ title }) => {
                   {myVolunteerRequest.map((post) => (
                     <tr className="border border-gray-300" key={post.registrationId}>
                       <td>{post.eventTitle}</td>
+                      <td>{renderStatus(post)}</td>
                       <td>{post.eventStartTime}</td>
                       <td>
                         <div className="flex items-center gap-6">

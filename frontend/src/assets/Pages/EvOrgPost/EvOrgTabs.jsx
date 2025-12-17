@@ -17,7 +17,7 @@ const EvOrgTabs = ({ title }) => {
     const location = useLocation();
     const [currentEventObj, setCurrentEventObj] = useState(null);
     useEffect(() => {
-        console.log('EvOrgTabs - location received', { pathname: location.pathname, search: location.search, state: location.state });
+        // console.log('EvOrgTabs - location received', { pathname: location.pathname, search: location.search, state: location.state });
         const passed = location?.state?.event;
         if (passed && passed.id) {
             console.log('EvOrgTabs - event passed via location.state', passed);
@@ -27,14 +27,14 @@ const EvOrgTabs = ({ title }) => {
             // fallback: try query param if present
             const params = new URLSearchParams(location.search);
             const eid = params.get('eventId');
-            console.log('EvOrgTabs - fallback eventId query param', eid);
+            // console.log('EvOrgTabs - fallback eventId query param', eid);
             if (eid) setSelectedEvent(Number(eid));
         }
     }, [location]);
 
-    useEffect(() => {
-        console.log('EvOrgTabs - state snapshot', { selectedEvent, activeTab });
-    }, [selectedEvent, activeTab]);
+    // useEffect(() => {
+    //     // console.log('EvOrgTabs - state snapshot', { selectedEvent, activeTab });
+    // }, [selectedEvent, activeTab]);
 
     return (
         <div className="container font-qs mx-auto space-y-5 p-6">

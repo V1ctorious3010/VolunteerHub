@@ -123,7 +123,7 @@ const PostDetails = ({ title2 }) => {
                   {formattedEnd}
                 </Typography>
               </div>
-              <div className=" flex items-center gap-2">
+              <div className=" flex items-center gap-2 mt-4">
                 <Typography
 
                   className="text-lg font-semibold "
