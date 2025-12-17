@@ -10,13 +10,13 @@ export async function getEvents({ keyword = '', category = '', start = '', page 
             sortBy: sortBy || ''
         });
         const url = `/events?${qs.toString()}`;
-        console.log('[localApi] getEvents -> calling', url);
+        // console.log('[localApi] getEvents -> calling', url);
         const res = await api.get(url);
-        console.log('[localApi] getEvents -> response status', res?.status);
+        // console.log('[localApi] getEvents -> response status', res?.status);
         const data = res?.data;
         return data || { content: [], totalPages: 0, number: 0 };
     } catch (e) {
-        console.error('getEvents error', e);
+        // console.error('getEvents error', e);
         return { content: [], totalPages: 0, number: 0 };
     }
 }
@@ -27,7 +27,7 @@ export async function getStatistics() {
         const data = res?.data;
         return data || { totalEvents: 0, totalVolunteers: 0, totalPosts: 0 };
     } catch (e) {
-        console.error('getStatistics error', e);
+        // console.error('getStatistics error', e);
         return { totalEvents: 0, totalVolunteers: 0, totalPosts: 0 };
     }
 }

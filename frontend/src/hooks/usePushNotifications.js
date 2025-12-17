@@ -29,9 +29,8 @@ export function usePushNotifications() {
 
   /**
    * Subscribe to push notifications
-   * @param {string} authToken - JWT auth token
    */
-  const subscribe = async (authToken) => {
+  const subscribe = async () => {
     if (!isSupported) {
       setError('Push notifications are not supported in this browser');
       return false;
@@ -44,7 +43,7 @@ export function usePushNotifications() {
       const vapidPublicKey = getVapidPublicKey();
 
       const subscription = await registerAndSubscribe(vapidPublicKey, async (sub) => {
-        await sendSubscriptionToServer(sub, authToken);
+        await sendSubscriptionToServer(sub);
       });
 
       if (subscription) {
@@ -65,9 +64,8 @@ export function usePushNotifications() {
 
   /**
    * Unsubscribe from push notifications
-   * @param {string} authToken - JWT auth token
    */
-  const unsubscribe = async (authToken) => {
+  const unsubscribe = async () => {
     if (!isSupported) {
       return false;
     }
@@ -80,9 +78,7 @@ export function usePushNotifications() {
 
       if (subscription) {
         // Remove from server first
-        if (authToken) {
-          await unsubscribeFromServer(subscription, authToken);
-        }
+        await unsubscribeFromServer(subscription);
 
         // Then unsubscribe locally
         const success = await unsubscribeFromPush();

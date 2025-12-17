@@ -79,19 +79,23 @@ export const logout = createAsyncThunk(
     'auth/logout',
     async (_, { rejectWithValue }) => {
         try {
+            // console.log('[auth/logout] start logout flow');
             // Unsubscribe from push notifications before logout
             if ('serviceWorker' in navigator && 'PushManager' in window) {
                 try {
+                    // console.log('[auth/logout] serviceWorker supported — checking registration');
                     const registration = await navigator.serviceWorker.ready;
+                    // console.log('[auth/logout] serviceWorker ready', !!registration);
                     const subscription = await registration.pushManager.getSubscription();
+                    // console.log('[auth/logout] current subscription', !!subscription, subscription?.endpoint);
 
                     if (subscription) {
-                        const token = localStorage.getItem('token');
                         // Try to notify server
                         try {
                             const subscriptionJSON = subscription.toJSON();
-                            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-                            await fetch(`${apiUrl}/notifications/unsubscribe`, {
+                            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+                            // console.log('[auth/logout] notifying backend to remove subscription', subscriptionJSON.endpoint);
+                            const notifyResp = await fetch(`${apiUrl}/notifications/unsubscribe`, {
                                 method: 'POST',
                                 credentials: 'include',
                                 headers: {
@@ -99,21 +103,36 @@ export const logout = createAsyncThunk(
                                 },
                                 body: JSON.stringify({ endpoint: subscriptionJSON.endpoint })
                             });
+                            // console.log('[auth/logout] notify response ok=', notifyResp.ok, 'status=', notifyResp.status);
                         } catch (e) {
-                            console.log('Could not notify server about unsubscription');
+                            console.log('[auth/logout] Could not notify server about unsubscription', e);
                         }
 
                         // Unsubscribe locally
-                        await subscription.unsubscribe();
+                        try {
+                            const unsubscribed = await subscription.unsubscribe();
+                            // console.log('[auth/logout] local subscription.unsubscribe() result:', unsubscribed);
+                        } catch (e) {
+                            console.log('[auth/logout] local unsubscribe failed', e);
+                        }
                     }
                 } catch (error) {
-                    console.error('Error unsubscribing from push:', error);
+                    console.error('[auth/logout] Error while handling serviceWorker/unsubscribe:', error);
                 }
             }
 
-            await api.post('/auth/logout');
+            console.log('[auth/logout] calling backend /auth/logout');
+            try {
+                const resp = await api.post('/auth/logout');
+                console.log('[auth/logout] backend logout response status=', resp?.status);
+            } catch (e) {
+                console.log('[auth/logout] backend logout failed', e);
+            }
+
+            console.log('[auth/logout] finished logout flow — returning true');
             return true;
         } catch (error) {
+            console.error('[auth/logout] unexpected error in logout flow', error);
             // Vẫn đăng xuất ở client ngay cả khi server error
             return true;
         }

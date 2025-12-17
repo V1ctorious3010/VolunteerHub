@@ -38,7 +38,6 @@ const startPushWhenLoggedIn = () => {
 
 startPushWhenLoggedIn();
 
-// Restore user session on app startup
 store.dispatch(fetchMe());
 
 ReactDOM.createRoot(document.getElementById("root")).render(

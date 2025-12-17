@@ -2,7 +2,7 @@
  * API functions for Web Push subscription management
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 /**
  * Get VAPID public key from environment
@@ -10,7 +10,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
  */
 export function getVapidPublicKey() {
   const key = import.meta.env.VITE_VAPID_PUBLIC_KEY;
-  console.log('VAPID env:', key);
+  // console.log('VAPID env:', key);
   if (!key) {
     throw new Error('VITE_VAPID_PUBLIC_KEY not found in environment');
   }
@@ -20,10 +20,9 @@ export function getVapidPublicKey() {
 /**
  * Send push subscription to backend
  * @param {PushSubscription} subscription - Push subscription object
- * @param {string} authToken - JWT auth token
  * @returns {Promise<void>}
  */
-export async function sendSubscriptionToServer(subscription, authToken) {
+export async function sendSubscriptionToServer(subscription) {
   try {
     const subscriptionJSON = subscription.toJSON();
 
@@ -31,8 +30,7 @@ export async function sendSubscriptionToServer(subscription, authToken) {
       method: 'POST',
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
-        ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {})
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         endpoint: subscriptionJSON.endpoint,
@@ -55,10 +53,9 @@ export async function sendSubscriptionToServer(subscription, authToken) {
 /**
  * Remove push subscription from backend
  * @param {PushSubscription} subscription - Push subscription object
- * @param {string} authToken - JWT auth token
  * @returns {Promise<void>}
  */
-export async function unsubscribeFromServer(subscription, authToken) {
+export async function unsubscribeFromServer(subscription) {
   try {
     const subscriptionJSON = subscription.toJSON();
 
@@ -66,8 +63,7 @@ export async function unsubscribeFromServer(subscription, authToken) {
       method: 'POST',
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
-        ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {})
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         endpoint: subscriptionJSON.endpoint
