@@ -8,7 +8,7 @@ import store from './store/store';
 import { Toaster } from "react-hot-toast";
 import { registerAndSubscribe } from "./pushRegistration";
 import { getVapidPublicKey, sendSubscriptionToServer } from "./utils/pushApi";
-import { fetchMe } from "./features/auth/authSlice";
+import { fetchMe } from './features/auth/authSlice';
 
 // Initialize Web Push Notifications after successful login
 const startPushWhenLoggedIn = () => {

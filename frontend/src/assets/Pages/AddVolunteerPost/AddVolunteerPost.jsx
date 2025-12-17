@@ -95,7 +95,7 @@ const AddVolunteerPost = ({ title }) => {
       toast.success("Bạn đã tạo sự kiện thành công. Hãy chờ để được xét duyệt!");
       form.reset();
       setThumbnailPreview(null);
-      navigate("/manage-my-post");
+      navigate("/manage-event-list");
     } catch (err) {
       // console.log(err);
       let re = err?.response?.data?.message;

@@ -133,26 +133,27 @@ export const refreshToken = createAsyncThunk(
     }
 );
 
-// Fetch current user info (for session restoration)
+// Fetch current user from server (restore session)
 export const fetchMe = createAsyncThunk(
     'auth/fetchMe',
     async (_, { rejectWithValue }) => {
         try {
             const response = await api.get('/auth/me');
             const userData = response.data;
-            let role = userData.role || userData.user?.role || null;
-            let avatarUrl = userData.avatarUrl || userData.avatar || userData.user?.avatarUrl || userData.user?.avatar || null;
-            const userPayload = {
-                name: userData.name || userData.user?.name,
-                email: userData.email || userData.user?.email,
-                role
-            };
+            // Extract user info from response
+            const name = userData.name || userData.user?.name;
+            const email = userData.email || userData.user?.email;
+            const role = userData.role || userData.user?.role;
+            const avatarUrl = userData.avatarUrl || userData.avatar || userData.user?.avatarUrl || userData.user?.avatar;
+
+            const userPayload = { name, email, role };
             if (avatarUrl) {
                 userPayload.avatarUrl = avatarUrl;
                 userPayload.avatar = avatarUrl;
             }
             return userPayload;
         } catch (error) {
+            // User not logged in or session expired
             return rejectWithValue('Không thể khôi phục phiên đăng nhập');
         }
     }
