@@ -123,7 +123,7 @@ const Navbar = () => {
                         </Link>
                       </li>
                     )}
-                    {role === ROLE.EVENT_ORGANIZER && (
+                    {role === ROLE.ADMIN && (
                       <li>
                         <Link to="/manage-admin-events" className="justify-between text">
                           Quản lý sự kiện
