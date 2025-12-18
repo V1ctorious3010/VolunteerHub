@@ -5,6 +5,7 @@ import com.example.backend.dto.RegistrationDto;
 import com.example.backend.dto.RegistrationStatusRequest;
 import com.example.backend.entity.Event;
 import com.example.backend.entity.Registration;
+import com.example.backend.entity.Registration.RequestStatus;
 import com.example.backend.entity.User;
 import com.example.backend.exception.*;
 import com.example.backend.repo.EventRepository;
@@ -12,6 +13,7 @@ import com.example.backend.repo.RegistrationRepository;
 import com.example.backend.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,9 @@ public class RegistrationService {
     private final RegistrationRepository registrationRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    @Autowired
+    private NotificationProducer notificationProducer;
+
 
     /**
      * Volunteer registers for an event
@@ -199,7 +204,28 @@ public class RegistrationService {
         if (newStatus == Registration.RequestStatus.APPROVED && event.getRemaining() == 0) {
             autoRejectPendingRegistrations(event.getId());
         }
-        
+        String userEmail = registration.getUser().getEmail();
+        String eventName = registration.getEvent().getTitle();
+        try {
+            String content = "Đơn đăng kí của bạn cho sự kiện " + eventName + "đã ";
+            if(newStatus.equals(RequestStatus.COMPLETED)) {
+                content = "Bạn đã được xác nhận hoàn thành sự kiện " + eventName;
+            }
+            else if(newStatus.equals(Registration.RequestStatus.APPROVED)) {
+                content += " được chấp nhận";
+            }
+            else {
+                content += " bị từ chối.";
+            }
+            notificationProducer.send(
+                userEmail,
+                "EVENT_ORGANIZER",
+                "Notification",
+                content
+            );
+        } catch (Exception e) {
+            throw new BadCredentialsAppException("Lỗi gửi thông báo");
+        }
         log.info("Registration {} updated from {} to {} by organizer {}", 
                 registrationId, oldStatus, newStatus, organizerEmail);
         

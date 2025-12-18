@@ -7,6 +7,7 @@ import com.example.backend.exception.*;
 import com.example.backend.repo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,8 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    @Autowired
+    private NotificationProducer notificationProducer;
 
     /**
      * Get all comments for a post with pagination
@@ -86,6 +89,17 @@ public class CommentService {
         comment.setAttachment(request.getAttachment());
 
         comment = commentRepository.save(comment);
+        String author_email = post.getAuthor().getEmail();
+        try {
+            notificationProducer.send(
+                author_email,
+                user.getEmail(),
+                "Notification",
+                "Có comment mới trong post của bạn"
+            );
+        } catch (Exception e) {
+            throw new BadCredentialsAppException("Lỗi gửi thông báo");
+        }
         log.info("Comment {} created successfully", comment.getId());
 
         return mapToCommentDto(comment);

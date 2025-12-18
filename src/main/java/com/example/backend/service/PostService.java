@@ -2,10 +2,12 @@ package com.example.backend.service;
 
 import com.example.backend.dto.*;
 import com.example.backend.entity.*;
+import com.example.backend.entity.Registration.RequestStatus;
 import com.example.backend.exception.*;
 import com.example.backend.repo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,8 @@ public class PostService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final RegistrationRepository registrationRepository;
+    @Autowired
+    private NotificationProducer notificationProducer;
 
     /**
      * Check if user can create post in event
@@ -156,6 +160,19 @@ public class PostService {
         post.setAuthor(author);
         post.setEvent(event);
 
+        String organizerEmail = event.getOrganizer().getEmail();
+        String eventName = event.getTitle();
+        try {
+            String content = "Sự kiện " + eventName + "đã có thêm nội dung mới.";
+            notificationProducer.send(
+                organizerEmail,
+                "EVENT_ORGANIZER",
+                "Notification",
+                content
+            );
+        } catch (Exception e) {
+            throw new BadCredentialsAppException("Lỗi gửi thông báo");
+        }
         post = postRepository.save(post);
         log.info("Post {} created successfully", post.getId());
 
