@@ -5,14 +5,19 @@ import ManageVolunteerPost from "./ManageVolunteerPost/ManageVolunteerPost";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import Loader from "../../Components/Loader/Loader";
+import { Spinner } from "@material-tailwind/react";
 import ROLE from "../../../constants/roles";
 import { useSelector } from 'react-redux';
 
-
 const ManageMyPost = ({ title }) => {
   const navigation = useNavigate();
-  if (navigation.state === "loading") return <Loader />;
+  if (navigation.state === "loading") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner className="h-12 w-12" />
+      </div>
+    );
+  }
   const user = useSelector(s => s.auth.user);
   const derivedRole = user?.role || (Array.isArray(user?.roles) ? user.roles[0] : undefined);
   const isVolunteer = derivedRole === ROLE.VOLUNTEER;

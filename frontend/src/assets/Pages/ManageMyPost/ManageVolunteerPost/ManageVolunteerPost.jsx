@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { getAdminEvents, patchAdminEventStatus, exportAdminEvents } from '../../../../utils/postApi';
 import { useSelector } from 'react-redux';
 import ROLE from '../../../../constants/roles';
-import Loader from '../../../Components/Loader/Loader';
+import { Spinner } from '@material-tailwind/react';
 import Swal from 'sweetalert2';
 
 const ManageVolunteerPost = ({ title }) => {
@@ -76,7 +76,13 @@ const ManageVolunteerPost = ({ title }) => {
         }
     };
 
-    if (loading) return <Loader />;
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <Spinner className="h-12 w-12" />
+            </div>
+        );
+    }
     if (!isAdmin) return (
         <div className="p-8 text-center text-gray-600">Chỉ admin mới có thể truy cập trang này.</div>
     );

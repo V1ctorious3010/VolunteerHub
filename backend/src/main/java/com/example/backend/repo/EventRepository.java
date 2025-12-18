@@ -57,4 +57,38 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     // Count events by status (for statistics)
     long countByStatusIn(Event.EventStatus... statuses);
+
+    // Find events with recent posts (for recent-activity)
+    @Query(value = """
+        SELECT e
+        FROM Event e
+        LEFT JOIN e.posts p
+        ON p.author.isLocked = false
+        WHERE e.status IN ('COMING', 'ONGOING', 'FINISHED')
+        GROUP BY e
+        ORDER BY MAX(p.createdAt) DESC
+    """)
+    Page<Event> findEventsWithRecentPosts(Pageable pageable);
+
+    // Find featured events (high engagement in last 3 days)
+    @Query("""
+        SELECT e
+        FROM Event e
+        LEFT JOIN e.posts p
+            ON p.createdAt >= :threeDaysAgo
+            AND p.author.isLocked = false
+        LEFT JOIN p.comments c
+            ON c.createdAt >= :threeDaysAgo
+            AND c.user.isLocked = false
+        LEFT JOIN p.likes l
+            ON l.createdAt >= :threeDaysAgo
+            AND l.user.isLocked = false
+        WHERE e.status IN ('COMING', 'ONGOING', 'FINISHED')
+        GROUP BY e.id
+        ORDER BY
+        (COUNT(DISTINCT p.id)
+        + COUNT(DISTINCT c.id)
+        + COUNT(DISTINCT l.id)) DESC
+    """)
+    Page<Event> findFeaturedEvents(@Param("threeDaysAgo") LocalDateTime threeDaysAgo, Pageable pageable);
 }

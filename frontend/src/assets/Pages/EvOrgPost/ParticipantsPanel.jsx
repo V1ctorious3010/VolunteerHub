@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Loader from '../../Components/Loader/Loader';
+import { Spinner } from '@material-tailwind/react';
 import { getEventReport } from '../../../utils/postApi';
 
 const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
@@ -35,7 +35,9 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
     return (
         <>
             {loading ? (
-                <Loader />
+                <div className="flex justify-center items-center py-8">
+                    <Spinner className="h-8 w-8" />
+                </div>
             ) : report && report.length > 0 ? (
                 <div>
                     <div className="overflow-x-auto">

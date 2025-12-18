@@ -354,6 +354,35 @@ public class EventService {
                 .toList();
     }
 
+    /**
+     * Get events with recent activity (has posts)
+     * GET /events/recent-activity
+     */
+    @Transactional(readOnly = true)
+    public Page<EventDetailDto> getRecentActivityEvents(int page, int size) {
+        log.info("Getting events with recent activity (page={}, size={})", page, size);
+        
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Event> events = eventRepository.findEventsWithRecentPosts(pageable);
+        
+        return events.map(this::mapToDetailDto);
+    }
+
+    /**
+     * Get featured events (high engagement in last 3 days)
+     * GET /events/featured
+     */
+    @Transactional(readOnly = true)
+    public Page<EventDetailDto> getFeaturedEvents(int page, int size) {
+        log.info("Getting featured events (page={}, size={})", page, size);
+        
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Event> events = eventRepository.findFeaturedEvents(threeDaysAgo, pageable);
+        
+        return events.map(this::mapToDetailDto);
+    }
+
     private Sort parseSort(String sortBy) {
         String field = "startTime";//if reuse
         Sort.Direction dir = Sort.Direction.ASC;

@@ -23,8 +23,8 @@ const Home = ({ title }) => {
 
   // State for tabs data
   const [tabs, setTabs] = useState([
-    { title: "Mới công bố", volunteers: [] },
-    { title: "Hoạt động gần đây", volunteers: [] },
+    { title: "Sự kiện mới công bố", volunteers: [] },
+    { title: "Sự kiện hoạt động gần đây", volunteers: [] },
     { title: "Sự kiện thu hút", volunteers: [] },
   ]);
 
@@ -67,9 +67,9 @@ const Home = ({ title }) => {
           }));
 
         setTabs([
-          { title: "Mới công bố", volunteers: mapEvents(newlyApproved).slice(0, 3) },
-          { title: "Hoạt động gần đây", volunteers: mapEvents(recentActivity).slice(0, 3) },
-          { title: "Sự kiện thu hút", volunteers: mapEvents(featured).slice(0, 3) },
+          { title: "Sự kiện mới công bố", volunteers: mapEvents(newlyApproved).slice(0, 3) },
+          { title: "Sự kiện hoạt động gần đây", volunteers: mapEvents(recentActivity).slice(0, 3) },
+          { title: "Sự kiện nhiều lượt tương tác nhất", volunteers: mapEvents(featured).slice(0, 3) },
         ]);
       } catch (error) {
         console.error("Failed to load tabs:", error);

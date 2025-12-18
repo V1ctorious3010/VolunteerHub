@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Loader from '../../Components/Loader/Loader';
+import { Spinner } from '@material-tailwind/react';
 import Swal from 'sweetalert2';
 import { getEventRegistrations, patchRegistrationStatus } from '../../../utils/postApi';
 
@@ -51,7 +51,9 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
     return (
         <>
             {loading ? (
-                <Loader />
+                <div className="flex justify-center items-center py-8">
+                    <Spinner className="h-8 w-8" />
+                </div>
             ) : registrations && registrations.length > 0 ? (
                 <div>
                     <h3 className="text-lg font-semibold mb-4">Tổng đăng ký: {registrations.length}</h3>

@@ -6,8 +6,7 @@ import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import PageError from "../../ErrorPage/PageError";
-import Loader from "../../../Components/Loader/Loader";
-import LoadingGif from "../../../Components/Loader/LoadingGif";
+import { Spinner } from "@material-tailwind/react";
 import { Helmet } from "react-helmet";
 
 const MyVolunteerRequest = ({ title }) => {
@@ -92,7 +91,13 @@ const MyVolunteerRequest = ({ title }) => {
     return map[s] || (s ? s : 'Chưa xác định');
   };
   const navigation = useNavigate();
-  if (navigation.state === "loading") return <Loader />;
+  if (navigation.state === "loading") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner className="h-12 w-12" />
+      </div>
+    );
+  }
   return (
     <div className="container font-qs mx-auto space-y-5">
       <Helmet>
@@ -116,7 +121,9 @@ const MyVolunteerRequest = ({ title }) => {
       </div>
 
       {loading ? (
-        <LoadingGif />
+        <div className="flex justify-center items-center py-16">
+          <Spinner className="h-12 w-12" />
+        </div>
       ) : myVolunteerRequest.length > 0 ? (
         <div>
           <h2 className="text-5xl my-6 font-bold text-center mt-6">
@@ -199,7 +206,9 @@ const MyVolunteerRequest = ({ title }) => {
           </div>
         </div>
       ) : showLoader ? (
-        <LoadingGif />
+        <div className="flex justify-center items-center py-16">
+          <Spinner className="h-12 w-12" />
+        </div>
       ) : (
         <PageError />
       )}

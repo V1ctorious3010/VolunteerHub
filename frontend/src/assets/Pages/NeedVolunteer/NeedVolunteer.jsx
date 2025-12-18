@@ -5,12 +5,11 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { Button } from "@material-tailwind/react";
+import { Button, Spinner } from "@material-tailwind/react";
 import axios from "axios";
 import { getEvents } from "../../../utils/localApi";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
-import LoadingGif from "../../Components/Loader/LoadingGif";
 
 const NeedVolunteer = ({ title }) => {
   const [volunteers, setVolunteers] = useState([]);
@@ -99,7 +98,13 @@ const NeedVolunteer = ({ title }) => {
     console.log(tableView);
   };
   const navigation = useNavigation();
-  if (navigation.state === "loading") return <LoadingGif />;
+  if (navigation.state === "loading") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner className="h-12 w-12" />
+      </div>
+    );
+  }
   return (
     <div className="py-16 font-qs">
       <Helmet>
@@ -201,7 +206,9 @@ const NeedVolunteer = ({ title }) => {
         </div>
       </div>
       {volunteers.length === 0 && showLoader ? (
-        <LoadingGif></LoadingGif>
+        <div className="flex justify-center items-center py-16">
+          <Spinner className="h-12 w-12" />
+        </div>
       ) : (
         <div>
           <div className="flex justify-center gap-3 my-4">

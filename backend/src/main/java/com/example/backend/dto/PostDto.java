@@ -26,6 +26,7 @@ public class PostDto {
     private String authorAvatar;
     
     // Event info
+    private Long eventId;
     private String eventTitle;
     
     // Statistics

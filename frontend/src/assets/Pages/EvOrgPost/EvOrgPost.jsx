@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux';
 import Swal from "sweetalert2";
 import PageError from "../ErrorPage/PageError";
 import PropTypes from "prop-types";
-import Loader from "../../Components/Loader/Loader";
-import LoadingGif from "../../Components/Loader/LoadingGif";
+import { Spinner } from "@material-tailwind/react";
 import { Helmet } from "react-helmet";
 import { getMyEvents, deleteEvent } from "../../../utils/postApi";
 import postIcon from '../../images/post.svg';
@@ -96,7 +95,13 @@ const EvOrgPost = ({ title }) => {
         REJECTED: 'Từ chối',
     };
     const navigation = useNavigation();
-    if (navigation.state === "loading") return <Loader />;
+    if (navigation.state === "loading") {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <Spinner className="h-12 w-12" />
+            </div>
+        );
+    }
 
     return (
         <div className="container font-qs mx-auto space-y-5">
@@ -197,7 +202,9 @@ const EvOrgPost = ({ title }) => {
                     </div>
                 </div>
             ) : showLoader ? (
-                <LoadingGif></LoadingGif>
+                <div className="flex justify-center items-center py-16">
+                    <Spinner className="h-12 w-12" />
+                </div>
             ) : (
                 <PageError></PageError>
             )}

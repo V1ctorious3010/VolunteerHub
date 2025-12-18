@@ -74,6 +74,11 @@ public class Event {
     @ToString.Exclude
     private List<Registration> requests;
 
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @ToString.Exclude
+    private List<Post> posts;
+
     @Column(name = "category")
     private String category;
 

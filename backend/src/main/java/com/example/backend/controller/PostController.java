@@ -23,6 +23,23 @@ public class PostController {
     private final PostService postService;
 
     /**
+     * Check if user can create post in event
+     * GET /events/{eventId}/posts/can-create
+     * Auth: Required
+     */
+    @GetMapping("/events/{eventId}/posts/can-create")
+    public ResponseEntity<Map<String, Boolean>> canCreatePost(
+            @PathVariable Long eventId,
+            Authentication authentication) {
+
+        String userEmail = authentication.getName();
+        log.info("GET /events/{}/posts/can-create by user: {}", eventId, userEmail);
+
+        boolean canCreate = postService.canUserCreatePost(eventId, userEmail);
+        return ResponseEntity.ok(Map.of("canCreate", canCreate));
+    }
+
+    /**
      * Get all posts for an event
      * GET /events/{eventId}/posts
      * Auth: Public (any user can view)
@@ -38,6 +55,25 @@ public class PostController {
         log.info("GET /events/{}/posts by user: {}", eventId, userEmail);
 
         Page<PostDto> posts = postService.getEventPosts(eventId, userEmail, page, size);
+        return ResponseEntity.ok(posts);
+    }
+
+    /**
+     * Get for you posts (trending or recent from all events)
+     * GET /posts/for-you?sort=trending&page=0&size=20
+     * Auth: Public
+     */
+    @GetMapping("/posts/for-you")
+    public ResponseEntity<Page<PostDto>> getForYouPosts(
+            @RequestParam(defaultValue = "trending") String sort,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9") int size,
+            Authentication authentication) {
+
+        String userEmail = authentication != null ? authentication.getName() : null;
+        log.info("GET /posts/for-you (sort={}, page={}, size={}) by user: {}", sort, page, size, userEmail);
+
+        Page<PostDto> posts = postService.getForYouPosts(sort, page, size, userEmail);
         return ResponseEntity.ok(posts);
     }
 
