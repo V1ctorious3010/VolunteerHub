@@ -45,7 +45,7 @@ const Footer = () => {
                 </div>
 
                 <div className="mt-6 border-t border-white/10 pt-4 text-sm text-center text-gray-200">
-                    © Givenow – All Rights Reserved
+                    © Givenow - All Rights Reserved
                 </div>
             </div>
         </footer>

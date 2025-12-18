@@ -90,58 +90,50 @@ const Navbar = () => {
             >
               <button className="px-8 py-3 text-xl hover:bg-white/20 hover:scale-105 transition-all duration-200 rounded-lg">Diễn đàn</button>
             </NavLink>
-            <button className="font-bold ">
-              <div className="dropdown dropdown-end z-50">
-                <div tabIndex={0} role="button" className="">
-                  <div>
-                    <button className="px-8 py-3 text-xl text-white hover:bg-white/20 hover:scale-105 transition-all duration-200 rounded-lg">Quản lý</button>
+            {user && user.role !== ROLE.VOLUNTEER && (
+              <button className="font-bold ">
+                <div className="dropdown dropdown-end z-50">
+                  <div tabIndex={0} role="button" className="">
+                    <div>
+                      <button className="px-8 py-3 text-xl text-white hover:bg-white/20 hover:scale-105 transition-all duration-200 rounded-lg">Quản lý</button>
+                    </div>
                   </div>
+                  <ul
+                    tabIndex={0}
+                    className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+                  >
+                    {(role === ROLE.EVENT_ORGANIZER) && (
+                      <li>
+                        <Link to="/add-volunteer-post" className="justify-between">
+                          Tạo mới sự kiện
+                        </Link>
+                      </li>
+                    )}
+                    {(role === ROLE.EVENT_ORGANIZER) && (
+                      <li>
+                        <Link to="/manage-event-list" className="justify-between">
+                          Quản lý sự kiện (Org)
+                        </Link>
+                      </li>
+                    )}
+                    {role === ROLE.ADMIN && (
+                      <li>
+                        <Link to="/manage-volunteers" className="justify-between text">
+                          Quản lý người dùng
+                        </Link>
+                      </li>
+                    )}
+                    {role === ROLE.EVENT_ORGANIZER && (
+                      <li>
+                        <Link to="/manage-admin-events" className="justify-between text">
+                          Quản lý sự kiện
+                        </Link>
+                      </li>
+                    )}
+                  </ul>
                 </div>
-                <ul
-                  tabIndex={0}
-                  className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-                >
-                  {!user ? (
-                    <li>
-                      <Link to="/login" className="justify-between">
-                        Đăng nhập để vào trang
-                      </Link>
-                    </li>
-                  ) : (
-                    <>
-                      {(role === ROLE.EVENT_ORGANIZER) && (
-                        <li>
-                          <Link to="/add-volunteer-post" className="justify-between">
-                            Tạo mới sự kiện
-                          </Link>
-                        </li>
-                      )}
-                      {(role === ROLE.EVENT_ORGANIZER) && (
-                        <li>
-                          <Link to="/manage-event-list" className="justify-between">
-                            Quản lý sự kiện (Org)
-                          </Link>
-                        </li>
-                      )}
-                      {role === ROLE.ADMIN && (
-                        <li>
-                          <Link to="/manage-volunteers" className="justify-between text">
-                            Quản lý người dùng
-                          </Link>
-                        </li>
-                      )}
-                      {role !== ROLE.EVENT_ORGANIZER && (
-                        <li>
-                          <Link to="/manage-my-post" className="justify-between text">
-                            Quản lý sự kiện
-                          </Link>
-                        </li>
-                      )}
-                    </>
-                  )}
-                </ul>
-              </div>
-            </button>
+              </button>
+            )}
           </ul>
         </div>
         <div className="navbar-end gap-4">
@@ -163,6 +155,13 @@ const Navbar = () => {
                     <li>
                       <NavLink to="/user-info">Trang cá nhân</NavLink>
                     </li>
+                    {role === ROLE.VOLUNTEER && (
+                      <li>
+                        <Link to="/my-volunteer-requests" className="justify-between text">
+                          Thông tin đăng ký
+                        </Link>
+                      </li>
+                    )}
                     <li>
                       <button onClick={() => dispatch(logout())}>Đăng xuất</button>
                     </li>

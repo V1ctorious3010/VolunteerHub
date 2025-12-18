@@ -12,6 +12,7 @@ import {
     Spinner,
     Typography,
 } from "@material-tailwind/react";
+import toast from 'react-hot-toast';
 import { PhotoIcon, XMarkIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const CommentDialog = ({
@@ -31,6 +32,11 @@ const CommentDialog = ({
     const commentFileRef = useRef(null);
 
     const handleSubmit = async () => {
+        if (!newComment || !newComment.trim()) {
+            toast.error('Vui lòng nhập nội dung bình luận');
+            return;
+        }
+
         await onSubmitComment(newComment, commentAttachment);
         setNewComment("");
         setCommentAttachment(null);
@@ -146,7 +152,7 @@ const CommentDialog = ({
                     <Button
                         size="sm"
                         onClick={handleSubmit}
-                        disabled={uploadingComment}
+                        disabled={uploadingComment || !newComment.trim()}
                     >
                         {uploadingComment ? <Spinner className="h-4 w-4" /> : "Gửi"}
                     </Button>

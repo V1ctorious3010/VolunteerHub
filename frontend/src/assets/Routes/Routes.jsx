@@ -4,7 +4,8 @@ import Home from "../Pages/Homepage/Home/Home";
 import Login from "../Pages/Login/Login";
 import Register from "../Pages/Register/Register";
 import AddVolunteerPost from "../Pages/AddVolunteerPost/AddVolunteerPost";
-import ManageMyPost from "../Pages/ManageMyPost/ManageMyPost";
+import MyVolunteerRequest from "../Pages/MyVolunteerRequest/MyVolunteerRequest";
+import ManageVolunteerPost from "../Pages/ManageVolunteerPost/ManageVolunteerPost";
 import ManageVolunteers from "../Pages/ManageVolunteers/ManageVolunteers";
 import PrivateRoutes from "./PrivateRoutes";
 import PostDetails from "../Pages/PostDetails/PostDetails";
@@ -62,10 +63,18 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/manage-my-post",
+        path: "/my-volunteer-requests",
         element: (
           <PrivateRoutes>
-            <ManageMyPost ></ManageMyPost>
+            <MyVolunteerRequest title="Đăng ký yêu cầu"></MyVolunteerRequest>
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/manage-admin-events",
+        element: (
+          <PrivateRoutes>
+            <ManageVolunteerPost title="Quản lý sự kiện"></ManageVolunteerPost>
           </PrivateRoutes>
         ),
       },

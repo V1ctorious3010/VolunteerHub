@@ -127,7 +127,7 @@ const AddVolunteerPost = ({ title }) => {
                   Tên sự kiện <span className="text-red-600 ml-1" aria-hidden="true">*</span>
                 </label>
                 <input
-                  placeholder="Enter your title of the post"
+                  placeholder="Hãy chọn tên sự kiện"
                   name="title"
                   id="title"
                   type="text"
@@ -199,7 +199,7 @@ const AddVolunteerPost = ({ title }) => {
                 <input
                   id="noOfVolunteer"
                   name="noOfVolunteer"
-                  placeholder="Enter the total number of people you need"
+                  placeholder="Hãy ghi số lượng tình nguyện viên"
                   type="number"
                   className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />

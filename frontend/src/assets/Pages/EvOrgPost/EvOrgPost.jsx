@@ -67,13 +67,14 @@ const EvOrgPost = ({ title }) => {
 
     const handleDelete = (id) => {
         Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            title: "Bạn có chắc không?",
+            text: "Bạn sẽ không thể thay đổi hành động này!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!",
+            confirmButtonText: "Hãy xóa nó!",
+            cancelButtonText: "Không",
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
@@ -81,7 +82,7 @@ const EvOrgPost = ({ title }) => {
                     Swal.fire({ title: 'Deleted!', text: 'The event has been deleted.', icon: 'success' });
                     const remaining = myVolunteerPost.filter((post) => post.id !== id);
                     setMyVolunteerPost(remaining);
-                    navigate(`/manage-my-post`);
+                    navigate(`/manage-event-list`);
                 } catch (err) {
                     console.error('Delete failed', err);
                     Swal.fire({ title: 'Error', text: 'Failed to delete event', icon: 'error' });
@@ -93,6 +94,9 @@ const EvOrgPost = ({ title }) => {
         PENDING: 'Chờ duyệt',
         COMING: 'Chấp nhận',
         REJECTED: 'Từ chối',
+        ONGOING: "Đang diễn ra",
+        FINISHED: "Hoàn thành",
+        COMING: "Sắp diễn ra",
     };
     const navigation = useNavigation();
     if (navigation.state === "loading") {

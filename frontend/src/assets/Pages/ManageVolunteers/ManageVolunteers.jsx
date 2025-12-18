@@ -54,13 +54,13 @@ const ManageVolunteers = ({ title }) => {
         try {
             setActionLoading(email);
             await banUser(email);
-            toast.success(`Đã cấm ${email}`);
+            toast.success(`Đã ban ${email}`);
             // Cập nhật state local
             setUsers((prev) =>
                 prev.map((u) => (u.email === email ? { ...u, locked: true } : u))
             );
         } catch (error) {
-            toast.error("Cấm người dùng thất bại");
+            toast.error("Ban người dùng thất bại");
         } finally {
             setActionLoading(null);
         }
@@ -71,13 +71,13 @@ const ManageVolunteers = ({ title }) => {
         try {
             setActionLoading(email);
             await unbanUser(email);
-            toast.success(`Đã gỡ cấm ${email}`);
+            toast.success(`Đã gỡ ban ${email}`);
             // Cập nhật state local
             setUsers((prev) =>
                 prev.map((u) => (u.email === email ? { ...u, locked: false } : u))
             );
         } catch (error) {
-            toast.error("Gỡ cấm người dùng thất bại");
+            toast.error("Gỡ ban người dùng thất bại");
         } finally {
             setActionLoading(null);
         }
@@ -236,78 +236,105 @@ const ManageVolunteers = ({ title }) => {
                             Không có người dùng
                         </div>
                     ) : (
-                        <div className="overflow-x-auto px-4">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Họ tên
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Email
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Vai trò
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Trạng thái
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Hành động
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {users.map((volunteer) => (
-                                        <tr key={volunteer.email} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm font-medium text-gray-900">
-                                                    {volunteer.name}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm text-gray-500">
-                                                    {volunteer.email}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                {getRoleBadge(volunteer.role)}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                {getStatusBadge(volunteer.locked)}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                {/* Không cho phép ban chính mình hoặc ADMIN khác */}
-                                                {volunteer.email === user.email ? (
-                                                    <span className="text-gray-400 italic">Bạn</span>
-                                                ) : volunteer.role === ROLE.ADMIN ? (
-                                                    <span className="text-gray-400 italic">Quản trị viên</span>
-                                                ) : volunteer.locked ? (
-                                                    <button
-                                                        onClick={() => openConfirmModal('unban', volunteer.email, volunteer.name)}
-                                                        disabled={actionLoading === volunteer.email}
-                                                        className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 transition"
-                                                    >
-                                                        {actionLoading === volunteer.email
-                                                            ? "Đang xử lý..."
-                                                            : "Gỡ cấm"}
-                                                    </button>
-                                                ) : (
-                                                    <button
-                                                        onClick={() => openConfirmModal('ban', volunteer.email, volunteer.name)}
-                                                        disabled={actionLoading === volunteer.email}
-                                                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 transition"
-                                                    >
-                                                        {actionLoading === volunteer.email
-                                                            ? "Đang xử lý..."
-                                                            : "Cấm"}
-                                                    </button>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        <div>
+                            <div className="hidden md:block">
+                                <div className="overflow-x-auto ">
+                                    <table className="table border-collapse border border-gray-400 w-full">
+                                        <thead>
+                                            <tr className="text-white raleway text-base bg-[#2986cc]">
+                                                <th className="px-4 py-3"></th>
+                                                <th className="px-4 py-3">Họ tên</th>
+                                                <th className="px-4 py-3">Email</th>
+                                                <th className="px-4 py-3">Vai trò</th>
+                                                <th className="px-4 py-3">Trạng thái</th>
+                                                <th className="px-4 py-3">Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {users.map((volunteer, idx) => (
+                                                <tr className="border border-gray-300" key={volunteer.email}>
+                                                    <th className="font-semibold px-4 py-3">{idx + 1}</th>
+                                                    <td className="font-semibold px-4 py-3">{volunteer.name}</td>
+                                                    <td className="font-semibold px-4 py-3">{volunteer.email}</td>
+                                                    <td className="font-semibold px-4 py-3">{getRoleBadge(volunteer.role)}</td>
+                                                    <td className="font-semibold px-4 py-3">{getStatusBadge(volunteer.locked)}</td>
+                                                    <td className="px-4 py-3">
+                                                        <div className="flex items-center gap-4">
+                                                            {volunteer.email === user.email ? (
+                                                                <span className="text-gray-400 italic">Bạn</span>
+                                                            ) : volunteer.role === ROLE.ADMIN ? (
+                                                                <span className="text-gray-400 italic">Quản trị viên</span>
+                                                            ) : volunteer.locked ? (
+                                                                <button
+                                                                    onClick={() => openConfirmModal('unban', volunteer.email, volunteer.name)}
+                                                                    disabled={actionLoading === volunteer.email}
+                                                                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 transition"
+                                                                >
+                                                                    {actionLoading === volunteer.email ? 'Đang xử lý...' : 'Gỡ ban'}
+                                                                </button>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={() => openConfirmModal('ban', volunteer.email, volunteer.name)}
+                                                                    disabled={actionLoading === volunteer.email}
+                                                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 transition"
+                                                                >
+                                                                    {actionLoading === volunteer.email ? 'Đang xử lý...' : 'Ban'}
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            {/* Mobile view */}
+                            <div className="md:hidden">
+                                <div className="overflow-x-auto ">
+                                    <table className="table border-collapse border border-gray-400 w-full">
+                                        <thead>
+                                            <tr className="text-white raleway text-base bg-[#DE00DF]">
+                                                <th className="px-4 py-3">Họ tên</th>
+                                                <th className="px-4 py-3">Trạng thái</th>
+                                                <th className="px-4 py-3">Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {users.map((volunteer) => (
+                                                <tr className="border border-gray-300" key={volunteer.email}>
+                                                    <td className="px-4 py-3">{volunteer.name}</td>
+                                                    <td className="px-4 py-3">{getStatusBadge(volunteer.locked)}</td>
+                                                    <td className="px-4 py-3">
+                                                        {volunteer.email === user.email ? (
+                                                            <span className="text-gray-400 italic">Bạn</span>
+                                                        ) : volunteer.role === ROLE.ADMIN ? (
+                                                            <span className="text-gray-400 italic">Quản trị viên</span>
+                                                        ) : volunteer.locked ? (
+                                                            <button
+                                                                onClick={() => openConfirmModal('unban', volunteer.email, volunteer.name)}
+                                                                disabled={actionLoading === volunteer.email}
+                                                                className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 transition"
+                                                            >
+                                                                {actionLoading === volunteer.email ? 'Đang xử lý...' : 'Gỡ ban'}
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => openConfirmModal('ban', volunteer.email, volunteer.name)}
+                                                                disabled={actionLoading === volunteer.email}
+                                                                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 transition"
+                                                            >
+                                                                {actionLoading === volunteer.email ? 'Đang xử lý...' : 'Ban'}
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     )}
 
@@ -315,7 +342,7 @@ const ManageVolunteers = ({ title }) => {
                     <div className="mt-6 px-4 text-sm text-gray-500">
                         Tổng: {users.length} người |{" "}
                         Hoạt động: {users.filter((u) => !u.locked).length} |{" "}
-                        Bị cấm: {users.filter((u) => u.locked).length}
+                        Bị ban: {users.filter((u) => u.locked).length}
                     </div>
                 </section>
             </div>
@@ -347,12 +374,12 @@ const ManageVolunteers = ({ title }) => {
 
                         {/* Title */}
                         <h3 className="mt-4 text-lg font-semibold text-center text-gray-900">
-                            {confirmModal.type === 'ban' ? 'Confirm ban user' : 'Confirm unban user'}
+                            {confirmModal.type === 'ban' ? 'Xác nhận ban người dùng' : 'Xác nhận unban người dùng'}
                         </h3>
 
                         {/* Message */}
                         <p className="mt-2 text-center text-gray-600">
-                            Are you sure you want to {confirmModal.type === 'ban' ? 'ban' : 'unban'} user{' '}
+                            Bạn muốn {confirmModal.type === 'ban' ? 'ban' : 'unban'} người dùng{' '}
                             <span className="font-semibold">{confirmModal.name || confirmModal.email}</span>?
                         </p>
 
@@ -362,7 +389,7 @@ const ManageVolunteers = ({ title }) => {
                                 onClick={closeConfirmModal}
                                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition font-medium"
                             >
-                                Cancel
+                                Hủy bỏ
                             </button>
                             <button
                                 onClick={handleConfirmAction}
