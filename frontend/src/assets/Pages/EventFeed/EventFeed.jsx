@@ -1,19 +1,12 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import {
-    Card,
-    CardBody,
-    Typography,
-    Button,
-    Spinner,
-    Tabs,
-    TabsHeader,
-    Tab,
-} from "@material-tailwind/react";
+import { Card, CardBody, Typography, Button, Spinner } from "@material-tailwind/react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import {
-    getForYouPosts,
+    getEventPosts,
+    createPost,
     updatePost,
     deletePost,
     likePost,
@@ -21,32 +14,39 @@ import {
     getPostComments,
     createComment,
     deleteComment,
+    canCreatePost,
 } from "../../../utils/feedApi";
+import apiClient from "../../../utils/apiClient";
 import handleUploadAnh from "../../../utils/handleUploadAnh";
-import GeneralPostCard from "./components/GeneralPostCard";
-import CommentDialog from "../EventFeed/components/CommentDialog";
-import EditPostDialog from "../EventFeed/components/EditPostDialog";
+import PostCard from "./components/PostCard";
+import CreatePostForm from "./components/CreatePostForm";
+import CommentDialog from "./components/CommentDialog";
+import EditPostDialog from "./components/EditPostDialog";
 
-// centralize API error handling
+// centralize API error handling: toast and log response.data.message when available
 const handleApiError = (context, error) => {
-    const msg = error?.response?.data?.message || error?.message || "Có lỗi xảy ra";
-    console.error(context, error, "responseMessage:", error?.response?.data?.message);
-    try {
-        toast.error(msg);
-    } catch (e) {
-        console.error("Toast failed", e);
-    }
+    const msg = error?.response?.data?.message || error?.message || 'Có lỗi xảy ra';
+    console.error(context, error, 'responseMessage:', error?.response?.data?.message);
+    try { toast.error(msg); } catch (e) { console.error('Toast failed', e); }
 };
 
-const Feed = () => {
+const EventFeed = () => {
+    const { eventId } = useParams();
     const user = useSelector((s) => s.auth.user);
+
+    // Event details
+    const [event, setEvent] = useState(null);
+    const [loadingEvent, setLoadingEvent] = useState(true);
 
     // Posts
     const [posts, setPosts] = useState([]);
     const [loadingPosts, setLoadingPosts] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const [sortType, setSortType] = useState("trending");
+
+    // Post creation
+    const [uploadingPost, setUploadingPost] = useState(false);
+    const [canCreate, setCanCreate] = useState(false);
 
     // Comments
     const [showCommentsDialog, setShowCommentsDialog] = useState(false);
@@ -60,15 +60,45 @@ const Feed = () => {
     const [editingPost, setEditingPost] = useState(null);
     const [updatingPost, setUpdatingPost] = useState(false);
 
+    // Fetch event details
+    useEffect(() => {
+        const fetchEvent = async () => {
+            try {
+                setLoadingEvent(true);
+                const response = await apiClient.get(`/events/${eventId}`);
+                setEvent(response.data);
+            } catch (error) {
+                handleApiError('Error loading event', error);
+            } finally {
+                setLoadingEvent(false);
+            }
+        };
+        fetchEvent();
+    }, [eventId]);
+
+    // Check can-create permission
+    useEffect(() => {
+        const checkCanCreate = async () => {
+            try {
+                const resp = await canCreatePost(eventId);
+                setCanCreate(Boolean(resp?.canCreate));
+            } catch (e) {
+                console.warn('Could not fetch can-create, defaulting to false', e);
+                setCanCreate(false);
+            }
+        };
+        if (eventId) checkCanCreate();
+    }, [eventId]);
+
     // Fetch posts
     useEffect(() => {
-        fetchPosts(0, sortType);
-    }, [sortType]);
+        fetchPosts(0);
+    }, [eventId]);
 
-    const fetchPosts = async (page, sort) => {
+    const fetchPosts = async (page) => {
         try {
             setLoadingPosts(true);
-            const response = await getForYouPosts(page, 9, sort);
+            const response = await getEventPosts(eventId, page, 10);
             if (page === 0) {
                 setPosts(response.content);
             } else {
@@ -77,7 +107,7 @@ const Feed = () => {
             setCurrentPage(response.number);
             setHasMore(!response.last);
         } catch (error) {
-            handleApiError("Error loading posts", error);
+            handleApiError('Error loading posts', error);
         } finally {
             setLoadingPosts(false);
         }
@@ -85,25 +115,49 @@ const Feed = () => {
 
     const handleLoadMore = () => {
         if (hasMore && !loadingPosts) {
-            fetchPosts(currentPage + 1, sortType);
+            fetchPosts(currentPage + 1);
         }
-    };
-
-    const handleSortChange = (value) => {
-        setSortType(value);
-        setCurrentPage(0);
-        setHasMore(true);
     };
 
     // Handle image upload
     const handleImageUpload = async (file) => {
         try {
+            // prevent handleUploadAnh from notifying /user/avatar by default
             const url = await handleUploadAnh(file, { notifyUrl: null });
             return url;
         } catch (error) {
             console.error("Error uploading image:", error);
             toast.error("Không thể tải ảnh lên");
             return null;
+        }
+    };
+
+    // Create new post
+    const handleCreatePost = async (content, attachment) => {
+        if (!content.trim() && !attachment) {
+            toast.error("Vui lòng nhập nội dung hoặc thêm ảnh");
+            return;
+        }
+        try {
+            setUploadingPost(true);
+            let attachmentUrl = null;
+
+            if (attachment) {
+                attachmentUrl = await handleImageUpload(attachment);
+                if (!attachmentUrl) return;
+            }
+
+            const newPost = await createPost(eventId, {
+                content,
+                attachment: attachmentUrl,
+            });
+
+            setPosts([newPost, ...posts]);
+            toast.success("Đăng bài thành công!");
+        } catch (error) {
+            handleApiError('Error creating post', error);
+        } finally {
+            setUploadingPost(false);
         }
     };
 
@@ -128,12 +182,14 @@ const Feed = () => {
                 attachment: attachmentUrl,
             });
 
-            setPosts(posts.map((p) => (p.postId === updatedPost.postId ? updatedPost : p)));
+            setPosts(
+                posts.map((p) => (p.postId === updatedPost.postId ? updatedPost : p))
+            );
             setShowEditDialog(false);
             setEditingPost(null);
             toast.success("Cập nhật bài viết thành công!");
         } catch (error) {
-            handleApiError("Error updating post", error);
+            handleApiError('Error updating post', error);
         } finally {
             setUpdatingPost(false);
         }
@@ -148,7 +204,7 @@ const Feed = () => {
             setPosts(posts.filter((p) => p.postId !== postId));
             toast.success("Xóa bài viết thành công!");
         } catch (error) {
-            handleApiError("Error deleting post", error);
+            handleApiError('Error deleting post', error);
         }
     };
 
@@ -175,7 +231,7 @@ const Feed = () => {
                 );
             }
         } catch (error) {
-            handleApiError("Error toggling like", error);
+            handleApiError('Error toggling like', error);
         }
     };
 
@@ -192,7 +248,7 @@ const Feed = () => {
             const response = await getPostComments(postId, 0, 50);
             setComments(response.content);
         } catch (error) {
-            handleApiError("Error loading comments", error);
+            handleApiError('Error loading comments', error);
         } finally {
             setLoadingComments(false);
         }
@@ -232,7 +288,7 @@ const Feed = () => {
 
             toast.success("Bình luận thành công!");
         } catch (error) {
-            handleApiError("Error creating comment", error);
+            handleApiError('Error creating comment', error);
         } finally {
             setUploadingComment(false);
         }
@@ -257,41 +313,64 @@ const Feed = () => {
 
             toast.success("Xóa bình luận thành công!");
         } catch (error) {
-            handleApiError("Error deleting comment", error);
+            handleApiError('Error deleting comment', error);
         }
     };
+
+    if (loadingEvent) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <Spinner className="h-12 w-12" />
+            </div>
+        );
+    }
+
+    if (!event) {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <Typography variant="h4" color="red">
+                    Không tìm thấy sự kiện
+                </Typography>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
             <Helmet>
-                <title>Diễn đàn - VolunteerHub</title>
+                <title>{event.title} - Trang sự kiện</title>
             </Helmet>
 
-            {/* Header */}
+            {/* Event Header */}
             <div className="bg-white shadow-md mb-6">
                 <div className="container mx-auto px-4 py-6">
-                    <Typography variant="h3" className="text-center mb-4">
-                        Diễn đàn
-                    </Typography>
-
-                    {/* Sort Tabs */}
-                    <div className="flex justify-center">
-                        <Tabs value={sortType} className="w-full max-w-md">
-                            <TabsHeader>
-                                <Tab value="trending" onClick={() => handleSortChange("trending")}>
-                                    Nổi bật
-                                </Tab>
-                                <Tab value="recent" onClick={() => handleSortChange("recent")}>
-                                    Mới nhất
-                                </Tab>
-                            </TabsHeader>
-                        </Tabs>
+                    <div className="flex flex-col items-center">
+                        <img
+                            src={event.thumbnail}
+                            alt={event.title}
+                            className="w-full max-w-4xl h-64 md:h-96 object-cover rounded-lg shadow-lg mb-4"
+                        />
+                        <Typography variant="h2" className="text-center mb-2">
+                            {event.title}
+                        </Typography>
+                        <Typography variant="lead" className="text-gray-600 text-center">
+                            {event.description}
+                        </Typography>
                     </div>
                 </div>
             </div>
 
             {/* Main Content */}
             <div className="container mx-auto px-4 max-w-3xl">
+                {/* Create Post */}
+                {user && (canCreate || user?.email === event?.orgEmail) && (
+                    <CreatePostForm
+                        user={user}
+                        onSubmit={handleCreatePost}
+                        uploading={uploadingPost}
+                    />
+                )}
+
                 {/* Posts Feed */}
                 <div className="space-y-4">
                     {loadingPosts && currentPage === 0 ? (
@@ -308,10 +387,11 @@ const Feed = () => {
                         </Card>
                     ) : (
                         posts.map((post) => (
-                            <GeneralPostCard
+                            <PostCard
                                 key={post.postId}
                                 post={post}
                                 currentUserEmail={user?.email}
+                                eventOrgEmail={event?.orgEmail}
                                 onToggleLike={handleToggleLike}
                                 onOpenComments={handleOpenComments}
                                 onEdit={(post) => {
@@ -327,7 +407,11 @@ const Feed = () => {
                     {hasMore && (
                         <div className="flex justify-center py-4">
                             <Button onClick={handleLoadMore} disabled={loadingPosts}>
-                                {loadingPosts ? <Spinner className="h-4 w-4" /> : "Xem thêm"}
+                                {loadingPosts ? (
+                                    <Spinner className="h-4 w-4" />
+                                ) : (
+                                    "Xem thêm"
+                                )}
                             </Button>
                         </div>
                     )}
@@ -342,7 +426,7 @@ const Feed = () => {
                 comments={comments}
                 loading={loadingComments}
                 user={user}
-                eventOrgEmail={null}
+                eventOrgEmail={event?.orgEmail}
                 onSubmitComment={handleCreateComment}
                 onDeleteComment={handleDeleteComment}
                 uploadingComment={uploadingComment}
@@ -360,4 +444,4 @@ const Feed = () => {
     );
 };
 
-export default Feed;
+export default EventFeed;

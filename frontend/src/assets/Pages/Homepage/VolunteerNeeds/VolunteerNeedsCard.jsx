@@ -24,10 +24,7 @@ const VolunteerNeedsCard = ({ volunteer }) => {
   };
   const formattedStart = formatDateOnly(startTime);
   return (
-    <div data-aos="fade-down"
-      data-aos-anchor-placement="top-bottom"
-      data-aos-easing="linear"
-      data-aos-duration="1000" className="mx-auto">
+    <div className="mx-auto">
       <Card className="max-w-[24rem] overflow-hidden">
         <CardHeader
           floated={false}

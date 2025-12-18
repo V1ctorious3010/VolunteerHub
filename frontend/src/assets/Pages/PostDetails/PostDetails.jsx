@@ -175,7 +175,7 @@ const PostDetails = ({ title2 }) => {
                 </div>
               </div>
             </div>
-            <div className="mb-4 flex w-full items-center gap-3 md:w-1/2 ">
+            <div className="mb-4 flex w-full items-center gap-3 flex-wrap">
               {isVolunteer ? (
                 <Button
                   onClick={handleVolunteer}
@@ -186,6 +186,14 @@ const PostDetails = ({ title2 }) => {
                   Làm tình nguyện viên
                 </Button>
               ) : null}
+              <Button
+                onClick={() => navigate(`/event-feed/${id}`)}
+                color="blue"
+                variant="gradient"
+                className="w-52"
+              >
+                Xem trang sự kiện
+              </Button>
             </div>
           </div>
         </div>

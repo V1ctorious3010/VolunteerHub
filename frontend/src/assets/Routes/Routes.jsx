@@ -16,6 +16,7 @@ import UpdateMyPost from "../Pages/UpdateMyPost/UpdateMyPost";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import EvOrgPost from "../Pages/EvOrgPost/EvOrgPost";
 import EvOrgTabs from "../Pages/EvOrgPost/EvOrgTabs";
+import EventFeed from "../Pages/EventFeed/EventFeed";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/feed",
-        element: <Feed title="Diễn đàn"></Feed>,
+        element: (
+          <PrivateRoutes>
+            <Feed title="Diễn đàn"></Feed>
+          </PrivateRoutes>
+        ),
       },
       {
         path: "/login",
@@ -92,6 +97,14 @@ const router = createBrowserRouter([
           const res = await api.get(`/events/${params.id}`);
           return res?.data || null;
         },
+      },
+      {
+        path: "/event-feed/:eventId",
+        element: (
+          <PrivateRoutes>
+            <EventFeed title="Trang sự kiện"></EventFeed>
+          </PrivateRoutes>
+        ),
       },
       {
         path: "/update-my-post/:id",

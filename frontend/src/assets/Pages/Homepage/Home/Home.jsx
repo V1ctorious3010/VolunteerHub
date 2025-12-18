@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { motion, useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
-import { getEvents, getStatistics } from "../../../../utils/localApi";
+import { getEvents, getStatistics, getRecentActivityEvents, getFeaturedEvents } from "../../../../utils/localApi";
 import { fetchAllUsers } from "../../../../features/auth/authSlice";
 
 // Import icons
@@ -21,6 +21,13 @@ const Home = ({ title }) => {
     volunteers: 0,
   });
 
+  // State for tabs data
+  const [tabs, setTabs] = useState([
+    { title: "Mới công bố", volunteers: [] },
+    { title: "Hoạt động gần đây", volunteers: [] },
+    { title: "Sự kiện thu hút", volunteers: [] },
+  ]);
+
   useEffect(() => {
     const loadStats = async () => {
       try {
@@ -37,6 +44,38 @@ const Home = ({ title }) => {
       }
     };
     loadStats();
+  }, []);
+
+  useEffect(() => {
+    const loadAllTabs = async () => {
+      try {
+        // Fetch all 3 APIs in parallel
+        const [newlyApproved, recentActivity, featured] = await Promise.all([
+          getEvents({ sortBy: "approvedAt,desc", page: 0 }),
+          getRecentActivityEvents(0, 3),
+          getFeaturedEvents(0, 3),
+        ]);
+
+        const mapEvents = (events) =>
+          (Array.isArray(events) ? events : events?.content || []).map((e) => ({
+            id: e.id,
+            thumbnail: e.thumbnail,
+            title: e.title,
+            category: e.category || "General",
+            startTime: e.startTime || e.deadline,
+            description: e.description || "",
+          }));
+
+        setTabs([
+          { title: "Mới công bố", volunteers: mapEvents(newlyApproved).slice(0, 3) },
+          { title: "Hoạt động gần đây", volunteers: mapEvents(recentActivity).slice(0, 3) },
+          { title: "Sự kiện thu hút", volunteers: mapEvents(featured).slice(0, 3) },
+        ]);
+      } catch (error) {
+        console.error("Failed to load tabs:", error);
+      }
+    };
+    loadAllTabs();
   }, []);
 
   return (
@@ -93,7 +132,7 @@ const Home = ({ title }) => {
       {/* Divider */}
       <hr className="border-gray-300 mx-auto w-4/5" />
 
-      <VolunteerNeeds></VolunteerNeeds>
+      <VolunteerNeeds tabs={tabs} />
     </motion.div>
   );
 };
