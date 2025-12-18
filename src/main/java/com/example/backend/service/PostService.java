@@ -331,6 +331,7 @@ public class PostService {
                 .authorName(post.getAuthor().getName())
                 .authorEmail(post.getAuthor().getEmail())
                 .authorAvatar(post.getAuthor().getAvatar())
+                .eventId(post.getEvent().getId())
                 .eventTitle(post.getEvent().getTitle())
                 .likeCount(likeCount)
                 .commentCount(commentCount)
