@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { GiCancel } from "react-icons/gi";
+import checkImg from '../../images/check.svg';
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -268,17 +270,19 @@ const ManageVolunteers = ({ title }) => {
                                                                 <button
                                                                     onClick={() => openConfirmModal('unban', volunteer.email, volunteer.name)}
                                                                     disabled={actionLoading === volunteer.email}
-                                                                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 transition"
+                                                                    className={`p-2 rounded ${actionLoading === volunteer.email ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-100'}`}
+                                                                    title="Gỡ ban"
                                                                 >
-                                                                    {actionLoading === volunteer.email ? 'Đang xử lý...' : 'Gỡ ban'}
+                                                                    <img src={checkImg} alt="Unban" className="h-5 w-5" />
                                                                 </button>
                                                             ) : (
                                                                 <button
                                                                     onClick={() => openConfirmModal('ban', volunteer.email, volunteer.name)}
                                                                     disabled={actionLoading === volunteer.email}
-                                                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 transition"
+                                                                    className={`p-2 rounded ${actionLoading === volunteer.email ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100'}`}
+                                                                    title="Ban"
                                                                 >
-                                                                    {actionLoading === volunteer.email ? 'Đang xử lý...' : 'Ban'}
+                                                                    <GiCancel className="h-5 w-5 text-red-600" />
                                                                 </button>
                                                             )}
                                                         </div>
@@ -315,17 +319,19 @@ const ManageVolunteers = ({ title }) => {
                                                             <button
                                                                 onClick={() => openConfirmModal('unban', volunteer.email, volunteer.name)}
                                                                 disabled={actionLoading === volunteer.email}
-                                                                className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 transition"
+                                                                className={`p-2 rounded ${actionLoading === volunteer.email ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-100'}`}
+                                                                title="Gỡ ban"
                                                             >
-                                                                {actionLoading === volunteer.email ? 'Đang xử lý...' : 'Gỡ ban'}
+                                                                <img src={checkImg} alt="Unban" className="h-5 w-5" />
                                                             </button>
                                                         ) : (
                                                             <button
                                                                 onClick={() => openConfirmModal('ban', volunteer.email, volunteer.name)}
                                                                 disabled={actionLoading === volunteer.email}
-                                                                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 transition"
+                                                                className={`p-2 rounded ${actionLoading === volunteer.email ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100'}`}
+                                                                title="Ban"
                                                             >
-                                                                {actionLoading === volunteer.email ? 'Đang xử lý...' : 'Ban'}
+                                                                <GiCancel className="h-5 w-5 text-red-600" />
                                                             </button>
                                                         )}
                                                     </td>

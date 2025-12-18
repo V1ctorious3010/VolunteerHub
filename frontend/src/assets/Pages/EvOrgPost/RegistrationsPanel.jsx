@@ -82,13 +82,13 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
                                         <td>
                                             <div className="flex items-center gap-2">
                                                 {r.status === 'PENDING' && (
-                                                    <button className="btn btn-sm bg-green-500" onClick={() => handleAction(r.registrationId ?? r.id, 'APPROVED')}>Approve</button>
+                                                    <button className="btn btn-sm bg-green-500" onClick={() => handleAction(r.registrationId ?? r.id, 'APPROVED')}>Đồng ý</button>
                                                 )}
                                                 {r.status === 'PENDING' && (
-                                                    <button className="btn btn-sm bg-red-500" onClick={() => handleAction(r.registrationId ?? r.id, 'REJECTED')}>Reject</button>
+                                                    <button className="btn btn-sm bg-red-500" onClick={() => handleAction(r.registrationId ?? r.id, 'REJECTED')}>Từ chối</button>
                                                 )}
                                                 {r.status === 'APPROVED' && (
-                                                    <button className="btn btn-sm bg-indigo-300" onClick={() => handleAction(r.registrationId ?? r.id, 'COMPLETED')}>Mark Complete</button>
+                                                    <button className="btn btn-sm bg-indigo-300" onClick={() => handleAction(r.registrationId ?? r.id, 'COMPLETED')}>Hoàn thành</button>
                                                 )}
                                             </div>
                                         </td>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Spinner } from "@material-tailwind/react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from 'react-redux';
@@ -14,6 +15,7 @@ const AddVolunteerPost = ({ title }) => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const user = useSelector(s => s.auth.user);
   const navigate = useNavigate();
   const handleFormSubmit = async (e) => {
@@ -88,18 +90,21 @@ const AddVolunteerPost = ({ title }) => {
       description,
     };
 
+    // start submitting state to prevent double submits
+    setIsSubmitting(true);
     try {
       // POST to backend
-      // console.log('request: ', newVolunteerPost);
       await createEvent(newVolunteerPost);
       toast.success("Bạn đã tạo sự kiện thành công. Hãy chờ để được xét duyệt!");
       form.reset();
       setThumbnailPreview(null);
       navigate("/manage-event-list");
+      return;
     } catch (err) {
-      // console.log(err);
       let re = err?.response?.data?.message;
-      toast.error(re, 'Lỗi khi tạo sự kiện!');
+      toast.error(re || 'Lỗi khi tạo sự kiện!');
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -111,6 +116,11 @@ const AddVolunteerPost = ({ title }) => {
         backgroundRepeat: "no-repeat",
       }}
     >
+      {isSubmitting && (
+        <div className="fixed inset-0 z-50 bg-white/60 flex items-center justify-center">
+          <Spinner className="h-16 w-16" />
+        </div>
+      )}
       <Helmet>
         <title>{title}</title>
       </Helmet>
@@ -163,7 +173,7 @@ const AddVolunteerPost = ({ title }) => {
                 <input
                   id="location"
                   name="location"
-                  placeholder="Enter the event location"
+                  placeholder="Từ Liêm, Hà Nội"
                   type="text"
                   className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
@@ -240,9 +250,10 @@ const AddVolunteerPost = ({ title }) => {
 
             <div className=" mt-6 md:px-12 md:pb-12">
               <input
-                className="px-8 w-full py-4 leading-5 cursor-pointer text-white transition-colors duration-300 transhtmlForm bg-green-500 font-bold rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+                className={`px-8 w-full py-4 leading-5 ${isSubmitting ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'} text-white transition-colors duration-300 transhtmlForm bg-green-500 font-bold rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600`}
                 type="submit"
-                value="Add Post"
+                value={isSubmitting ? 'Đang gửi...' : 'Add Post'}
+                disabled={isSubmitting}
               />
             </div>
           </form>
