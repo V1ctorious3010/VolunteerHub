@@ -22,6 +22,7 @@ import PostCard from "./components/PostCard";
 import CreatePostForm from "./components/CreatePostForm";
 import CommentDialog from "./components/CommentDialog";
 import EditPostDialog from "./components/EditPostDialog";
+import Swal from 'sweetalert2';
 
 // centralize API error handling: toast and log response.data.message when available
 const handleApiError = (context, error) => {
@@ -195,15 +196,29 @@ const EventFeed = () => {
         }
     };
 
-    // Delete post
+    // Delete post (use SweetAlert2 like MyVolunteerRequest)
     const handleDeletePost = async (postId) => {
-        if (!window.confirm("Bạn có chắc muốn xóa bài viết này?")) return;
+        const result = await Swal.fire({
+            title: "Bạn chắc chưa?",
+            text: "Bạn sẽ không thể thay đổi lựa chọn này!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Hãy xóa đi!",
+            cancelButtonText: "Không",
+        });
+
+        if (!result.isConfirmed) return;
 
         try {
             await deletePost(postId);
-            setPosts(posts.filter((p) => p.postId !== postId));
-            toast.success("Xóa bài viết thành công!");
+            setPosts((prev) => prev.filter((p) => p.postId !== postId));
+            await Swal.fire('Thông báo', 'Xóa bài viết thành công!', 'success');
         } catch (error) {
+            console.error('Error deleting post', error);
+            const emsg = error?.response?.data?.message || error?.message || 'Lỗi khi xóa bài viết';
+            Swal.fire('Error', emsg, 'error');
             handleApiError('Error deleting post', error);
         }
     };
@@ -294,13 +309,23 @@ const EventFeed = () => {
         }
     };
 
-    // Delete comment
+    // Delete comment (use SweetAlert2 confirmation)
     const handleDeleteComment = async (commentId) => {
-        if (!window.confirm("Bạn có chắc muốn xóa bình luận này?")) return;
+        const result = await Swal.fire({
+            title: "Bạn chắc chưa?",
+            text: "Bạn sẽ không thể thay đổi lựa chọn này!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Hãy xóa đi!",
+            cancelButtonText: "Không",
+        });
+        if (!result.isConfirmed) return;
 
         try {
             await deleteComment(commentId);
-            setComments(comments.filter((c) => c.commentId !== commentId));
+            setComments((prev) => prev.filter((c) => c.commentId !== commentId));
 
             // Update post comment count
             setPosts(
@@ -311,8 +336,11 @@ const EventFeed = () => {
                 )
             );
 
-            toast.success("Xóa bình luận thành công!");
+            await Swal.fire('Thông báo', 'Xóa bình luận thành công!', 'success');
         } catch (error) {
+            console.error('Error deleting comment', error);
+            const emsg = error?.response?.data?.message || error?.message || 'Lỗi khi xóa bình luận';
+            Swal.fire('Error', emsg, 'error');
             handleApiError('Error deleting comment', error);
         }
     };
@@ -355,6 +383,9 @@ const EventFeed = () => {
                         </Typography>
                         <Typography variant="lead" className="text-gray-600 text-center">
                             {event.description}
+                        </Typography>
+                        <Typography variant="small" className="text-sm text-gray-500 text-center mt-2 italic">
+                            Lưu ý: Chỉ người đăng ký đã được chấp nhận và chủ sự kiện mới có thể tạo bài viết.
                         </Typography>
                     </div>
                 </div>
