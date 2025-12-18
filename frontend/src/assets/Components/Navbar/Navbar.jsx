@@ -9,6 +9,20 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const { user } = useSelector(s => s.auth);
   const role = user?.role;
+  const handleLogout = async () => {
+    try {
+      const res = dispatch(logout());
+      if (res && typeof res.then === 'function') {
+        await res;
+      }
+      // navigate to home and replace history so back doesn't return to protected pages
+      window.location.replace('/');
+    } catch (e) {
+      // still navigate even if logout thunk failed
+      console.error('Logout failed', e);
+      window.location.replace('/');
+    }
+  };
   // ensure the app always uses light theme
   // console.log(user);
   useEffect(() => {
@@ -163,7 +177,7 @@ const Navbar = () => {
                       </li>
                     )}
                     <li>
-                      <button onClick={() => dispatch(logout())}>Đăng xuất</button>
+                      <button onClick={handleLogout}>Đăng xuất</button>
                     </li>
                   </ul>
                 </div>
