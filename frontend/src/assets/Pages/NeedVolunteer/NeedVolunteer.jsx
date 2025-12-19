@@ -234,7 +234,7 @@ const NeedVolunteer = ({ title }) => {
         <div>
           <div className="flex justify-center gap-3 my-4">
             <button onClick={handlePrev} className="px-3 py-2 bg-gray-200 rounded" disabled={pageNumber <= 0}>Prev</button>
-            <div className="px-3 py-2">Page {pageNumber + 1} / {totalPages || 1}</div>
+            <div className="px-3 py-2">Trang {pageNumber + 1} / {totalPages || 1}</div>
             <button onClick={handleNext} className="px-3 py-2 bg-gray-200 rounded" disabled={pageNumber >= (totalPages - 1)}>Next</button>
           </div>
           <div className={gridView ? "block" : "hidden"}>

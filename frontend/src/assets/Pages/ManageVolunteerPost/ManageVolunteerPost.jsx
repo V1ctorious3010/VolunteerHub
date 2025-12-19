@@ -11,24 +11,50 @@ import Swal from 'sweetalert2';
 const ManageVolunteerPost = ({ title }) => {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]);
+    const [status, setStatus] = useState('');
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     const user = useSelector(s => s.auth.user);
     const isAdmin = user?.role === ROLE.ADMIN || (Array.isArray(user?.roles) && user.roles.includes(ROLE.ADMIN));
+
+    const STATUS_LABELS = {
+        PENDING: 'Chờ duyệt',
+        COMING: 'Sắp diễn ra',
+        REJECTED: 'Từ chối',
+        ONGOING: 'Đang diễn ra',
+        FINISHED: 'Hoàn thành',
+    };
 
     const loadEvents = async () => {
         setLoading(true);
         try {
-            const resp = await getAdminEvents();
+            const params = { page };
+            if (status) params.status = status;
+            const resp = await getAdminEvents(params);
             let data = resp?.data;
-            if (!Array.isArray(data)) {
-                if (data?.content && Array.isArray(data.content)) data = data.content;
-                else if (data?.data && Array.isArray(data.data)) data = data.data;
-                else if (Array.isArray(data)) data = data;
-                else data = [];
+            let items = [];
+            if (data && Array.isArray(data.content)) {
+                items = data.content;
+                setTotalPages(data.totalPages || 1);
+            } else if (data && Array.isArray(data.data)) {
+                items = data.data;
+                setTotalPages(1);
+            } else if (Array.isArray(data)) {
+                items = data;
+                setTotalPages(1);
+            } else if (data && typeof data === 'object') {
+                // single object
+                items = [data];
+                setTotalPages(1);
+            } else {
+                items = [];
+                setTotalPages(1);
             }
-            setEvents(data);
+            setEvents(items);
         } catch (err) {
             console.error('Failed to load admin events', err);
             setEvents([]);
+            setTotalPages(1);
         } finally {
             setLoading(false);
         }
@@ -37,7 +63,7 @@ const ManageVolunteerPost = ({ title }) => {
     useEffect(() => {
         if (isAdmin) loadEvents();
         else setLoading(false);
-    }, [isAdmin]);
+    }, [isAdmin, status, page]);
 
     const handleExport = async (format) => {
         try {
@@ -111,28 +137,39 @@ const ManageVolunteerPost = ({ title }) => {
                         Duyệt sự kiện
                     </h2>
 
-                    <div className="flex justify-end mb-4 px-4 gap-2 flex-wrap">
-                        <button
-                            onClick={() => handleExport('json')}
-                            disabled={loading || events.length === 0}
-                            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 transition"
-                        >
-                            Xuất JSON
-                        </button>
-                        <button
-                            onClick={() => handleExport('csv')}
-                            disabled={loading || events.length === 0}
-                            className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50 transition"
-                        >
-                            Xuất CSV
-                        </button>
-                        <button
-                            onClick={loadEvents}
-                            disabled={loading}
-                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition"
-                        >
-                            {loading ? 'Đang tải...' : 'Tải lại'}
-                        </button>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 px-4 gap-2">
+                        <div className="flex items-center gap-2">
+                            <label className="mr-2 font-medium">Trạng thái:</label>
+                            <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(0); }} className="border p-2 rounded-md">
+                                <option value="">Tất cả</option>
+                                {Object.keys(STATUS_LABELS).map((k) => (
+                                    <option key={k} value={k}>{STATUS_LABELS[k]}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="flex justify-end mb-0 md:mb-0 px-0 gap-2 flex-wrap">
+                            <button
+                                onClick={() => handleExport('json')}
+                                disabled={loading || events.length === 0}
+                                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 transition"
+                            >
+                                Xuất JSON
+                            </button>
+                            <button
+                                onClick={() => handleExport('csv')}
+                                disabled={loading || events.length === 0}
+                                className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50 transition"
+                            >
+                                Xuất CSV
+                            </button>
+                            <button
+                                onClick={loadEvents}
+                                disabled={loading}
+                                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition"
+                            >
+                                {loading ? 'Đang tải...' : 'Tải lại'}
+                            </button>
+                        </div>
                     </div>
 
                     {/* Users table */}
@@ -166,8 +203,8 @@ const ManageVolunteerPost = ({ title }) => {
                                                     <td className="font-semibold px-4 py-3">{formatDateOnly(ev.endTime)}</td>
                                                     <td className="font-semibold px-4 py-3">{ev.location}</td>
                                                     <td className="font-semibold px-4 py-3">{ev.orgName || ev.orgEmail}</td>
-                                                    <td className="font-semibold px-4 py-3">{ev.status}</td>
-                                                    <td className="px-4 py-3">
+                                                    <td className="font-semibold px-4 py-3">{STATUS_LABELS[ev.status] || ev.status}</td>
+                                                    <td className="px-4 py-3  justify-center">
                                                         {ev.status === 'PENDING' ? (
                                                             <div className="flex items-center gap-2 justify-center">
                                                                 <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, 'COMING')}>Duyệt</button>
@@ -180,6 +217,12 @@ const ManageVolunteerPost = ({ title }) => {
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+
+                            <div className="flex justify-center gap-3 mb-4 mt-4">
+                                <button onClick={() => setPage(p => Math.max(0, p - 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page <= 0}>Prev</button>
+                                <div className="px-3 py-2">Trang  {page + 1} / {totalPages}</div>
+                                <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page + 1 >= totalPages}>Next</button>
                             </div>
 
                             <div className="md:hidden">
@@ -199,7 +242,7 @@ const ManageVolunteerPost = ({ title }) => {
                                                     <td className="px-4 py-3">{formatDateOnly(ev.startTime)}</td>
                                                     <td className="px-4 py-3">
                                                         {ev.status === 'PENDING' ? (
-                                                            <div className="flex items-center gap-2">
+                                                            <div className="flex items-center gap-2  justify-center">
                                                                 <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, "COMING")}>Duyệt</button>
                                                                 <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, "REJECT")}>Từ chối</button>
                                                             </div>
