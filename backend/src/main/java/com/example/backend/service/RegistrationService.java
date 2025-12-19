@@ -37,8 +37,11 @@ public class RegistrationService {
 
 
     /**
-     * Volunteer registers for an event
+     * Volunteer registers for event
      * POST /events/{eventId}/registration
+     * Creates registration with PENDING status
+     * Only allows registration for COMING events (not started yet)
+     * Prevents duplicate registrations
      */
     @Transactional
     public RegistrationDto registerForEvent(Long eventId, String userEmail) {
@@ -66,8 +69,11 @@ public class RegistrationService {
     }
 
     /**
-     * Volunteer cancels their registration
+     * Volunteer cancels their own registration
      * DELETE /registrations/{registrationId}
+     * Cannot cancel if event already started
+     * Cannot cancel REJECTED or COMPLETED registrations
+     * Restores event slot if registration was APPROVED
      */
     @Transactional
     public void cancelRegistration(Long registrationId, String userEmail) {
@@ -104,8 +110,10 @@ public class RegistrationService {
     }
 
     /**
-     * Get volunteer's own registrations with filtering and pagination
+     * Get volunteer's own registrations with filtering
      * GET /registrations?status=APPROVED&page=0&size=12
+     * Optional status filter (PENDING, APPROVED, REJECTED, COMPLETED)
+     * Sorted by createdAt DESC
      */
     @Transactional(readOnly = true)
     public Page<MyRegistrationDto> getMyRegistrations(
@@ -135,8 +143,10 @@ public class RegistrationService {
     }
 
     /**
-     * Get registrations for a specific event (for organizer)
+     * Get all registrations for specific event (organizer only)
      * GET /events/{eventId}/registrations
+     * Returns all registrations regardless of status
+     * Sorted by createdAt ASC
      */
     @Transactional(readOnly = true)
     public Page<RegistrationDto> getEventRegistrations(
@@ -161,9 +171,15 @@ public class RegistrationService {
     }
 
     /**
-     * Update registration status (Approve/Reject/Complete)
+     * Organizer updates registration status
      * PATCH /registrations/{registrationId}/status
-     * For EVENT_ORGANIZER only
+     * Status transitions:
+     * - PENDING -> APPROVED (decreases event remaining slots)
+     * - PENDING -> REJECTED (no slot change)
+     * - APPROVED -> REJECTED (increases event remaining slots)
+     * - APPROVED -> COMPLETED (no slot change, only if event ONGOING/FINISHED)
+     * - REJECTED/COMPLETED cannot be changed
+     * Auto-rejects all pending when event becomes full
      */
     @Transactional
     public RegistrationDto updateRegistrationStatus(

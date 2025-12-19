@@ -32,9 +32,10 @@ public class CommentService {
 
     /**
      * Get all comments for a post with pagination
-     * GET /api/posts/{postId}/comments
-     * Auth: Public
-     * Sort: createdAt DESC (newest first)
+     * GET /posts/{postId}/comments
+     * Returns comments only from available events (not PENDING/REJECTED)
+     * Filters out comments from banned users
+     * Sorted by createdAt DESC (newest first)
      */
     @Transactional(readOnly = true)
     public Page<CommentDto> getPostComments(Long postId, int page, int size) {
@@ -59,9 +60,10 @@ public class CommentService {
     }
 
     /**
-     * Create new comment
-     * POST /api/posts/{postId}/comments
-     * Auth: Any authenticated user
+     * Create new comment on post
+     * POST /posts/{postId}/comments
+     * Any authenticated user can comment
+     * Cannot comment on posts in PENDING/REJECTED events
      */
     @Transactional
     public CommentDto createComment(Long postId, CreateCommentRequest request, String userEmail) {
@@ -107,8 +109,8 @@ public class CommentService {
 
     /**
      * Delete comment
-     * DELETE /api/comments/{id}
-     * Auth: Author OR Organizer of event
+     * DELETE /comments/{id}
+     * Comment author OR event organizer can delete
      */
     @Transactional
     public Map<String, String> deleteComment(Long commentId, String userEmail) {

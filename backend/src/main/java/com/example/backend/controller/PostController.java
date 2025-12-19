@@ -41,7 +41,7 @@ public class PostController {
 
     /**
      * Get all posts for an event
-     * GET /events/{eventId}/posts
+     * GET /events/{eventId}/posts?page=0&size=10
      * Auth: Public (any user can view)
      */
     @GetMapping("/events/{eventId}/posts")
@@ -60,7 +60,7 @@ public class PostController {
 
     /**
      * Get for you posts (trending or recent from all events)
-     * GET /posts/for-you?sort=trending&page=0&size=20
+     * GET /posts/for-you?sort=trending&page=0&size=9
      * Auth: Public
      */
     @GetMapping("/posts/for-you")

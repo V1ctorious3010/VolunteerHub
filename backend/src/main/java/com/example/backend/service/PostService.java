@@ -70,8 +70,9 @@ public class PostService {
 
     /**
      * Get all posts for an event with pagination
-     * GET /api/events/{eventId}/posts
-     * Auth: Public (read-only)
+     * GET /events/{eventId}/posts
+     * Returns posts only from COMING, ONGOING, FINISHED events
+     * Filters out posts from banned authors
      */
     @Transactional(readOnly = true)
     public Page<PostDto> getEventPosts(Long eventId, String currentUserEmail, int page, int size) {
@@ -95,9 +96,10 @@ public class PostService {
     }
 
     /**
-     * Get post detail by id
-     * GET /api/posts/{id}
-     * Auth: Public
+     * Get single post detail
+     * GET /posts/{id}
+     * Verifies event is available (not PENDING/REJECTED)
+     * Includes like/comment counts and latest comment
      */
     @Transactional(readOnly = true)
     public PostDto getPostDetail(Long postId, String currentUserEmail) {
@@ -118,9 +120,10 @@ public class PostService {
     }
 
     /**
-     * Create new post
-     * POST /api/events/{eventId}/posts
-     * Auth: Approved members + Organizer ONLY
+     * Create new post in event
+     * POST /events/{eventId}/posts
+     * Only approved volunteers and event organizer can post
+     * Cannot post in PENDING or REJECTED events
      */
     @Transactional
     public PostDto createPost(Long eventId, CreatePostRequest request, String authorEmail) {
@@ -180,9 +183,9 @@ public class PostService {
     }
 
     /**
-     * Update post
-     * PUT /api/posts/{id}
-     * Auth: Author only
+     * Update post content/attachment
+     * PUT /posts/{id}
+     * Only post author can update
      */
     @Transactional
     public PostDto updatePost(Long postId, UpdatePostRequest request, String userEmail) {
@@ -209,8 +212,9 @@ public class PostService {
 
     /**
      * Delete post
-     * DELETE /api/posts/{id}
-     * Auth: Author OR Organizer
+     * DELETE /posts/{id}
+     * Post author OR event organizer can delete
+     * Cascade deletes all likes and comments
      */
     @Transactional
     public Map<String, String> deletePost(Long postId, String userEmail) {
@@ -233,15 +237,15 @@ public class PostService {
         log.info("Post {} deleted successfully", postId);
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Post deleted successfully");
+        response.put("message", "Đã xóa bài viết thành công");
         response.put("postId", postId.toString());
         return response;
     }
 
     /**
      * Like a post
-     * POST /api/posts/{id}/like
-     * Auth: Any authenticated user
+     * POST /posts/{id}/like
+     * Prevents duplicate likes from same user
      */
     @Transactional
     public Map<String, Object> likePost(Long postId, String userEmail) {
@@ -253,7 +257,7 @@ public class PostService {
 
         // 2. Check if already liked
         if (postLikeRepository.existsByUserEmailAndPostId(userEmail, postId)) {
-            throw new BadRequestException("You already liked this post");
+            throw new BadRequestException("Bạn đã thích bài viết này rồi");
         }
 
         // 3. Get user
@@ -271,15 +275,15 @@ public class PostService {
         log.info("Post {} liked successfully. Total likes: {}", postId, likeCount);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Post liked successfully");
+        response.put("message", "Đã thích bài viết");
         response.put("likeCount", likeCount);
         return response;
     }
 
     /**
-     * Unlike a post
-     * DELETE /api/posts/{id}/like
-     * Auth: Any authenticated user
+     * Remove like from post
+     * DELETE /posts/{id}/like
+     * Only removes if user previously liked the post
      */
     @Transactional
     public Map<String, Object> unlikePost(Long postId, String userEmail) {
@@ -291,7 +295,7 @@ public class PostService {
 
         // 2. Find like
         PostLike like = postLikeRepository.findByUserEmailAndPostId(userEmail, postId)
-                .orElseThrow(() -> new BadRequestException("You haven't liked this post"));
+                .orElseThrow(() -> new BadRequestException("Bạn chưa thích bài viết này"));
 
         // 3. Delete like
         postLikeRepository.delete(like);
@@ -301,15 +305,17 @@ public class PostService {
         log.info("Post {} unliked successfully. Total likes: {}", postId, likeCount);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Post unliked successfully");
+        response.put("message", "Đã bỏ thích bài viết");
         response.put("likeCount", likeCount);
         return response;
     }
 
     /**
-     * Get for you posts (trending or recent from all events)
-     * GET /posts/for-you?sort=trending
-     * Auth: Public
+     * Get personalized post feed
+     * GET /posts/for-you?sort=trending|recent
+     * - trending: High engagement in last 3 days (posts, comments, likes)
+     * - recent: Latest posts ordered by createdAt
+     * Filters out posts from banned authors
      */
     @Transactional(readOnly = true)
     public Page<PostDto> getForYouPosts(String sort, int page, int size, String currentUserEmail) {
