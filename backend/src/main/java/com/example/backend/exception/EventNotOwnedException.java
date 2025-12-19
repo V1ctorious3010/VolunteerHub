@@ -7,10 +7,10 @@ public class EventNotOwnedException extends RuntimeException {
     }
 
     public EventNotOwnedException() {
-        super("You can only modify events that you created");
+        super("Bạn chỉ có thể chỉnh sửa sự kiện do bạn tạo");
     }
 
     public EventNotOwnedException(Long eventId, String userEmail) {
-        super("Event " + eventId + " does not belong to user " + userEmail);
+        super("Sự kiện " + eventId + " không thuộc về người dùng " + userEmail);
     }
 }

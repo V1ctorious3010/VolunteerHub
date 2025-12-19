@@ -6,6 +6,6 @@ public class EventNotFoundException extends RuntimeException {
     }
 
     public EventNotFoundException(Long eventId) {
-        super("Event not found with id: " + eventId);
+        super("Không tìm thấy sự kiện với ID: " + eventId);
     }
 }

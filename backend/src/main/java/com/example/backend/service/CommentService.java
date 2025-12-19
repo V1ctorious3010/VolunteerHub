@@ -47,7 +47,7 @@ public class CommentService {
         // 2. Check event status
         if (post.getEvent().getStatus() == Event.EventStatus.PENDING || 
             post.getEvent().getStatus() == Event.EventStatus.REJECTED) {
-            throw new ForbiddenException("Event is not available");
+            throw new ForbiddenException("Sự kiện không khả dụng");
         }
 
         // 3. Get comments with pagination
@@ -74,7 +74,7 @@ public class CommentService {
         // 2. Check event status
         if (post.getEvent().getStatus() == Event.EventStatus.PENDING || 
             post.getEvent().getStatus() == Event.EventStatus.REJECTED) {
-            throw new ForbiddenException("Cannot comment on posts in this event");
+            throw new ForbiddenException("Không thể bình luận bài viết trong sự kiện này");
         }
 
         // 3. Get user
@@ -127,7 +127,7 @@ public class CommentService {
         boolean isOrganizer = event.getOrganizer().getEmail().equals(userEmail);
 
         if (!isAuthor && !isOrganizer) {
-            throw new ForbiddenException("You can only delete your own comments or comments in your events");
+            throw new ForbiddenException("Bạn chỉ có thể xóa bình luận của mình hoặc bình luận trong sự kiện của bạn");
         }
 
         // 4. Delete comment
@@ -135,7 +135,7 @@ public class CommentService {
         log.info("Comment {} deleted successfully", commentId);
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Comment deleted successfully");
+        response.put("message", "Đã xóa bình luận thành công");
         response.put("commentId", commentId.toString());
         return response;
     }

@@ -6,6 +6,6 @@ public class DuplicateRegistrationException extends RuntimeException {
     }
 
     public DuplicateRegistrationException() {
-        super("You have already registered for this event");
+        super("Bạn đã đăng ký sự kiện này rồi");
     }
 }

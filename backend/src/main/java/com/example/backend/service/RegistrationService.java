@@ -48,7 +48,7 @@ public class RegistrationService {
                 .orElseThrow(() -> new EventNotFoundException(eventId));
 
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("User not found: " + userEmail));
+                .orElseThrow(() -> new UserNotFoundException(userEmail));
 
         validateEventRegistration(event, eventId, userEmail);
 
@@ -79,17 +79,17 @@ public class RegistrationService {
         if (!registration.getUser().getEmail().equals(userEmail)) {
             log.warn("Unauthorized cancellation attempt by {} for registration {}", 
                     userEmail, registrationId);
-            throw new UnauthorizedAccessException("You can only cancel your own registrations");
+            throw new UnauthorizedAccessException("Bạn chỉ có thể hủy đăng ký của chính mình");
         }
 
         Event event = registration.getEvent();
         if (event.getStartTime().isBefore(LocalDateTime.now())) {
-            throw new InvalidEventStatusException("Cannot cancel registration for event that has already started");
+            throw new InvalidEventStatusException("Không thể hủy đăng ký cho sự kiện đã bắt đầu");
         }
 
         if (registration.getStatus() == Registration.RequestStatus.REJECTED ||
             registration.getStatus() == Registration.RequestStatus.COMPLETED) {
-            throw new InvalidEventStatusException("Cannot cancel registration with status: " + 
+            throw new InvalidEventStatusException("Không thể hủy đăng ký với trạng thái: " + 
                     registration.getStatus());
         }
 
@@ -151,7 +151,7 @@ public class RegistrationService {
                 .orElseThrow(() -> new EventNotFoundException(eventId));
         
         if (!event.getOrganizer().getEmail().equals(organizerEmail)) {
-            throw new UnauthorizedAccessException("You can only view registrations for your own events");
+            throw new UnauthorizedAccessException("Bạn chỉ có thể xem đăng ký cho sự kiện của mình");
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
@@ -179,14 +179,14 @@ public class RegistrationService {
 
         Event event = registration.getEvent();
         if (!event.getOrganizer().getEmail().equals(organizerEmail)) {
-            throw new UnauthorizedAccessException("You can only manage registrations for your own events");
+            throw new UnauthorizedAccessException("Bạn chỉ có thể quản lý đăng ký cho sự kiện của mình");
         }
 
         Registration.RequestStatus newStatus;
         try {
             newStatus = Registration.RequestStatus.valueOf(request.getStatus().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InvalidEventStatusException("Invalid status: " + request.getStatus());
+            throw new InvalidEventStatusException("Trạng thái không hợp lệ: " + request.getStatus());
         }
 
         // Validate status transition
@@ -236,12 +236,12 @@ public class RegistrationService {
         // Check event status - only allow registration for COMING events
         if (event.getStatus() != Event.EventStatus.COMING) {
             throw new InvalidEventStatusException(
-                    "Cannot register for event with status: " + event.getStatus());
+                    "Không thể đăng ký cho sự kiện với trạng thái: " + event.getStatus());
         }
 
         // Check if event has passed
         if (event.getStartTime().isBefore(LocalDateTime.now())) {
-            throw new InvalidEventStatusException("Cannot register for past events");
+            throw new InvalidEventStatusException("Không thể đăng ký cho sự kiện đã qua");
         }
 
         // Check if already registered
@@ -263,7 +263,7 @@ public class RegistrationService {
         if (!isMarkingCompleted && 
             event.getStatus() == Event.EventStatus.FINISHED) {
             throw new InvalidEventStatusException(
-                    "Cannot update registration for event with status: " + event.getStatus());
+                    "Không thể cập nhật đăng ký cho sự kiện với trạng thái: " + event.getStatus());
         }
 
         // PENDING can go to APPROVED or REJECTED
@@ -272,22 +272,22 @@ public class RegistrationService {
         // COMPLETED cannot be changed
         
         if (oldStatus == Registration.RequestStatus.REJECTED) {
-            throw new InvalidEventStatusException("Cannot change status of rejected registration");
+            throw new InvalidEventStatusException("Không thể thay đổi trạng thái của đăng ký đã bị từ chối");
         }
         
         if (oldStatus == Registration.RequestStatus.COMPLETED) {
-            throw new InvalidEventStatusException("Cannot change status of completed registration");
+            throw new InvalidEventStatusException("Không thể thay đổi trạng thái của đăng ký đã hoàn thành");
         }
 
         // Can only mark as COMPLETED if currently APPROVED and event is ONGOING or FINISHED
         if (newStatus == Registration.RequestStatus.COMPLETED) {
             if (oldStatus != Registration.RequestStatus.APPROVED) {
                 throw new InvalidEventStatusException(
-                        "Can only mark APPROVED registrations as COMPLETED");
+                        "Chỉ có thể đánh dấu đăng ký đã duyệt là hoàn thành");
             }
             if (event.getStatus() == Event.EventStatus.COMING) {
                 throw new InvalidEventStatusException(
-                        "Cannot mark registration as COMPLETED before event starts");
+                        "Không thể đánh dấu đăng ký là hoàn thành trước khi sự kiện bắt đầu");
             }
         }
     }
@@ -311,7 +311,7 @@ public class RegistrationService {
                 log.info("Event {} remaining slots decreased to {} (approved registration)", 
                         event.getId(), event.getRemaining());
             } else {
-                throw new EventFullException("Cannot approve registration, event is full");
+                throw new EventFullException("Không thể duyệt đăng ký, sự kiện đã đầy");
             }
         } else if (oldStatus == Registration.RequestStatus.APPROVED && 
                    newStatus == Registration.RequestStatus.REJECTED) {

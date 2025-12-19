@@ -46,7 +46,7 @@ public class EventService {
         log.info("Creating event '{}' by organizer {}", request.getTitle(), organizerEmail);
 
         User organizer = userRepository.findByEmail(organizerEmail)
-                .orElseThrow(() -> new RuntimeException("Organizer not found: " + organizerEmail));
+                .orElseThrow(() -> new UserNotFoundException(organizerEmail));
 
         Event event = new Event();
         event.setTitle(request.getTitle());
@@ -249,7 +249,7 @@ public class EventService {
         // 2. Validate current status is PENDING
         if (event.getStatus() != Event.EventStatus.PENDING) {
             throw new InvalidEventStatusException(
-                    "Can only approve/reject events with PENDING status. Current status: " + event.getStatus().name());
+                    "Chỉ có thể duyệt/từ chối sự kiện ở trạng thái PENDING. Trạng thái hiện tại: " + event.getStatus().name());
         }
 
         // 3. Parse and validate new status
@@ -257,11 +257,11 @@ public class EventService {
         try {
             status = Event.EventStatus.valueOf(newStatus.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InvalidEventStatusException("Invalid status: " + newStatus);
+            throw new InvalidEventStatusException("Trạng thái không hợp lệ: " + newStatus);
         }
 
         if (status != Event.EventStatus.COMING && status != Event.EventStatus.REJECTED) {
-            throw new InvalidEventStatusException("Admin can only set status to COMING or REJECTED");
+            throw new InvalidEventStatusException("Quản trị viên chỉ có thể đặt trạng thái COMING hoặc REJECTED");
         }
 
         // 4. Update status

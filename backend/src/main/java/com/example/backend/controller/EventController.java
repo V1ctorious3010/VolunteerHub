@@ -146,7 +146,7 @@ public class EventController {
         eventService.deleteEvent(eventId, organizerEmail);
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Event deleted successfully");
+        response.put("message", "Đã xóa sự kiện thành công");
         response.put("eventId", eventId.toString());
 
         return ResponseEntity.ok(response);

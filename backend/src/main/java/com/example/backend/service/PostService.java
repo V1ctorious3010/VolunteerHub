@@ -133,7 +133,7 @@ public class PostService {
         // 2. Check event status
         if (event.getStatus() == Event.EventStatus.PENDING || 
             event.getStatus() == Event.EventStatus.REJECTED) {
-            throw new ForbiddenException("Cannot post in this event");
+            throw new ForbiddenException("Không thể đăng bài viết trong sự kiện này");
         }
 
         // 3. Verify authorization: organizer or approved member
@@ -145,7 +145,7 @@ public class PostService {
                     .orElse(null);
             
             if (registration == null || registration.getStatus() != Registration.RequestStatus.APPROVED) {
-                throw new ForbiddenException("Only approved members can create posts");
+                throw new ForbiddenException("Chỉ có thành viên được duyệt mới có thể đăng bài viết");
             }
         }
 
@@ -194,7 +194,7 @@ public class PostService {
 
         // 2. Verify author
         if (!post.getAuthor().getEmail().equals(userEmail)) {
-            throw new ForbiddenException("You can only update your own posts");
+            throw new ForbiddenException("Bạn chỉ có thể sửa bài viết của chính mình");
         }
 
         // 3. Update post
@@ -225,7 +225,7 @@ public class PostService {
         boolean isOrganizer = post.getEvent().getOrganizer().getEmail().equals(userEmail);
 
         if (!isAuthor && !isOrganizer) {
-            throw new ForbiddenException("You can only delete your own posts or posts in your events");
+            throw new ForbiddenException("Bạn chỉ có thể xóa bài viết của mình hoặc bài viết trong sự kiện của bạn");
         }
 
         // 3. Delete post (cascade delete likes and comments)
