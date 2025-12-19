@@ -7,10 +7,11 @@ import { Button } from "@material-tailwind/react";
 const VolunteerNeeds = ({ tabs }) => {
   const [currentTab, setCurrentTab] = useState(0);
   const [direction, setDirection] = useState(1);
+  const [autoAdvance, setAutoAdvance] = useState(true);
 
   // Auto-advance tabs every 5 seconds
   useEffect(() => {
-    if (!tabs || tabs.length === 0) return;
+    if (!tabs || tabs.length === 0 || !autoAdvance) return;
 
     const interval = setInterval(() => {
       setCurrentTab((prev) => {
@@ -20,11 +21,12 @@ const VolunteerNeeds = ({ tabs }) => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [tabs]);
+  }, [tabs, autoAdvance]);
 
   const handleTabChange = (index) => {
     setDirection(index > currentTab ? 1 : -1);
     setCurrentTab(index);
+    setAutoAdvance(false);
   };
 
   if (!tabs || tabs.length === 0) {

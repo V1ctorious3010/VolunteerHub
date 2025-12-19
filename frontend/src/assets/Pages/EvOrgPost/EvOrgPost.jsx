@@ -99,6 +99,18 @@ const EvOrgPost = ({ title }) => {
         COMING: "Sắp diễn ra",
     };
     const navigation = useNavigation();
+    const formatDateOnly = (v) => {
+        if (!v) return "";
+        const s = String(v).trim();
+        const datePart = s.split(" ")[0];
+        if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(datePart)) return datePart;
+        const d = new Date(s);
+        if (isNaN(d)) return datePart;
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const yyyy = d.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    };
     if (navigation.state === "loading") {
         return (
             <div className="flex justify-center items-center min-h-screen">
@@ -140,8 +152,8 @@ const EvOrgPost = ({ title }) => {
                                             <th className="font-semibold">{idx + 1}</th>
                                             <td className="font-semibold">{post.title}</td>
                                             <td className="font-semibold">{post.category}</td>
-                                            <td className="font-semibold">{post.startTime}</td>
-                                            <td className="font-semibold">{post.endTime}</td>
+                                            <td className="font-semibold">{formatDateOnly(post.startTime)}</td>
+                                            <td className="font-semibold">{formatDateOnly(post.endTime)}</td>
                                             <td className="font-semibold">{post.location}</td>
                                             <td className="font-semibold">{STATUS_LABELS[post.status] || post.status}</td>
 

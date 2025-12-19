@@ -97,6 +97,18 @@ const NeedVolunteer = ({ title }) => {
     setGridView(!e);
     console.log(tableView);
   };
+  const formatDateOnly = (v) => {
+    if (!v) return "";
+    const s = String(v).trim();
+    const datePart = s.split(" ")[0];
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(datePart)) return datePart;
+    const d = new Date(s);
+    if (isNaN(d)) return datePart;
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  };
   const navigation = useNavigation();
   if (navigation.state === "loading") {
     return (
@@ -255,8 +267,8 @@ const NeedVolunteer = ({ title }) => {
                             {post.orgName}
                           </td>
                           <td className="font-semibold">{post.category}</td>
-                          <td className="font-semibold">{post.startTime}</td>
-                          <td className="font-semibold">{post.endTime}</td>
+                          <td className="font-semibold">{formatDateOnly(post.startTime)}</td>
+                          <td className="font-semibold">{formatDateOnly(post.endTime)}</td>
                           <td className="font-semibold">{post.location}</td>
                           <td className="font-semibold text-center">
                             {post.noOfVolunteer}
@@ -291,7 +303,7 @@ const NeedVolunteer = ({ title }) => {
                         {volunteers.map((post) => (
                           <tr className="border border-gray-300" key={post.id}>
                             <td>{post.title}</td>
-                            <td>{post.startTime}</td>
+                            <td>{formatDateOnly(post.startTime)}</td>
                             <td>
                               <Link to={`/post-details/${post.id}`} state={{ event: post }}>
                                 <Button color="green">Chi tiết</Button>

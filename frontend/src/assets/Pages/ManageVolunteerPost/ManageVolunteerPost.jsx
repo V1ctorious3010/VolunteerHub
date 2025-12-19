@@ -75,6 +75,19 @@ const ManageVolunteerPost = ({ title }) => {
         }
     };
 
+    const formatDateOnly = (v) => {
+        if (!v) return "";
+        const s = String(v).trim();
+        const datePart = s.split(" ")[0];
+        if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(datePart)) return datePart;
+        const d = new Date(s);
+        if (isNaN(d)) return datePart;
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const yyyy = d.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
@@ -132,8 +145,8 @@ const ManageVolunteerPost = ({ title }) => {
                                             <th className="font-semibold">{idx + 1}</th>
                                             <td className="font-semibold">{ev.title}</td>
                                             <td className="font-semibold">{ev.category}</td>
-                                            <td className="font-semibold">{ev.startTime}</td>
-                                            <td className="font-semibold">{ev.endTime}</td>
+                                            <td className="font-semibold">{formatDateOnly(ev.startTime)}</td>
+                                            <td className="font-semibold">{formatDateOnly(ev.endTime)}</td>
                                             <td className="font-semibold">{ev.location}</td>
                                             <td className="font-semibold">{ev.orgName || ev.orgEmail}</td>
                                             <td className="font-semibold">{ev.status}</td>
@@ -166,7 +179,7 @@ const ManageVolunteerPost = ({ title }) => {
                                     {events.map((ev) => (
                                         <tr className="border border-gray-300" key={ev.id}>
                                             <td>{ev.title}</td>
-                                            <td>{ev.startTime}</td>
+                                            <td>{formatDateOnly(ev.startTime)}</td>
                                             <td>
                                                 {ev.status === 'PENDING' ? (
                                                     <div className="flex items-center gap-2">

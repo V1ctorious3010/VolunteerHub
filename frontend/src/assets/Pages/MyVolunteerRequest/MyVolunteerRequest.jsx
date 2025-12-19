@@ -80,6 +80,19 @@ const MyVolunteerRequest = ({ title }) => {
         return post?.status ?? post?.registrationStatus ?? post?.statusName ?? '';
     };
 
+    const formatDateOnly = (v) => {
+        if (!v) return "";
+        const s = String(v).trim();
+        const datePart = s.split(" ")[0];
+        if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(datePart)) return datePart;
+        const d = new Date(s);
+        if (isNaN(d)) return datePart;
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const yyyy = d.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    };
+
     const renderStatus = (post) => {
         const s = getStatusFromPost(post);
         const map = {
@@ -129,7 +142,7 @@ const MyVolunteerRequest = ({ title }) => {
             ) : myVolunteerRequest.length > 0 ? (
                 <div>
                     <h2 className="text-5xl my-6 font-bold text-center mt-6">
-                        Tổng số đăng ký: {myVolunteerRequest.length}
+                        Lịch sử tham gia
                     </h2>
                     <div className="hidden md:block">
                         <div className="overflow-x-auto ">
@@ -152,7 +165,7 @@ const MyVolunteerRequest = ({ title }) => {
                                             <td className="font-semibold">{post.eventTitle}</td>
                                             <td className="font-semibold">{renderStatus(post)}</td>
                                             <td className="font-semibold">{post.organizerEmail}</td>
-                                            <td className="font-semibold">{post.eventStartTime}</td>
+                                            <td className="font-semibold">{formatDateOnly(post.eventStartTime)}</td>
                                             <td className="font-semibold">{post.eventLocation}</td>
 
                                             <td>
@@ -186,7 +199,7 @@ const MyVolunteerRequest = ({ title }) => {
                                         <tr className="border border-gray-300" key={post.registrationId}>
                                             <td>{post.eventTitle}</td>
                                             <td>{renderStatus(post)}</td>
-                                            <td>{post.eventStartTime}</td>
+                                            <td>{formatDateOnly(post.eventStartTime)}</td>
                                             <td>
                                                 <div className="flex items-center gap-6">
                                                     <GiCancel

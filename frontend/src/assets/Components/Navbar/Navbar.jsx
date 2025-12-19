@@ -169,7 +169,7 @@ const Navbar = () => {
                     {role === ROLE.VOLUNTEER && (
                       <li>
                         <Link to="/my-volunteer-requests" className="justify-between text">
-                          Thông tin đăng ký
+                          Lịch sử tham gia
                         </Link>
                       </li>
                     )}
