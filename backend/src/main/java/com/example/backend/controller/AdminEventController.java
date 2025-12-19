@@ -24,19 +24,20 @@ public class AdminEventController {
     private final EventService eventService;
 
     /**
-     * Get all pending events for approval
-     * GET /admin/events
+     * Get events for admin (with optional status filter)
+     * GET /admin/events?status=PENDING (or null for all events)
      * Role: ADMIN
      */
     @GetMapping("/events")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<EventDetailDto>> getPendingEvents(
+    public ResponseEntity<Page<EventDetailDto>> getEvents(
+            @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size) {
 
-        log.info("Admin GET /admin/events (page={}, size={})", page, size);
+        log.info("Admin GET /admin/events (status={}, page={}, size={})", status, page, size);
 
-        Page<EventDetailDto> events = eventService.getPendingEventsForAdmin(page, size);
+        Page<EventDetailDto> events = eventService.getEventsForAdmin(status, page, size);
         return ResponseEntity.ok(events);
     }
 

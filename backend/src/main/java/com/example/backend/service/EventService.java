@@ -214,15 +214,24 @@ public class EventService {
     }
 
     /**
-     * Get pending events for admin approval
-     * GET /api/admin/events
+     * Get events for admin with optional status filter
+     * GET /api/admin/events?status=PENDING (null for all events)
      */
     @Transactional(readOnly = true)
-    public Page<EventDetailDto> getPendingEventsForAdmin(int page, int size) {
-        log.info("Fetching pending events for admin (page={}, size={})", page, size);
+    public Page<EventDetailDto> getEventsForAdmin(String status, int page, int size) {
+        log.info("Fetching events for admin (status={}, page={}, size={})", status, page, size);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
-        Page<Event> events = eventRepository.findByStatusOrderByCreatedAtAsc(Event.EventStatus.PENDING, pageable);
+        Page<Event> events;
+        
+        if (status == null || status.trim().isEmpty()) {
+            // Get all events
+            events = eventRepository.findAll(pageable);
+        } else {
+            // Filter by specific status
+            Event.EventStatus eventStatus = Event.EventStatus.valueOf(status.toUpperCase());
+            events = eventRepository.findByStatusOrderByCreatedAtAsc(eventStatus, pageable);
+        }
 
         return events.map(this::mapToDetailDto);
     }
