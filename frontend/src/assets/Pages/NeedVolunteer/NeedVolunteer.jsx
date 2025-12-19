@@ -7,7 +7,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { Button, Spinner } from "@material-tailwind/react";
 import axios from "axios";
-import { getEvents } from "../../../utils/localApi";
+import { getEvents, getRecentActivityEvents, getFeaturedEvents } from "../../../utils/localApi";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 
@@ -30,14 +30,20 @@ const NeedVolunteer = ({ title }) => {
   }, []);
   useEffect(() => {
     const getData = async () => {
-      // Map frontend sort to backend sortBy param: "startTime,ASC" or "startTime,DESC"
-      let sortBy = '';
-      if (sort === 'asc') sortBy = 'startTime,ASC';
-      else if (sort === 'desc') sortBy = 'startTime,DESC';
+      let page;
+      if (sort === 'recent') {
+        page = await getRecentActivityEvents(pageNumber, 10);
+      } else if (sort === 'featured') {
+        page = await getFeaturedEvents(pageNumber, 10);
+      } else {
+        let sortBy = '';
+        if (sort === 'asc') sortBy = 'startTime,ASC';
+        else if (sort === 'desc') sortBy = 'startTime,DESC';
+        else if (sort === 'newly') sortBy = 'approvedAt,desc';
 
-      const page = await getEvents({ keyword: search || '', category: category || '', location: '', start: '', page: pageNumber, sortBy });
+        page = await getEvents({ keyword: search || '', category: category || '', location: '', start: '', page: pageNumber, sortBy });
+      }
       const events = Array.isArray(page?.content) ? page.content : [];
-      // normalize events to shape used by UI
       const mapped = events.map(e => ({
         thumbnail: e.thumbnail,
         id: e.id,
@@ -50,6 +56,7 @@ const NeedVolunteer = ({ title }) => {
         noOfVolunteer: e.noOfVolunteer || 0,
         remaining: e.remaining,
         description: e.description || '',
+        status: e.status || e.statusName || e.eventStatus || '',
       }));
 
       setVolunteers(mapped);
@@ -185,8 +192,10 @@ const NeedVolunteer = ({ title }) => {
               onChange={(e) => setSort(e.target.value)}
             >
               <option value="">Không sắp xếp</option>
-              <option value="asc">Mới nhất</option>
-              <option value="desc">Gần hết hạn</option>
+              <option value="newly">Mới nhất</option>
+              <option value="recent">Hoạt động gần đây</option>
+              <option value="featured">Nổi bật</option>
+              <option value="desc">Cũ nhất</option>
             </select>
           </div>
         </div>

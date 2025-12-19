@@ -27,8 +27,12 @@ const PostDetails = ({ title2 }) => {
     endTime,
     description,
     orgEmail,
-    orgName
+    orgName,
+    status,
+    statusName,
+    eventStatus
   } = post || {};
+  const postStatus = status || statusName || eventStatus || "";
   const formatDateOnly = (v) => {
     if (!v) return "";
     const s = String(v).trim();
@@ -176,7 +180,7 @@ const PostDetails = ({ title2 }) => {
               </div>
             </div>
             <div className="mb-4 flex w-full items-center gap-3 flex-wrap">
-              {isVolunteer ? (
+              {isVolunteer && postStatus !== 'ONGOING' ? (
                 <Button
                   onClick={handleVolunteer}
                   color="red"

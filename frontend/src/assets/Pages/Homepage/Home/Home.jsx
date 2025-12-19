@@ -64,6 +64,7 @@ const Home = ({ title }) => {
             category: e.category || "General",
             startTime: e.startTime || e.deadline,
             description: e.description || "",
+            status: e.status || e.statusName || e.eventStatus || "",
           }));
 
         setTabs([

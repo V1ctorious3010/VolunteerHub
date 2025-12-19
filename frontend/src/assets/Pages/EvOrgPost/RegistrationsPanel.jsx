@@ -34,6 +34,19 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
         return () => { mounted = false };
     }, [selectedEvent, regsPage, regsSize, refreshCounter]);
 
+    const formatDateOnly = (v) => {
+        if (!v) return "";
+        const s = String(v).trim();
+        const datePart = s.split(" ")[0];
+        if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(datePart)) return datePart;
+        const d = new Date(s);
+        if (isNaN(d)) return datePart;
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const yyyy = d.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    };
+
     const handleAction = async (registrationId, status) => {
         try {
             const resp = await patchRegistrationStatus(registrationId, { status });
@@ -76,7 +89,7 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
                                         <th className="font-semibold">{idx + 1}</th>
                                         <td className="font-semibold">{r.userName || r.userFullName || r.name}</td>
                                         <td className="font-semibold">{r.userEmail || r.email}</td>
-                                        <td className="font-semibold">{r.registeredAt || r.eventStartTime}</td>
+                                        <td className="font-semibold">{formatDateOnly(r.registeredAt || r.eventStartTime)}</td>
                                         <td className="font-semibold">{r.eventLocation || currentEventObj?.location || ''}</td>
                                         <td className="font-semibold">{r.status}</td>
                                         <td>
