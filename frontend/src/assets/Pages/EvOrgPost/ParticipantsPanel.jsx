@@ -44,6 +44,18 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
         return `${dd}/${mm}/${yyyy}`;
     };
 
+    const mapStatus = (s) => {
+        if (!s) return '';
+        const key = String(s).toUpperCase();
+        switch (key) {
+            case 'APPROVED': return 'Đồng ý';
+            case 'REJECTED': return 'Từ chối';
+            case 'COMPLETED': return 'Hoàn thành';
+            case 'PENDING': return 'Chờ duyệt';
+            default: return s;
+        }
+    };
+
     return (
         <>
             {loading ? (
@@ -53,7 +65,7 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
             ) : report && report.volunteers.content.length > 0 ? (
                 <div>
                     <div className="overflow-x-auto">
-                        <table className="table border-collapse border border-gray-400 w-full">
+                        <table className="table border-collapse border border-gray-400 w-full text-center">
                             <thead>
                                 <tr className="text-white raleway text-base bg-[#2986cc]">
                                     <th></th>
@@ -72,7 +84,7 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
                                         <td className="font-semibold">{v.email || v.userEmail}</td>
                                         <td className="font-semibold">{formatDateOnly(currentEventObj?.startTime || v.registeredAt)}</td>
                                         <td className="font-semibold">{currentEventObj?.location || ''}</td>
-                                        <td className="font-semibold">{v.status}</td>
+                                        <td className="font-semibold">{mapStatus(v.status)}</td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -241,7 +241,7 @@ const ManageVolunteers = ({ title }) => {
                         <div>
                             <div className="hidden md:block">
                                 <div className="overflow-x-auto ">
-                                    <table className="table border-collapse border border-gray-400 w-full">
+                                    <table className="table border-collapse border border-gray-400 w-full text-center">
                                         <thead>
                                             <tr className="text-white raleway text-base bg-[#2986cc]">
                                                 <th className="px-4 py-3"></th>
@@ -261,7 +261,7 @@ const ManageVolunteers = ({ title }) => {
                                                     <td className="font-semibold px-4 py-3">{getRoleBadge(volunteer.role)}</td>
                                                     <td className="font-semibold px-4 py-3">{getStatusBadge(volunteer.locked)}</td>
                                                     <td className="px-4 py-3">
-                                                        <div className="flex items-center gap-4">
+                                                        <div className="flex items-center gap-4 justify-center">
                                                             {volunteer.email === user.email ? (
                                                                 <span className="text-gray-400 italic">Bạn</span>
                                                             ) : volunteer.role === ROLE.ADMIN ? (
@@ -297,9 +297,9 @@ const ManageVolunteers = ({ title }) => {
                             {/* Mobile view */}
                             <div className="md:hidden">
                                 <div className="overflow-x-auto ">
-                                    <table className="table border-collapse border border-gray-400 w-full">
+                                    <table className="table border-collapse border border-gray-400 w-full text-center">
                                         <thead>
-                                            <tr className="text-white raleway text-base bg-[#DE00DF]">
+                                            <tr className="text-white raleway text-base bg-[#2986cc]">
                                                 <th className="px-4 py-3">Họ tên</th>
                                                 <th className="px-4 py-3">Trạng thái</th>
                                                 <th className="px-4 py-3">Hành động</th>

@@ -10,7 +10,7 @@ import backIcon from '../../images/back.svg';
 
 const EvOrgTabs = ({ title }) => {
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const [activeTab, setActiveTab] = useState('registrations');
+    const [tabIndex, setTabIndex] = useState(0);
 
     const navigate = useNavigate();
 
@@ -50,10 +50,10 @@ const EvOrgTabs = ({ title }) => {
                 </div>
             </div>
 
-            <Tabs selectedIndex={activeTab === 'participants' ? 1 : 0} onSelect={(index) => { setActiveTab(index === 1 ? 'participants' : 'registrations'); }}>
-                <TabList className="mx-0 md:mx-0 flex items-center justify-start mb-4">
-                    <Tab className={`tab tab-lifted ${activeTab === 'registrations' ? 'bg-gray-200 text-gray-800' : ''}`}>Danh sách đăng ký</Tab>
-                    <Tab className={`tab tab-lifted ${activeTab === 'participants' ? 'bg-gray-200 text-gray-800' : ''}`}>Danh sách tham gia</Tab>
+            <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
+                <TabList className="mx-0 md:mx-0 flex items-center justify-center mb-4">
+                    <Tab>Danh sách đăng ký</Tab>
+                    <Tab>Danh sách tham gia</Tab>
                 </TabList>
 
                 <TabPanel>

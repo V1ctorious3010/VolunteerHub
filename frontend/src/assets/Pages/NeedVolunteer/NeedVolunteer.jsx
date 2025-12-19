@@ -251,7 +251,7 @@ const NeedVolunteer = ({ title }) => {
             <div data-aos="fade-up" data-aos-easing="linear" data-aos-duration="1500" className="container mx-auto mt-16">
               <div className="hidden md:block">
                 <div className="overflow-x-auto ">
-                  <table className="table border-collapse border border-gray-400">
+                  <table className="table border-collapse border border-gray-400 text-center">
                     {/* head */}
                     <thead>
                       <tr className="text-white raleway text-base bg-[#2986cc]">
@@ -298,10 +298,10 @@ const NeedVolunteer = ({ title }) => {
               <div>
                 <div data-aos="fade-up" data-aos-easing="linear" data-aos-duration="1500" className=" md:hidden">
                   <div className="overflow-x-auto ">
-                    <table className="table border-collapse border border-gray-400">
+                    <table className="table border-collapse border border-gray-400 text-center">
                       {/* head */}
                       <thead>
-                        <tr className="text-white raleway text-base bg-[#DE00DF]">
+                        <tr className="text-white raleway text-base bg-[#2986cc]">
                           <th>Tên </th>
                           <th>Hạn cuối</th>
                           <th>Chi tiết</th>
@@ -310,7 +310,7 @@ const NeedVolunteer = ({ title }) => {
                       <tbody>
                         {/* row 1 */}
                         {volunteers.map((post) => (
-                          <tr className="border border-gray-300" key={post.id}>
+                          <tr className="border border-gray-300 justify-center" key={post.id}>
                             <td>{post.title}</td>
                             <td>{formatDateOnly(post.startTime)}</td>
                             <td>

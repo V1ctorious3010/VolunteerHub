@@ -61,6 +61,17 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
             Swal.fire({ title: 'Error', text: emsg, icon: 'error' });
         }
     };
+    const mapStatus = (s) => {
+        if (!s) return '';
+        const key = String(s).toUpperCase();
+        switch (key) {
+            case 'APPROVED': return 'Đồng ý';
+            case 'REJECTED': return 'Từ chối';
+            case 'COMPLETED': return 'Hoàn thành';
+            case 'PENDING': return 'Chờ duyệt';
+            default: return s;
+        }
+    };
     return (
         <>
             {loading ? (
@@ -69,9 +80,8 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
                 </div>
             ) : registrations && registrations.length > 0 ? (
                 <div>
-                    <h3 className="text-lg font-semibold mb-4">Tổng đăng ký: {registrations.length}</h3>
                     <div className="overflow-x-auto">
-                        <table className="table border-collapse border border-gray-400 w-full">
+                        <table className="table border-collapse border border-gray-400 w-full text-center">
                             <thead>
                                 <tr className="text-white raleway text-base bg-[#2986cc]">
                                     <th></th>
@@ -91,9 +101,9 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
                                         <td className="font-semibold">{r.userEmail || r.email}</td>
                                         <td className="font-semibold">{formatDateOnly(r.registeredAt || r.eventStartTime)}</td>
                                         <td className="font-semibold">{r.eventLocation || currentEventObj?.location || ''}</td>
-                                        <td className="font-semibold">{r.status}</td>
+                                        <td className="font-semibold">{mapStatus(r.status)}</td>
                                         <td>
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 justify-center">
                                                 {r.status === 'PENDING' && (
                                                     <button className="btn btn-sm bg-green-500" onClick={() => handleAction(r.registrationId ?? r.id, 'APPROVED')}>Đồng ý</button>
                                                 )}

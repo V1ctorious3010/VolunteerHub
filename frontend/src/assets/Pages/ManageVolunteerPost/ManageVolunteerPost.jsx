@@ -125,7 +125,7 @@ const ManageVolunteerPost = ({ title }) => {
                 <div>
                     <div className="hidden md:block">
                         <div className="overflow-x-auto ">
-                            <table className="table border-collapse border border-gray-400 w-full">
+                            <table className="table border-collapse border border-gray-400 w-full text-center">
                                 <thead>
                                     <tr className="text-white raleway text-base bg-[#2986cc]">
                                         <th></th>
@@ -152,7 +152,7 @@ const ManageVolunteerPost = ({ title }) => {
                                             <td className="font-semibold">{ev.status}</td>
                                             <td>
                                                 {ev.status === 'PENDING' ? (
-                                                    <div className="flex items-center gap-2">
+                                                    <div className="flex items-center gap-2 justify-center">
                                                         <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, 'COMING')}>Duyệt</button>
                                                         <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, 'REJECTED')}>Từ chối</button>
                                                     </div>
@@ -167,9 +167,9 @@ const ManageVolunteerPost = ({ title }) => {
 
                     <div className="md:hidden">
                         <div className="overflow-x-auto ">
-                            <table className="table border-collapse border border-gray-400 w-full">
+                            <table className="table border-collapse border border-gray-400 w-full text-center">
                                 <thead>
-                                    <tr className="text-white raleway text-base bg-[#DE00DF]">
+                                    <tr className="text-white raleway text-base bg-[#2986cc]">
                                         <th>Tiêu đề</th>
                                         <th>Thời gian bắt đầu</th>
                                         <th>Hành động</th>

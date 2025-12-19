@@ -146,7 +146,7 @@ const MyVolunteerRequest = ({ title }) => {
                     </h2>
                     <div className="hidden md:block">
                         <div className="overflow-x-auto ">
-                            <table className="table border-collapse border border-gray-400">
+                            <table className="table border-collapse border border-gray-400 text-center">
                                 <thead>
                                     <tr className="text-white raleway text-base bg-[#2986cc]">
                                         <th></th>
@@ -169,7 +169,7 @@ const MyVolunteerRequest = ({ title }) => {
                                             <td className="font-semibold">{post.eventLocation}</td>
 
                                             <td>
-                                                <div className="flex items-center gap-6">
+                                                <div className="flex items-center gap-6 justify-center">
                                                     <GiCancel
                                                         title="Cancel Request"
                                                         onClick={() => handleCancel(post.registrationId)}
@@ -185,7 +185,7 @@ const MyVolunteerRequest = ({ title }) => {
                     </div>
                     <div className=" md:hidden">
                         <div className="overflow-x-auto ">
-                            <table className="table border-collapse border border-gray-400">
+                            <table className="table border-collapse border border-gray-400 text-center">
                                 <thead>
                                     <tr className="text-white raleway text-base bg-[#2986cc]">
                                         <th>Sự kiện </th>
@@ -201,7 +201,7 @@ const MyVolunteerRequest = ({ title }) => {
                                             <td>{renderStatus(post)}</td>
                                             <td>{formatDateOnly(post.eventStartTime)}</td>
                                             <td>
-                                                <div className="flex items-center gap-6">
+                                                <div className="flex items-center gap-6 justify-center">
                                                     <GiCancel
                                                         title="Cancel Request"
                                                         onClick={() => handleCancel(post.registrationId)}

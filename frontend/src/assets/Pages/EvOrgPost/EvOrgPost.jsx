@@ -133,7 +133,7 @@ const EvOrgPost = ({ title }) => {
                     </h2>
                     <div className="hidden md:block">
                         <div className="overflow-x-auto ">
-                            <table className="table border-collapse border border-gray-400">
+                            <table className="table border-collapse border border-gray-400 text-center">
                                 <thead>
                                     <tr className="text-white raleway text-base bg-[#2986cc]">
                                         <th></th>
@@ -158,7 +158,7 @@ const EvOrgPost = ({ title }) => {
                                             <td className="font-semibold">{STATUS_LABELS[post.status] || post.status}</td>
 
                                             <td>
-                                                <div className="flex items-center gap-6">
+                                                <div className="flex items-center gap-6 justify-center">
                                                     <Link to={`/update-my-post/${post.id}`}>
                                                         <MdEdit className="size-6" />
                                                     </Link>
@@ -179,9 +179,9 @@ const EvOrgPost = ({ title }) => {
                     <div>
                         <div className=" md:hidden">
                             <div className="overflow-x-auto ">
-                                <table className="table border-collapse border border-gray-400">
+                                <table className="table border-collapse border border-gray-400 text-center">
                                     <thead>
-                                        <tr className="text-white raleway text-base bg-[#DE00DF]">
+                                        <tr className="text-white raleway text-base bg-[#2986cc]">
                                             <th>Tên sự kiện </th>
                                             <th>Phân loại</th>
                                             <th>Hành dộng</th>
@@ -194,7 +194,7 @@ const EvOrgPost = ({ title }) => {
                                                 <td>{post.category}</td>
                                                 <td>
                                                     {((post.orgEmail && post.orgEmail === user?.email) || (post.orgName && post.orgName === user?.name)) ? (
-                                                        <div className="flex items-center gap-6">
+                                                        <div className="flex items-center gap-6 justify-center">
                                                             <Link to={`/update-my-post/${post.id}`}>
                                                                 <MdEdit className="size-6" />
                                                             </Link>
