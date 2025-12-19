@@ -27,11 +27,22 @@ public class UserController {
     private CloudinaryService cloudinaryService;
     @Autowired
     private UserRepository userRepository;
+
+    /**
+     * Get all volunteers
+     * GET /user/users
+     * Auth: Public
+     */
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.getAllVolunteers();
     }
 
+    /**
+     * Ban a user account
+     * POST /user/ban
+     * Role: ADMIN
+     */
     @PostMapping("/ban")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> banUser(@RequestBody @Valid UserStatusRequest request) {
@@ -39,20 +50,36 @@ public class UserController {
         userService.banUser(request.getEmail());
 
         return ResponseEntity.ok()
-            .body(Map.of("message", "Account has been locked: " + request.getEmail()));
+            .body(Map.of("message", "Đã cấm tài khoản " + request.getEmail()));
     }
 
+    /**
+     * Unban a user account
+     * POST /user/unban
+     * Role: ADMIN
+     */
     @PostMapping("/unban")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> unbanUser(@RequestBody @Valid UserStatusRequest request) {
         userService.unbanUser(request.getEmail());
         return ResponseEntity.ok()
-            .body(Map.of("message", "Account has been unlocked: " + request.getEmail()));
+            .body(Map.of("message", "Đã bỏ cấm tài khoản: " + request.getEmail()));
     }
+
+    /**
+     * Get Cloudinary signature for direct upload
+     * GET /user/signature
+     * Auth: Any authenticated user
+     */
     @GetMapping("/signature")
     public ResponseEntity<?> getSignature() {
         return ResponseEntity.ok(cloudinaryService.getSignature());
     }
+    /**
+     * Update user avatar
+     * POST /user/avatar
+     * Auth: Any authenticated user
+     */
     @PostMapping("/avatar")
     public ResponseEntity<?> updateAvatar(@RequestBody UserAvatarDTO request) {
 
@@ -61,7 +88,7 @@ public class UserController {
             return ResponseEntity.status(401).body("Bạn chưa đăng nhập!");
         }
         User user = userRepository.findByEmail(currentUserEmail)
-            .orElseThrow(() -> new RuntimeException("Khong tim thay nguoi dung: " + currentUserEmail));
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với email: " + currentUserEmail));
 
         user.setAvatar(request.getAvatarUrl());
         userRepository.save(user);

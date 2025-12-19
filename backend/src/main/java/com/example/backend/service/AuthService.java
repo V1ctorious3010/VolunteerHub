@@ -27,6 +27,12 @@ public class AuthService {
     private NotificationProducer notificationProducer;
     @Autowired
     private UserService userService;
+    /**
+     * Register a new user
+     * @param req the registration request containing email, password, name, and role
+     * @return the registered User entity
+     * @throws BadCredentialsAppException if email already exists
+     */
     @Transactional
     public User register(RegisterRequest req) {
         userRepository.findByEmail(req.getEmail())
@@ -45,40 +51,54 @@ public class AuthService {
         return saved;
     }
 
+    /**
+     * Login and return the User entity if successful
+     * @param req the login request containing email and password
+     * @return the User entity
+     * @throws BadCredentialsAppException if email does not exist, password is incorrect, or account is locked
+     */
     @Transactional(readOnly = true)
     public User loginAndGetUser(LoginRequest req) {
         User v = userRepository.findByEmail(req.getEmail())
-            .orElseThrow(() -> new BadCredentialsAppException("Email does not exist or is incorrect."));
+            .orElseThrow(() -> new BadCredentialsAppException("Email không tồn tại."));
         if (!passwordEncoder.matches(req.getPassword(), v.getPassword())) {
-            throw new BadCredentialsAppException("The password is incorrect.");
+            throw new BadCredentialsAppException("Mật khẩu không đúng.");
         }
         if (v.isLocked()) {
-            throw new BadCredentialsAppException("This account has been locked.");
+            throw new BadCredentialsAppException("Tài khoản đã bị cấm.");
         }
         return v;
     }
 
+    /**
+     * Generate access token for user
+     */
     @Transactional(readOnly = true)
     public String generateAccessToken(User v) {
         return jwtService.generateAccessToken(v);
     }
 
+    /**
+     * Generate refresh token for user
+     */
     @Transactional(readOnly = true)
     public String generateRefreshToken(User v) {
         return jwtService.generateRefreshToken(v);
     }
 
     /**
-     * Nhận refreshToken, validate, trả về accessToken mới
+     * Refresh access token using refresh token
+     * @param refreshToken the refresh token
+     * @return a map containing the new access token and refresh token
      */
     @Transactional(readOnly = true)
     public Map<String, String> refreshAccessToken(String refreshToken) {
         User v = jwtService.validateRefreshAndLoadUser(refreshToken);
         if (v == null) {
-            throw new BadCredentialsAppException("The refresh token is invalid or has expired.");
+            throw new BadCredentialsAppException("Không thể xác thực token làm mới.");
         }
         if (v.isLocked()) {
-            throw new BadCredentialsAppException("This account has been locked.");
+            throw new BadCredentialsAppException("Tài khoản đã bị cấm.");
         }
         String newAccess = jwtService.generateAccessToken(v);
         String newRefresh = jwtService.generateRefreshToken(v);

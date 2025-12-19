@@ -21,10 +21,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
+    /**
+     * Constructor for JwtAuthenticationFilter.
+     * @param jwtService the JWT service to handle token operations
+     */
     public JwtAuthenticationFilter(JwtService jwtService) {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Filters incoming requests to authenticate users based on JWT tokens in cookies.
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param filterChain the filter chain
+     * @throws ServletException if a servlet error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
         HttpServletResponse response,
@@ -55,6 +67,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Retrieves a token from cookies in the HTTP request.
+     * @param request the HTTP request
+     * @param name the name of the cookie to retrieve
+     * @return the token value if found, otherwise null
+     */
     private String getTokenFromCookies(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;

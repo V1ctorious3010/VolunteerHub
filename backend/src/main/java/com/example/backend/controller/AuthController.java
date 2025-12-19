@@ -29,6 +29,14 @@ public class AuthController {
     private static final String REFRESH_PATH = "/auth";
     private final UserRepository userRepository;
 
+    /**
+     * Create a secure HTTP-only cookie
+     * @param name name of the cookie
+     * @param value value of the cookie
+     * @param path path where the cookie is valid
+     * @param duration duration before the cookie expires
+     * @return ResponseCookie
+     */
     private ResponseCookie createCookie(String name, String value, String path, Duration duration) {
         return ResponseCookie.from(name, value)
             .httpOnly(true)
@@ -38,6 +46,12 @@ public class AuthController {
             .maxAge(duration)
             .build();
     }
+    /**
+     * Build authentication response with tokens in cookies
+     * @param v authenticated user
+     * @param message success message
+     * @return ResponseEntity with AuthResponse body and cookies set
+     */
     private ResponseEntity<AuthResponse> buildAuthResponse(User v, String message) {
         String accessToken = authService.generateAccessToken(v);
         String refreshToken = authService.generateRefreshToken(v);
@@ -53,24 +67,39 @@ public class AuthController {
             .body(resp);
     }
 
+    /**
+     * Login endpoint
+     * @param req  login request body
+     * @return
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Validated LoginRequest req) {
         User v = authService.loginAndGetUser(req);
-        return buildAuthResponse(v, "You have logged in successfully.");
+        return buildAuthResponse(v, "Bạn đã đăng nhập thành công.");
     }
-    
+
+    /**
+     * Register endpoint
+     * @param req register request body
+     * @return
+     */
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody @Validated RegisterRequest req) {
         User v = authService.register(req);
-        return buildAuthResponse(v, "You have registered successfully and have been logged in automatically.");
+        return buildAuthResponse(v, "Bạn đã đăng ký thành công và sẽ được đăng nhập ngay bây giờ.");
     }
 
+    /**
+     * Refresh access token using refresh token from cookies
+     * @param refreshToken refresh token from cookies
+     * @return ResponseEntity with new tokens in cookies
+     */
     @PostMapping("/refresh")
     public ResponseEntity<Void> refresh(
         @CookieValue(name = "refreshToken", required = false) String refreshToken // auto find refresh token from request cookies
     ) {
         if (refreshToken == null || refreshToken.isBlank()) {
-            throw new BadCredentialsAppException("Refresh token is missing or empty.");
+            throw new BadCredentialsAppException("Không tìm thấy refresh token.");
         }
 
         Map<String, String> tokens = authService.refreshAccessToken(refreshToken);
@@ -83,12 +112,16 @@ public class AuthController {
             .build();
     }
 
+    /**
+     * Logout endpoint - clear the authentication cookies
+     * @return ResponseEntity with cleared cookies
+     */
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logout() {
         ResponseCookie accessCookie = createCookie("accessToken", "", "/", Duration.ZERO);
         ResponseCookie refreshCookie = createCookie("refreshToken", "", "/auth", Duration.ZERO);
         AuthResponse resp = new AuthResponse(
-            "You have logged out successfully.",
+            "Bạn đã đăng xuất thành công.",
             null,
             null, null, null
         );
@@ -98,16 +131,21 @@ public class AuthController {
             .body(resp);
     }
 
+    /**
+     * Get current authenticated user's info
+     * @param accessToken access token from cookies
+     * @return AuthResponse with user info
+     */
     @GetMapping("/me")
     public AuthResponse me(
         @CookieValue(name = ACCESS_TOKEN_COOKIE, required = false) String accessToken
     ) {
         if (accessToken == null || accessToken.isBlank()) {
-            throw new BadCredentialsAppException("Access token is missing or empty.");
+            throw new BadCredentialsAppException("Không tìm thấy access token.");
         }
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User u = userRepository.findByEmail(email)
-            .orElseThrow(() -> new BadCredentialsAppException("User not found"));
+            .orElseThrow(() -> new BadCredentialsAppException("Không tìm thấy người dùng."));
         return new AuthResponse("INFO", u.getName(), u.getEmail(), u.getRole(), u.getAvatar());
     }
 }

@@ -7,9 +7,17 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, String> {
 
-    // Phương thức tìm kiếm Tình nguyện viên theo Email
+    /**
+     * Find user by email
+     * @param email the email of the user
+     * @return the user
+     */
     Optional<User> findByEmail(String email);
 
-    // Count users by role (not locked) for statistics
+    /**
+     * Count users by roles and not locked
+     * @param roles the roles to filter
+     * @return the count of users
+     */
     long countByRoleInAndIsLockedFalse(User.Role... roles);
 }

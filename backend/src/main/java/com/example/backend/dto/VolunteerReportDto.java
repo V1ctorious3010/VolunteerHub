@@ -24,5 +24,5 @@ public class VolunteerReportDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime registeredAt;
     
-    private String status; // APPROVED, COMPLETED
+    private String status;
 }

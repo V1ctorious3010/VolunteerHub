@@ -12,14 +12,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    // Tìm thông báo theo Email user, sắp xếp mới nhất lên đầu
-    // Complexity: O(log N + K) nhờ Index (user_email, created_at)
+    /**
+     * Get notifications for a specific user, ordered by creation date descending
+     * @param email email of the user
+     * @param pageable pagination information
+     * @return paginated notifications
+     */
     Page<Notification> findByUser_EmailOrderByCreatedAtDesc(String email, Pageable pageable);
 
-    // Đếm số thông báo chưa đọc (để hiển thị số trên quả chuông)
+    /**
+     * Count unread notifications for a specific user
+     * @param email email of the user
+     * @return count of unread notifications
+     */
     long countByUser_EmailAndIsReadFalse(String email);
 
-    // Đánh dấu tất cả là đã đọc (Optional)
+    /**
+     * Mark all notifications as read for a specific user
+     * @param email email of the user
+     */
     @Modifying
     @Transactional
     @Query("UPDATE Notification n SET n.isRead = true WHERE n.user.email = :email")

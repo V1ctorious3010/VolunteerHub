@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class UserStatusRequest {
-    @Email(message = "Must be a valid email format.")
+    @Email(message = "")
     @NotBlank(message = "Email must not be empty.")
     private String email;
 }

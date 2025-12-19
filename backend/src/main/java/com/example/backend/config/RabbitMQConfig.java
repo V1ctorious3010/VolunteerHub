@@ -14,26 +14,31 @@ public class RabbitMQConfig {
     public static final String EXCHANGE = "notify_exchange";
     public static final String ROUTING_KEY = "notify_key";
 
+    /** RabbitMQ Configuration Beans */
     @Bean
     public Queue queue() {
         return new Queue(QUEUE, true);
     }
 
+    /** Topic Exchange Bean */
     @Bean
     public TopicExchange exchange() {
         return new TopicExchange(EXCHANGE);
     }
 
+    /** Binding between Queue and Exchange with Routing Key */
     @Bean
     public Binding binding(Queue queue, TopicExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
     }
 
+    /** Message Converter Bean */
     @Bean
     public MessageConverter converter() {
         return new Jackson2JsonMessageConverter();
     }
 
+    /** AMQP Template Bean */
     @Bean
     public AmqpTemplate template(ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);

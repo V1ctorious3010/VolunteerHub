@@ -13,6 +13,11 @@ public class CloudinaryService {
     @Autowired
     private Cloudinary cloudinary;
 
+    /**
+     * Get signature for uploading avatar to Cloudinary
+     * @return map containing signature, timestamp, api_key, cloud_name, and folder
+     * @throws BadCredentialsAppException if signature generation fails
+     */
     public Map<String, Object> getSignature() {
         try {
             long timestamp = System.currentTimeMillis() / 1000;
@@ -33,7 +38,7 @@ public class CloudinaryService {
                 "folder", folder
             );
         } catch (Exception e) {
-            throw new BadCredentialsAppException("Lỗi tạo chữ ký");
+            throw new BadCredentialsAppException("Lỗi tạo chữ ký cho Cloudinary");
         }
     }
 }

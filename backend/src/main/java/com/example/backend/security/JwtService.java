@@ -24,6 +24,10 @@ public class JwtService {
     private final Duration accessTtl;
     private final Duration refreshTtl;
 
+    /**
+     * @param accessSecret base64-encoded or plain string
+     * @param refreshSecret base64-encoded or plain string
+     */
     public JwtService(
         UserRepository userRepository,
         @Value("${security.jwt.access.secret}") String accessSecret,
@@ -38,6 +42,11 @@ public class JwtService {
         this.refreshTtl = Duration.ofDays(refreshDays);
     }
 
+    /**
+     * Generate access token for Volunteer
+     * @param v the Volunteer
+     * @return the JWT access token
+     */
     public String generateAccessToken(User v) {
         return buildToken(
             Map.of(
@@ -51,6 +60,11 @@ public class JwtService {
         );
     }
 
+    /**
+     * Generate refresh token for Volunteer
+     * @param v the Volunteer
+     * @return the JWT refresh token
+     */
     public String generateRefreshToken(User v) {
         return buildToken(
             Map.of("type", "refresh"),
@@ -60,6 +74,9 @@ public class JwtService {
         );
     }
 
+    /**
+     * Validate access token
+     */
     public boolean isAccessTokenValid(String token) {
         try {
             Claims c = parse(token, accessKey);
@@ -69,6 +86,11 @@ public class JwtService {
         }
     }
 
+    /**
+     * Extract email from access token
+     * @param token the JWT access token
+     * @return the email
+     */
     public String extractEmailFromAccess(String token) {
         Claims c = parse(token, accessKey);
         if (!"access".equals(c.get("type"))) {
@@ -78,7 +100,9 @@ public class JwtService {
     }
 
     /**
-     * Validate refresh token, trả về Volunteer nếu hợp lệ, null nếu sai / hết hạn
+     * Validate refresh token and load the associated Volunteer
+     * @param refreshToken the JWT refresh token
+     * @return the Volunteer if valid; null otherwise
      */
     public User validateRefreshAndLoadUser(String refreshToken) {
         if (refreshToken == null || refreshToken.isBlank()) {
@@ -99,8 +123,9 @@ public class JwtService {
         }
     }
 
-    // ================== private helpers ==================
-
+    /**
+     * Build a JWT token
+     */
     private String buildToken(
         Map<String, Object> claims,
         String subject,
@@ -118,6 +143,9 @@ public class JwtService {
             .compact();
     }
 
+    /**
+     * Parse JWT token and return claims
+     */
     private Claims parse(String token, SecretKey key) {
         return Jwts.parserBuilder()
             .setSigningKey(key)
@@ -126,11 +154,17 @@ public class JwtService {
             .getBody();
     }
 
+    /**
+     * Check if the token is expired
+     */
     private boolean isExpired(Claims claims) {
         Date exp = claims.getExpiration();
         return exp == null || exp.before(new Date());
     }
 
+    /**
+     * Decode secret key from base64 or plain string
+     */
     private SecretKey decodeKey(String maybeBase64) {
         try {
             byte[] decoded = Decoders.BASE64.decode(maybeBase64);
@@ -140,6 +174,9 @@ public class JwtService {
         }
     }
 
+    /**
+     * Extract role from access token
+     */
     public String extractRole(String token) {
         return parse(token, accessKey).get("role", String.class);
     }

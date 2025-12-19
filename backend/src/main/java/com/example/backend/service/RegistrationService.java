@@ -207,7 +207,7 @@ public class RegistrationService {
         String userEmail = registration.getUser().getEmail();
         String eventName = registration.getEvent().getTitle();
         try {
-            String content = "Đơn đăng kí của bạn cho sự kiện " + eventName + "đã ";
+            String content = "Đơn đăng kí của bạn cho sự kiện " + eventName + " đã";
             if(newStatus.equals(RequestStatus.COMPLETED)) {
                 content = "Bạn đã được xác nhận hoàn thành sự kiện " + eventName;
             }

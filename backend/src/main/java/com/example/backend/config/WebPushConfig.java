@@ -20,6 +20,11 @@ public class WebPushConfig {
     @Value("${vapid.subject}")
     private String subject;
 
+    /**
+     * Configure PushService for Web Push API
+     * @return the PushService bean
+     * @throws Exception if keys are invalid
+     */
     @Bean
     public PushService pushService() throws Exception {
         if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {

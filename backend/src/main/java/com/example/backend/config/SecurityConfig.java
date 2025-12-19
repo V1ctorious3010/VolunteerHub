@@ -30,7 +30,10 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthFilter;
 
-    // Tạo nguồn cấu hình CORS
+    /**
+     * Configure CORS settings
+     * @return CorsConfigurationSource
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -49,32 +52,27 @@ public class SecurityConfig {
         return source;
     }
 
+    /**
+     * Configure security filter chain
+     * @param http HttpSecurity
+     * @return SecurityFilterChain
+     * @throws Exception in case of any error
+     */
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Áp dụng CORS cấu hình ở trên
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-            // Vô hiệu hóa CSRF cho Stateless API
             .csrf(AbstractHttpConfigurer::disable)
-
-            // Vô hiệu hóa Form Login và Basic Auth
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
-
-            // Thiết lập Session là STATELESS
             .sessionManagement(
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .logout(AbstractHttpConfigurer::disable)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            // Cấu hình ủy quyền
             .authorizeHttpRequests(auth -> auth
-                // Cho phép OPTIONS (CORS pre-flight)
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                // Cho phép các API công khai truy cập không cần xác thực = access token
                 .requestMatchers(
                     "/",
                     "/auth/register",
@@ -84,20 +82,19 @@ public class SecurityConfig {
                     "/error",
                     "/statistics"
                 ).permitAll()
-                
-                // Cho phép GET /events và các endpoints public
                 .requestMatchers(HttpMethod.GET, "/events", "/events/recent-activity", "/events/featured").permitAll()
                 .requestMatchers(new RegexRequestMatcher("/events/\\d+", "GET")).permitAll()
-                
                 .requestMatchers(HttpMethod.GET, "/posts/for-you").permitAll()
-
-                // Mọi request khác đều phải được xác thực
                 .anyRequest().authenticated()
             );
 
         return http.build();
     }
 
+    /**
+     * Password encoder bean using BCrypt
+     * @return PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

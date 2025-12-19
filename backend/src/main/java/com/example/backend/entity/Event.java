@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "event") // Tên bảng trong MySQL là event
-@Data // Tự động tạo getters, setters, toString, equals, hashCode (Lombok)
+@Table(name = "event")
+@Data
 public class Event {
 
     public enum EventStatus {

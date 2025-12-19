@@ -26,8 +26,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final RegistrationRepository registrationRepository;
+
     /**
-     * Lấy danh sách tất cả volunteer (không phân trang)
+     * Get all volunteers
+     * @return List of volunteers
      */
     @Transactional(readOnly = true)
     public List<User> getAllVolunteers() {
@@ -35,7 +37,9 @@ public class UserService {
     }
 
     /**
-     * Lấy danh sách volunteer có phân trang
+     * Get paginated volunteers
+     * @param pageable pagination information
+     * @return Page of volunteers
      */
     @Transactional(readOnly = true)
     public Page<User> getVolunteers(Pageable pageable) {
@@ -50,11 +54,11 @@ public class UserService {
     @Transactional
     public void banUser(String email) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new BadCredentialsAppException("The user was not found."));
+            .orElseThrow(() -> new BadCredentialsAppException("Không tìm thấy người dùng."));
         
         user.setLocked(true);
         userRepository.save(user);
-        log.info("User {} has been locked", email);
+        log.info("Người dùng {} đã bị cấm", email);
 
         // If organizer: auto-reject all PENDING events
         if (user.getRole() == User.Role.EVENT_ORGANIZER) {
@@ -64,10 +68,10 @@ public class UserService {
             if (!pendingEvents.isEmpty()) {
                 pendingEvents.forEach(event -> {
                     event.setStatus(Event.EventStatus.REJECTED);
-                    log.info("Auto-rejected event {} due to organizer ban", event.getId());
+                    log.info("Tự động hủy sự kiện {} vì người tổ chức đã bị cấm", event.getId());
                 });
                 eventRepository.saveAll(pendingEvents);
-                log.info("Auto-rejected {} pending events for banned organizer {}", 
+                log.info("Tự động từ chối sự kiện {} vì người tổ chức đã bị cấm",
                     pendingEvents.size(), email);
             }
         }
@@ -79,28 +83,29 @@ public class UserService {
         if (!approvedRegistrations.isEmpty()) {
             approvedRegistrations.forEach(reg -> {
                 reg.setStatus(Registration.RequestStatus.REJECTED);
-                
-                // Restore event remaining slot
                 Event event = reg.getEvent();
                 event.setRemaining(event.getRemaining() + 1);
                 eventRepository.save(event);
                 
-                log.info("Auto-rejected registration {} and restored slot for event {}", 
+                log.info("Tự động từ chối đơn đăng kí cho sự kiện {}",
                     reg.getId(), event.getId());
             });
             registrationRepository.saveAll(approvedRegistrations);
-            log.info("Auto-rejected {} approved registrations for banned user {}", 
+            log.info("Tự động từ chối {} đơn đăng kí vì người dùng đã bị cấm",
                 approvedRegistrations.size(), email);
         }
     }
 
 
+    /**
+     * Unban user
+     */
     @Transactional
     public void unbanUser(String email) {
         User v = userRepository.findByEmail(email)
-            .orElseThrow(() -> new BadCredentialsAppException("The user was not found."));
+            .orElseThrow(() -> new BadCredentialsAppException("Không tìm thấy người dùng."));
         v.setLocked(false);
         userRepository.save(v);
-        log.info("User {} has been unlocked", email);
+        log.info("Người dùng {} đã được gỡ lệnh cấm", email);
     }
 }
