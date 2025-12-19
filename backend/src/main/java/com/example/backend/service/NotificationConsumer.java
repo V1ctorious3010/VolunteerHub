@@ -28,10 +28,13 @@ public class NotificationConsumer {
     private final PushService pushService;
     private final ObjectMapper objectMapper;
 
+    /**
+     * Handle incoming notification messages from RabbitMQ
+     * @param msg NotificationEventDTO message
+     */
     @RabbitListener(queues = RabbitMQConfig.QUEUE)
     @Transactional
     public void handleNotification(NotificationEventDTO msg) {
-        //Lưu DB
         User user = userRepo.getReferenceById(msg.getRecipientEmail());
 
         Notification entity = Notification.builder()
@@ -43,15 +46,16 @@ public class NotificationConsumer {
             .build();
         notiRepo.save(entity);
 
-        //Gửi Web Push
         sendWebPushToAllDevices(msg);
     }
 
+    /**
+     * Send web push notifications to all devices of the user
+     * @param msg NotificationEventDTO message
+     */
     private void sendWebPushToAllDevices(NotificationEventDTO msg) {
-        // Lấy danh sách thiết bị của user
         List<PushSubscription> subs = subRepo.findByUserEmail(msg.getRecipientEmail());
 
-        // Tạo JSON Payload gửi xuống browser
         ObjectNode payload = objectMapper.createObjectNode();
         payload.put("title", "Thông báo mới");
         payload.put("body", msg.getActorName() + ": " + msg.getContent());

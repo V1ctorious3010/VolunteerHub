@@ -17,5 +17,5 @@ public class CreateCommentRequest {
     private String content;
 
     @Pattern(regexp = "^https://.*", message = "Attachment must be a valid HTTPS URL")
-    private String attachment; // Optional Cloudinary URL
+    private String attachment;
 }

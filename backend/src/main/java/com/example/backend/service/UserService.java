@@ -59,8 +59,6 @@ public class UserService {
         user.setLocked(true);
         userRepository.save(user);
         log.info("Người dùng {} đã bị cấm", email);
-
-        // If organizer: auto-reject all PENDING events
         if (user.getRole() == User.Role.EVENT_ORGANIZER) {
             List<Event> pendingEvents = eventRepository.findByOrganizerEmailAndStatus(
                 email, Event.EventStatus.PENDING);
@@ -75,8 +73,6 @@ public class UserService {
                     pendingEvents.size(), email);
             }
         }
-
-        // Auto-reject all APPROVED registrations
         List<Registration> approvedRegistrations = registrationRepository
             .findByUserEmailAndStatus(email, Registration.RequestStatus.APPROVED);
         

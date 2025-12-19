@@ -176,7 +176,6 @@ public class EventService {
     /**
      * Get event detail with role-based access control
      * GET /api/events/{eventId}
-     * 
      * Public/Volunteer: Only COMING, ONGOING, FINISHED
      * Organizer: Own events (all status)
      * Admin: All events (all status)
