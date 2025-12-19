@@ -188,16 +188,13 @@ const ManageVolunteers = ({ title }) => {
 
     return (
         <div
-            data-aos="fade-up"
-            data-aos-easing="linear"
-            data-aos-duration="1500"
-            className="font-qs md:p-12 mb-12"
+            className="font-qs md:p-6 mb-6"
         >
             <Helmet>
                 <title>{title}</title>
             </Helmet>
 
-            <div className="md:w-4/5 mx-auto min-h-[calc(100vh-364px)] my-12">
+            <div className="md:w-4/5 mx-auto min-h-[calc(100vh-364px)] my-6">
                 <section className="p-2 md:p-6 mx-auto bg-white rounded-md shadow-md">
                     <h2 className="text-2xl pt-6 text-center mb-8 font-body font-semibold text-gray-900 capitalize">
                         Quản lý người dùng

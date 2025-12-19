@@ -13,27 +13,28 @@ const ManageVolunteerPost = ({ title }) => {
     const user = useSelector(s => s.auth.user);
     const isAdmin = user?.role === ROLE.ADMIN || (Array.isArray(user?.roles) && user.roles.includes(ROLE.ADMIN));
 
-    useEffect(() => {
-        const load = async () => {
-            setLoading(true);
-            try {
-                const resp = await getAdminEvents();
-                let data = resp?.data;
-                if (!Array.isArray(data)) {
-                    if (data?.content && Array.isArray(data.content)) data = data.content;
-                    else if (data?.data && Array.isArray(data.data)) data = data.data;
-                    else if (Array.isArray(data)) data = data;
-                    else data = [];
-                }
-                setEvents(data);
-            } catch (err) {
-                console.error('Failed to load admin events', err);
-                setEvents([]);
-            } finally {
-                setLoading(false);
+    const loadEvents = async () => {
+        setLoading(true);
+        try {
+            const resp = await getAdminEvents();
+            let data = resp?.data;
+            if (!Array.isArray(data)) {
+                if (data?.content && Array.isArray(data.content)) data = data.content;
+                else if (data?.data && Array.isArray(data.data)) data = data.data;
+                else if (Array.isArray(data)) data = data;
+                else data = [];
             }
-        };
-        if (isAdmin) load();
+            setEvents(data);
+        } catch (err) {
+            console.error('Failed to load admin events', err);
+            setEvents([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (isAdmin) loadEvents();
         else setLoading(false);
     }, [isAdmin]);
 
@@ -100,108 +101,125 @@ const ManageVolunteerPost = ({ title }) => {
     );
 
     return (
-        <div className="container mx-auto p-6">
+        <div className="font-qs md:p-6 mb-6">
             <Helmet><title>{title}</title></Helmet>
-            <div className="flex items-center justify-center gap-4 mb-4">
-                <h1 className="text-2xl font-bold">Duyệt sự kiện</h1>
-                <div className="flex gap-2">
-                    <button
-                        className="px-3 py-1 bg-green-600 text-white rounded"
-                        onClick={() => handleExport('csv')}
-                    >
-                        Tải CSV
-                    </button>
-                    <button
-                        className="px-3 py-1 bg-blue-600 text-white rounded"
-                        onClick={() => handleExport('json')}
-                    >
-                        Tải JSON
-                    </button>
-                </div>
-            </div>
-            {events.length === 0 ? (
-                <div className="text-gray-600 text-center">Không có sự kiện cần duyệt.</div>
-            ) : (
-                <div>
-                    <div className="hidden md:block">
-                        <div className="overflow-x-auto ">
-                            <table className="table border-collapse border border-gray-400 w-full text-center">
-                                <thead>
-                                    <tr className="text-white raleway text-base bg-[#2986cc]">
-                                        <th></th>
-                                        <th>Tiêu đề</th>
-                                        <th>Phân loại</th>
-                                        <th>Thời gian bắt đầu</th>
-                                        <th>Thời gian kết thúc</th>
-                                        <th>Địa điểm</th>
-                                        <th>Tổ chức</th>
-                                        <th>Trạng thái</th>
-                                        <th>Hành động</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {events.map((ev, idx) => (
-                                        <tr className="border border-gray-300" key={ev.id}>
-                                            <th className="font-semibold">{idx + 1}</th>
-                                            <td className="font-semibold">{ev.title}</td>
-                                            <td className="font-semibold">{ev.category}</td>
-                                            <td className="font-semibold">{formatDateOnly(ev.startTime)}</td>
-                                            <td className="font-semibold">{formatDateOnly(ev.endTime)}</td>
-                                            <td className="font-semibold">{ev.location}</td>
-                                            <td className="font-semibold">{ev.orgName || ev.orgEmail}</td>
-                                            <td className="font-semibold">{ev.status}</td>
-                                            <td>
-                                                {ev.status === 'PENDING' ? (
-                                                    <div className="flex items-center gap-2 justify-center">
-                                                        <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, 'COMING')}>Duyệt</button>
-                                                        <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, 'REJECTED')}>Từ chối</button>
-                                                    </div>
-                                                ) : null}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+
+            <div className="md:w-4/5 mx-auto min-h-[calc(100vh-364px)] my-12">
+                <section className="p-2 md:p-6 mx-auto bg-white rounded-md shadow-md">
+                    <h2 className="text-2xl pt-6 text-center mb-8 font-body font-semibold text-gray-900 capitalize">
+                        Duyệt sự kiện
+                    </h2>
+
+                    <div className="flex justify-end mb-4 px-4 gap-2 flex-wrap">
+                        <button
+                            onClick={() => handleExport('json')}
+                            disabled={loading || events.length === 0}
+                            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 transition"
+                        >
+                            Xuất JSON
+                        </button>
+                        <button
+                            onClick={() => handleExport('csv')}
+                            disabled={loading || events.length === 0}
+                            className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50 transition"
+                        >
+                            Xuất CSV
+                        </button>
+                        <button
+                            onClick={loadEvents}
+                            disabled={loading}
+                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition"
+                        >
+                            {loading ? 'Đang tải...' : 'Tải lại'}
+                        </button>
                     </div>
 
-                    <div className="md:hidden">
-                        <div className="overflow-x-auto ">
-                            <table className="table border-collapse border border-gray-400 w-full text-center">
-                                <thead>
-                                    <tr className="text-white raleway text-base bg-[#2986cc]">
-                                        <th>Tiêu đề</th>
-                                        <th>Thời gian bắt đầu</th>
-                                        <th>Hành động</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {events.map((ev) => (
-                                        <tr className="border border-gray-300" key={ev.id}>
-                                            <td>{ev.title}</td>
-                                            <td>{formatDateOnly(ev.startTime)}</td>
-                                            <td>
-                                                {ev.status === 'PENDING' ? (
-                                                    <div className="flex items-center gap-2">
-                                                        <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, "COMING")}>Duyệt</button>
-                                                        <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, "REJECT")}>Từ chối</button>
-                                                    </div>
-                                                ) : null}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                    {/* Users table */}
+                    {events.length === 0 ? (
+                        <div className="text-gray-600 text-center">Không có sự kiện cần duyệt.</div>
+                    ) : (
+                        <div>
+                            <div className="hidden md:block">
+                                <div className="overflow-x-auto ">
+                                    <table className="table border-collapse border border-gray-400 w-full text-center">
+                                        <thead>
+                                            <tr className="text-white raleway text-base bg-[#2986cc]">
+                                                <th className="px-4 py-3"></th>
+                                                <th className="px-4 py-3">Tiêu đề</th>
+                                                <th className="px-4 py-3">Phân loại</th>
+                                                <th className="px-4 py-3">Thời gian bắt đầu</th>
+                                                <th className="px-4 py-3">Thời gian kết thúc</th>
+                                                <th className="px-4 py-3">Địa điểm</th>
+                                                <th className="px-4 py-3">Tổ chức</th>
+                                                <th className="px-4 py-3">Trạng thái</th>
+                                                <th className="px-4 py-3">Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {events.map((ev, idx) => (
+                                                <tr className="border border-gray-300" key={ev.id}>
+                                                    <th className="font-semibold px-4 py-3">{idx + 1}</th>
+                                                    <td className="font-semibold px-4 py-3">{ev.title}</td>
+                                                    <td className="font-semibold px-4 py-3">{ev.category}</td>
+                                                    <td className="font-semibold px-4 py-3">{formatDateOnly(ev.startTime)}</td>
+                                                    <td className="font-semibold px-4 py-3">{formatDateOnly(ev.endTime)}</td>
+                                                    <td className="font-semibold px-4 py-3">{ev.location}</td>
+                                                    <td className="font-semibold px-4 py-3">{ev.orgName || ev.orgEmail}</td>
+                                                    <td className="font-semibold px-4 py-3">{ev.status}</td>
+                                                    <td className="px-4 py-3">
+                                                        {ev.status === 'PENDING' ? (
+                                                            <div className="flex items-center gap-2 justify-center">
+                                                                <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, 'COMING')}>Duyệt</button>
+                                                                <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, 'REJECTED')}>Từ chối</button>
+                                                            </div>
+                                                        ) : null}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div className="md:hidden">
+                                <div className="overflow-x-auto ">
+                                    <table className="table border-collapse border border-gray-400 w-full text-center">
+                                        <thead>
+                                            <tr className="text-white raleway text-base bg-[#2986cc]">
+                                                <th className="px-4 py-3">Tiêu đề</th>
+                                                <th className="px-4 py-3">Thời gian bắt đầu</th>
+                                                <th className="px-4 py-3">Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {events.map((ev) => (
+                                                <tr className="border border-gray-300" key={ev.id}>
+                                                    <td className="px-4 py-3">{ev.title}</td>
+                                                    <td className="px-4 py-3">{formatDateOnly(ev.startTime)}</td>
+                                                    <td className="px-4 py-3">
+                                                        {ev.status === 'PENDING' ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, "COMING")}>Duyệt</button>
+                                                                <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, "REJECT")}>Từ chối</button>
+                                                            </div>
+                                                        ) : null}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    )}
+                </section>
+            </div>
         </div>
     );
 };
 
 ManageVolunteerPost.propTypes = {
-    title: PropTypes.object.isRequired,
+    title: PropTypes.string.isRequired,
 };
 
 export default ManageVolunteerPost;

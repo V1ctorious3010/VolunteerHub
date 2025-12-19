@@ -196,7 +196,7 @@ const EventFeed = () => {
         }
     };
 
-    // Delete post (use SweetAlert2 like MyVolunteerRequest)
+    // Delete post 
     const handleDeletePost = async (postId) => {
         const result = await Swal.fire({
             title: "Bạn chắc chưa?",
@@ -307,7 +307,7 @@ const EventFeed = () => {
         }
     };
 
-    // Delete comment (use SweetAlert2 confirmation)
+    // Delete comment
     const handleDeleteComment = async (commentId) => {
         try {
             await deleteComment(commentId);
