@@ -247,10 +247,10 @@ const authSlice = createSlice({
                 state.error = null;
             })
             // refreshToken
-            .addCase(refreshToken.rejected, (state) => {
-                state.user = null;
-                state.error = null;
-            })
+            // .addCase(refreshToken.rejected, (state) => {
+            //     state.user = null;
+            //     state.error = null;
+            // })
             // fetchMe
             .addCase(fetchMe.pending, (state) => {
                 state.loading = true;

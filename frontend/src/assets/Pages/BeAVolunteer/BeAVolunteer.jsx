@@ -76,7 +76,7 @@ const BeAVolunteer = ({ title }) => {
       };
       await registerEvent(id, requestBody);
       toast.success('Gửi yêu cầu thành công');
-      navigate("/manage-my-post");
+      navigate("/my-volunteer-requests");
     } catch (err) {
       console.log(err);
       const msg = err?.response?.data?.message || 'Gửi yêu cầu thất bại. Vui lòng thử lại.';

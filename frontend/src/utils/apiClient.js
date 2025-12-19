@@ -12,7 +12,12 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        const isRefreshCall = originalRequest && originalRequest.url && originalRequest.url.includes('/auth/refresh');
+        const isRefreshCall = originalRequest && originalRequest.url && (
+            originalRequest.url.includes('/auth/refresh') ||
+            originalRequest.url.includes('/auth/login') ||
+            originalRequest.url.includes('/auth/register') ||
+            originalRequest.url.includes('/auth/me')
+        );
         if ((error.response?.status === 403 || error.response?.status === 401) && !originalRequest._retry && !isRefreshCall) {
             originalRequest._retry = true;
             try {
