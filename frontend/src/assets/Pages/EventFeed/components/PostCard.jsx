@@ -80,7 +80,16 @@ const PostCard = ({
                 {/* Like and Comment Counts */}
                 <div className="flex justify-between text-sm text-gray-600 mb-3 pb-3 border-b">
                     <span>{post.likeCount} lượt thích</span>
-                    <span>{post.commentCount} bình luận</span>
+                    <span
+                        onClick={() => onOpenComments(post)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onOpenComments(post); }}
+                        className="cursor-pointer hover:underline"
+                        title="Xem bình luận"
+                    >
+                        {post.commentCount} bình luận
+                    </span>
                 </div>
 
                 {/* Action Buttons */}

@@ -133,7 +133,7 @@ const EventFeed = () => {
         }
     };
 
-    // Create new post
+    // Create new
     const handleCreatePost = async (content, attachment) => {
         if (!content.trim() && !attachment) {
             toast.error("Vui lòng nhập nội dung hoặc thêm ảnh");
@@ -214,11 +214,9 @@ const EventFeed = () => {
         try {
             await deletePost(postId);
             setPosts((prev) => prev.filter((p) => p.postId !== postId));
-            await Swal.fire('Thông báo', 'Xóa bài viết thành công!', 'success');
         } catch (error) {
             console.error('Error deleting post', error);
             const emsg = error?.response?.data?.message || error?.message || 'Lỗi khi xóa bài viết';
-            Swal.fire('Error', emsg, 'error');
             handleApiError('Error deleting post', error);
         }
     };
@@ -311,36 +309,25 @@ const EventFeed = () => {
 
     // Delete comment (use SweetAlert2 confirmation)
     const handleDeleteComment = async (commentId) => {
-        const result = await Swal.fire({
-            title: "Bạn chắc chưa?",
-            text: "Bạn sẽ không thể thay đổi lựa chọn này!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Hãy xóa đi!",
-            cancelButtonText: "Không",
-        });
-        if (!result.isConfirmed) return;
-
         try {
             await deleteComment(commentId);
-            setComments((prev) => prev.filter((c) => c.commentId !== commentId));
+            // compute new comments list for selected post
+            const newComments = (comments || []).filter((c) => c.commentId !== commentId);
+            setComments(newComments);
 
-            // Update post comment count
+            // Update post comment count and latestComment based on remaining comments
             setPosts(
-                posts.map((p) =>
-                    p.postId === selectedPost.postId
-                        ? { ...p, commentCount: Math.max(0, p.commentCount - 1) }
-                        : p
-                )
+                posts.map((p) => {
+                    if (p.postId !== selectedPost.postId) return p;
+                    const newCount = Math.max(0, p.commentCount - 1);
+                    const newLatest = newComments.length > 0 ? newComments[0] : null;
+                    return { ...p, commentCount: newCount, latestComment: newLatest };
+                })
             );
 
-            await Swal.fire('Thông báo', 'Xóa bình luận thành công!', 'success');
         } catch (error) {
             console.error('Error deleting comment', error);
             const emsg = error?.response?.data?.message || error?.message || 'Lỗi khi xóa bình luận';
-            Swal.fire('Error', emsg, 'error');
             handleApiError('Error deleting comment', error);
         }
     };
