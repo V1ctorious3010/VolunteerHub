@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useNavigation } from "react-router-dom";
+import { Link, useNavigate, useNavigation, useLocation } from "react-router-dom";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { useSelector } from 'react-redux';
 import Swal from "sweetalert2";
@@ -8,12 +8,17 @@ import PropTypes from "prop-types";
 import { Spinner } from "@material-tailwind/react";
 import { Helmet } from "react-helmet";
 import { getMyEvents, deleteEvent } from "../../../utils/postApi";
+import { truncateChars } from '../../../utils/textUtils';
 import postIcon from '../../images/post.svg';
 
 const EvOrgPost = ({ title }) => {
     const user = useSelector(s => s.auth.user);
     const navigate = useNavigate();
     const [showLoader, setShowLoader] = useState(true);
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const initialPage = Math.max(0, parseInt(searchParams.get('page') || '0', 10) || 0);
+    const [page, setPage] = useState(initialPage);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -24,27 +29,33 @@ const EvOrgPost = ({ title }) => {
     }, []);
     const [myVolunteerPost, setMyVolunteerPost] = useState([]);
     const [totalCount, setTotalCount] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     useEffect(() => {
         const volunteers = async () => {
             try {
-                const resp = await getMyEvents();
+                const resp = await getMyEvents({ page });
                 let data = resp?.data;
                 let items = [];
                 if (data && Array.isArray(data.content)) {
                     items = data.content;
                     setTotalCount(data.totalElements || items.length);
+                    setTotalPages(data.totalPages || 1);
                 } else if (data && Array.isArray(data.data)) {
                     items = data.data;
                     setTotalCount(items.length);
+                    setTotalPages(1);
                 } else if (Array.isArray(data)) {
                     items = data;
                     setTotalCount(items.length);
+                    setTotalPages(1);
                 } else if (data && typeof data === 'object') {
                     items = [data];
                     setTotalCount(1);
+                    setTotalPages(1);
                 } else {
                     items = [];
                     setTotalCount(0);
+                    setTotalPages(1);
                 }
 
                 const normalized = items.map(e => ({
@@ -63,7 +74,17 @@ const EvOrgPost = ({ title }) => {
             }
         };
         volunteers();
-    }, [user?.id, user?.name]);
+    }, [user?.id, user?.name, page]);
+
+    // keep URL in sync when page changes
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        if ((params.get('page') || '0') !== String(page)) {
+            params.set('page', String(page));
+            navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+        }
+        // reload when page changes
+    }, [page]);
 
     const handleDelete = (id) => {
         Swal.fire({
@@ -131,6 +152,11 @@ const EvOrgPost = ({ title }) => {
                     <h2 className="text-5xl font-bold my-6 text-center mt-6">
                         Tổng số sự kiện: {totalCount || myVolunteerPost.length}
                     </h2>
+                    <div className="flex justify-center gap-3 mb-4">
+                        <button onClick={() => setPage(p => Math.max(0, p - 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page <= 0}>Prev</button>
+                        <div className="px-3 py-2">Page {page + 1} / {totalPages}</div>
+                        <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page + 1 >= totalPages}>Next</button>
+                    </div>
                     <div className="hidden md:block">
                         <div className="overflow-x-auto ">
                             <table className="table border-collapse border border-gray-400 text-center">
@@ -150,7 +176,7 @@ const EvOrgPost = ({ title }) => {
                                     {myVolunteerPost.map((post, idx) => (
                                         <tr className="border border-gray-300" key={post.id}>
                                             <th className="font-semibold">{idx + 1}</th>
-                                            <td className="font-semibold">{post.title}</td>
+                                            <td className="font-semibold">{truncateChars(post.title, 15)}</td>
                                             <td className="font-semibold">{post.category}</td>
                                             <td className="font-semibold">{formatDateOnly(post.startTime)}</td>
                                             <td className="font-semibold">{formatDateOnly(post.endTime)}</td>
@@ -190,7 +216,7 @@ const EvOrgPost = ({ title }) => {
                                     <tbody>
                                         {myVolunteerPost.map((post) => (
                                             <tr className="border border-gray-300" key={post.id}>
-                                                <td>{post.title}</td>
+                                                <td>{truncateChars(post.title, 15)}</td>
                                                 <td>{post.category}</td>
                                                 <td>
                                                     {((post.orgEmail && post.orgEmail === user?.email) || (post.orgName && post.orgName === user?.name)) ? (

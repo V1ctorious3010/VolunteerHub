@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import PageError from "../ErrorPage/PageError";
 import { Spinner } from "@material-tailwind/react";
 import { Helmet } from "react-helmet";
+import { truncateChars } from '../../../utils/textUtils';
 
 const MyVolunteerRequest = ({ title }) => {
     const [showLoader, setShowLoader] = useState(true);
@@ -162,7 +163,7 @@ const MyVolunteerRequest = ({ title }) => {
                                     {myVolunteerRequest.map((post, idx) => (
                                         <tr className="border border-gray-300" key={post.registrationId}>
                                             <th className="font-semibold">{idx + 1}</th>
-                                            <td className="font-semibold">{post.eventTitle}</td>
+                                            <td className="font-semibold">{truncateChars(post.eventTitle, 15)}</td>
                                             <td className="font-semibold">{renderStatus(post)}</td>
                                             <td className="font-semibold">{post.organizerEmail}</td>
                                             <td className="font-semibold">{formatDateOnly(post.eventStartTime)}</td>
@@ -197,7 +198,7 @@ const MyVolunteerRequest = ({ title }) => {
                                 <tbody>
                                     {myVolunteerRequest.map((post) => (
                                         <tr className="border border-gray-300" key={post.registrationId}>
-                                            <td>{post.eventTitle}</td>
+                                            <td>{truncateChars(post.eventTitle, 15)}</td>
                                             <td>{renderStatus(post)}</td>
                                             <td>{formatDateOnly(post.eventStartTime)}</td>
                                             <td>

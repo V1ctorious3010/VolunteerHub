@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import { getAdminEvents, patchAdminEventStatus, exportAdminEvents } from '../../../utils/postApi';
+import { truncateChars } from '../../../utils/textUtils';
 import { useSelector } from 'react-redux';
 import ROLE from '../../../constants/roles';
 import { Spinner } from '@material-tailwind/react';
@@ -159,7 +160,7 @@ const ManageVolunteerPost = ({ title }) => {
                                             {events.map((ev, idx) => (
                                                 <tr className="border border-gray-300" key={ev.id}>
                                                     <th className="font-semibold px-4 py-3">{idx + 1}</th>
-                                                    <td className="font-semibold px-4 py-3">{ev.title}</td>
+                                                    <td className="font-semibold px-4 py-3">{truncateChars(ev.title, 15)}</td>
                                                     <td className="font-semibold px-4 py-3">{ev.category}</td>
                                                     <td className="font-semibold px-4 py-3">{formatDateOnly(ev.startTime)}</td>
                                                     <td className="font-semibold px-4 py-3">{formatDateOnly(ev.endTime)}</td>
@@ -194,7 +195,7 @@ const ManageVolunteerPost = ({ title }) => {
                                         <tbody>
                                             {events.map((ev) => (
                                                 <tr className="border border-gray-300" key={ev.id}>
-                                                    <td className="px-4 py-3">{ev.title}</td>
+                                                    <td className="px-4 py-3">{truncateChars(ev.title, 15)}</td>
                                                     <td className="px-4 py-3">{formatDateOnly(ev.startTime)}</td>
                                                     <td className="px-4 py-3">
                                                         {ev.status === 'PENDING' ? (

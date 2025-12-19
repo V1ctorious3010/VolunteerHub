@@ -9,6 +9,7 @@ import { Button, Spinner } from "@material-tailwind/react";
 import axios from "axios";
 import { getEvents, getRecentActivityEvents, getFeaturedEvents } from "../../../utils/localApi";
 import { Helmet } from "react-helmet";
+import { truncateChars } from '../../../utils/textUtils';
 import PropTypes from "prop-types";
 
 const NeedVolunteer = ({ title }) => {
@@ -191,7 +192,6 @@ const NeedVolunteer = ({ title }) => {
               value={sort}
               onChange={(e) => setSort(e.target.value)}
             >
-              <option value="">Không sắp xếp</option>
               <option value="newly">Mới nhất</option>
               <option value="recent">Hoạt động gần đây</option>
               <option value="featured">Nổi bật</option>
@@ -271,7 +271,7 @@ const NeedVolunteer = ({ title }) => {
                       {volunteers.map((post, idx) => (
                         <tr className="border border-gray-300" key={post.id}>
                           <th className="font-semibold">{idx + 1}</th>
-                          <td className="font-semibold">{post.title}</td>
+                          <td className="font-semibold">{truncateChars(post.title, 15)}</td>
                           <td className="font-semibold">
                             {post.orgName}
                           </td>
@@ -311,7 +311,7 @@ const NeedVolunteer = ({ title }) => {
                         {/* row 1 */}
                         {volunteers.map((post) => (
                           <tr className="border border-gray-300 justify-center" key={post.id}>
-                            <td>{post.title}</td>
+                            <td>{truncateChars(post.title, 15)}</td>
                             <td>{formatDateOnly(post.startTime)}</td>
                             <td>
                               <Link to={`/post-details/${post.id}`} state={{ event: post }}>

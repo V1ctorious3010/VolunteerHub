@@ -4,8 +4,8 @@ export const createEvent = (eventData) => {
     return api.post('/events', eventData);
 };
 
-export const getMyEvents = () => {
-    return api.get('/events/my-events');
+export const getMyEvents = (params) => {
+    return api.get('/events/my-events', { params });
 };
 
 export const updateEvent = (eventId, eventData) => {
