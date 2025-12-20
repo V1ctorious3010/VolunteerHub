@@ -2,6 +2,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.UserAvatarDTO;
 import com.example.backend.dto.UserStatusRequest;
 import com.example.backend.entity.User;
+import com.example.backend.exception.UserNotFoundException;
 import com.example.backend.repo.UserRepository;
 import com.example.backend.security.JwtService;
 import com.example.backend.service.CloudinaryService;
@@ -88,7 +89,7 @@ public class UserController {
             return ResponseEntity.status(401).body("Bạn chưa đăng nhập!");
         }
         User user = userRepository.findByEmail(currentUserEmail)
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với email: " + currentUserEmail));
+            .orElseThrow(() -> new UserNotFoundException("Không tìm thấy người dùng với email: " + currentUserEmail));
 
         user.setAvatar(request.getAvatarUrl());
         userRepository.save(user);

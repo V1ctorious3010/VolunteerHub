@@ -63,7 +63,7 @@ public class RegistrationController {
         registrationService.cancelRegistration(registrationId, userEmail);
         
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Registration cancelled successfully");
+        response.put("message", "Đã hủy đăng ký thành công");
         response.put("registrationId", registrationId.toString());
         
         return ResponseEntity.ok(response);

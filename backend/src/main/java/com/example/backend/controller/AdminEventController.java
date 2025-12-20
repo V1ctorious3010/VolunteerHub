@@ -72,7 +72,7 @@ public class AdminEventController {
         eventService.deleteEventByAdmin(eventId);
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Event deleted successfully by admin");
+        response.put("message", "Quản trị viên đã xóa sự kiện thành công");
         response.put("eventId", eventId.toString());
 
         return ResponseEntity.ok(response);

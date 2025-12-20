@@ -6,6 +6,6 @@ public class RegistrationNotFoundException extends RuntimeException {
     }
 
     public RegistrationNotFoundException(Long registrationId) {
-        super("Registration not found with id: " + registrationId);
+        super("Đăng ký không tồn tại với ID: " + registrationId);
     }
 }

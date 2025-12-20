@@ -32,9 +32,10 @@ public class CommentService {
 
     /**
      * Get all comments for a post with pagination
-     * GET /api/posts/{postId}/comments
-     * Auth: Public
-     * Sort: createdAt DESC (newest first)
+     * GET /posts/{postId}/comments
+     * Returns comments only from available events (not PENDING/REJECTED)
+     * Filters out comments from banned users
+     * Sorted by createdAt DESC (newest first)
      */
     @Transactional(readOnly = true)
     public Page<CommentDto> getPostComments(Long postId, int page, int size) {
@@ -47,7 +48,7 @@ public class CommentService {
         // 2. Check event status
         if (post.getEvent().getStatus() == Event.EventStatus.PENDING || 
             post.getEvent().getStatus() == Event.EventStatus.REJECTED) {
-            throw new ForbiddenException("Event is not available");
+            throw new ForbiddenException("Sự kiện không khả dụng");
         }
 
         // 3. Get comments with pagination
@@ -59,9 +60,10 @@ public class CommentService {
     }
 
     /**
-     * Create new comment
-     * POST /api/posts/{postId}/comments
-     * Auth: Any authenticated user
+     * Create new comment on post
+     * POST /posts/{postId}/comments
+     * Any authenticated user can comment
+     * Cannot comment on posts in PENDING/REJECTED events
      */
     @Transactional
     public CommentDto createComment(Long postId, CreateCommentRequest request, String userEmail) {
@@ -74,7 +76,7 @@ public class CommentService {
         // 2. Check event status
         if (post.getEvent().getStatus() == Event.EventStatus.PENDING || 
             post.getEvent().getStatus() == Event.EventStatus.REJECTED) {
-            throw new ForbiddenException("Cannot comment on posts in this event");
+            throw new ForbiddenException("Không thể bình luận bài viết trong sự kiện này");
         }
 
         // 3. Get user
@@ -107,8 +109,8 @@ public class CommentService {
 
     /**
      * Delete comment
-     * DELETE /api/comments/{id}
-     * Auth: Author OR Organizer of event
+     * DELETE /comments/{id}
+     * Comment author OR event organizer can delete
      */
     @Transactional
     public Map<String, String> deleteComment(Long commentId, String userEmail) {
@@ -127,7 +129,7 @@ public class CommentService {
         boolean isOrganizer = event.getOrganizer().getEmail().equals(userEmail);
 
         if (!isAuthor && !isOrganizer) {
-            throw new ForbiddenException("You can only delete your own comments or comments in your events");
+            throw new ForbiddenException("Bạn chỉ có thể xóa bình luận của mình hoặc bình luận trong sự kiện của bạn");
         }
 
         // 4. Delete comment
@@ -135,7 +137,7 @@ public class CommentService {
         log.info("Comment {} deleted successfully", commentId);
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Comment deleted successfully");
+        response.put("message", "Đã xóa bình luận thành công");
         response.put("commentId", commentId.toString());
         return response;
     }

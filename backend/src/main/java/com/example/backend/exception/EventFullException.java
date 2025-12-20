@@ -6,6 +6,6 @@ public class EventFullException extends RuntimeException {
     }
 
     public EventFullException() {
-        super("This event has reached maximum capacity");
+        super("Sự kiện đã đủ số lượng tình nguyện viên");
     }
 }

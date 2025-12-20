@@ -27,6 +27,11 @@ public class EventController {
 
     private final EventService eventService;
 
+    /**
+     * Get events with filters, pagination, and sorting
+     * GET /events?keyword=&category=&start=&page=&sortBy=
+     * Public
+     */
     @GetMapping("/events")
     public ResponseEntity<Page<EventDetailDto>> getEvents(
             @RequestParam(defaultValue = "") String keyword,
@@ -130,9 +135,10 @@ public class EventController {
     }
 
     /**
-     * Delete event (only PENDING status)
-     * DELETE /events/{eventId}
-     * Role: EVENT_ORGANIZER, ADMIN
+     * Delete event by organizer
+     * DELETE /events/{id}
+     * Role: EVENT_ORGANIZER
+     * Only allows deleting PENDING or COMING status events
      */
     @DeleteMapping("/events/{eventId}")
     @PreAuthorize("hasAnyRole('EVENT_ORGANIZER')")
@@ -146,7 +152,7 @@ public class EventController {
         eventService.deleteEvent(eventId, organizerEmail);
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Event deleted successfully");
+        response.put("message", "Đã xóa sự kiện thành công");
         response.put("eventId", eventId.toString());
 
         return ResponseEntity.ok(response);
@@ -154,7 +160,7 @@ public class EventController {
 
     /**
      * Get my events
-     * GET /events/my-events
+     * GET /events/my-events?status=&page=&size=
      * Role: EVENT_ORGANIZER
      */
     @GetMapping("/events/my-events")
@@ -176,7 +182,7 @@ public class EventController {
     /**
      * Get event report with volunteer list (paginated)
      * GET /events/{eventId}/report
-     * Role: EVENT_ORGANIZER (must be event owner)
+     * Role: EVENT_ORGANIZER
      */
     @GetMapping("/events/{eventId}/report")
     @PreAuthorize("hasAnyRole('EVENT_ORGANIZER')")

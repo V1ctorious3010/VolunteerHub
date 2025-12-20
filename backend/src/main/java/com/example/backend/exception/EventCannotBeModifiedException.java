@@ -6,7 +6,7 @@ public class EventCannotBeModifiedException extends RuntimeException {
     }
 
     public EventCannotBeModifiedException() {
-        super("This event cannot be modified in its current state");
+        super("Không thể chỉnh sửa sự kiện ở trạng thái hiện tại");
     }
 
 }

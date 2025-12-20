@@ -6,6 +6,6 @@ public class InvalidEventStatusException extends RuntimeException {
     }
 
     public InvalidEventStatusException() {
-        super("Invalid event status for this operation");
+        super("Trạng thái sự kiện không hợp lệ cho thao tác này");
     }
 }

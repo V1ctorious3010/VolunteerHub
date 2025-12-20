@@ -27,6 +27,12 @@ public class EventService {
     private final UserRepository userRepository;
     private final RegistrationRepository registrationRepository;
 
+    /**
+     * Get public events with search and pagination
+     * GET /events
+     * Returns only COMING, ONGOING, FINISHED events
+     * Supports keyword, category, startTime filter and sorting
+     */
     @Transactional(readOnly = true)
     public Page<EventDetailDto> getEvents(String keyword, String category, String start, int page, String sortBy) {
         int size = 9; // default page size or 9
@@ -38,15 +44,16 @@ public class EventService {
         return result.map(this::mapToDetailDto);
     }
     /**
-     * Create new event
-     * POST /api/events
+     * Create new event with PENDING status
+     * POST /events
+     * Sets remaining = noOfVolunteer initially
      */
     @Transactional
     public EventDetailDto createEvent(CreateEventRequest request, String organizerEmail) {
         log.info("Creating event '{}' by organizer {}", request.getTitle(), organizerEmail);
 
         User organizer = userRepository.findByEmail(organizerEmail)
-                .orElseThrow(() -> new RuntimeException("Organizer not found: " + organizerEmail));
+                .orElseThrow(() -> new UserNotFoundException(organizerEmail));
 
         Event event = new Event();
         event.setTitle(request.getTitle());
@@ -70,8 +77,10 @@ public class EventService {
     }
 
     /**
-     * Update existing event
-     * PUT /api/events/{eventId}
+     * Update existing event (only by organizer)
+     * PUT /events/{eventId}
+     * Cannot update ONGOING or FINISHED events
+     * Can adjust noOfVolunteer if >= approved count
      */
     @Transactional
     public EventDetailDto updateEvent(Long eventId, UpdateEventRequest request, String organizerEmail) {
@@ -130,8 +139,9 @@ public class EventService {
     }
 
     /**
-     * Delete event
-     * DELETE /api/events/{eventId}
+     * Delete event by organizer
+     * DELETE /events/{eventId}
+     * Only allows deleting PENDING or COMING status events
      */
     @Transactional
     public void deleteEvent(Long eventId, String organizerEmail) {
@@ -151,8 +161,9 @@ public class EventService {
     }
 
     /**
-     * Get my events with filtering
-     * GET /api/events/my-events
+     * Get organizer's own events with optional status filter
+     * GET /events/my-events?status=PENDING
+     * Returns all events created by organizer
      */
     @Transactional(readOnly = true)
     public Page<EventDetailDto> getMyEvents(String organizerEmail, String status, int page, int size) {
@@ -175,10 +186,10 @@ public class EventService {
 
     /**
      * Get event detail with role-based access control
-     * GET /api/events/{eventId}
-     * Public/Volunteer: Only COMING, ONGOING, FINISHED
-     * Organizer: Own events (all status)
-     * Admin: All events (all status)
+     * GET /events/{eventId}
+     * - Public/Volunteer: Only COMING, ONGOING, FINISHED
+     * - Organizer: Own events (all statuses)
+     * - Admin: All events (all statuses)
      */
     @Transactional(readOnly = true)
     public EventDetailDto getEventDetail(Long eventId, String userEmail) {
@@ -235,8 +246,10 @@ public class EventService {
         return events.map(this::mapToDetailDto);
     }
     /**
-     * Update event status (approve/reject)
-     * PATCH /api/admin/events/{eventId}/status
+     * Admin approves or rejects pending event
+     * PATCH /admin/events/{eventId}/status
+     * Only PENDING events can be approved/rejected
+     * Sets approvedAt timestamp when status changed to COMING
      */
     @Transactional
     public EventDetailDto updateEventStatus(Long eventId, String newStatus) {
@@ -249,7 +262,7 @@ public class EventService {
         // 2. Validate current status is PENDING
         if (event.getStatus() != Event.EventStatus.PENDING) {
             throw new InvalidEventStatusException(
-                    "Can only approve/reject events with PENDING status. Current status: " + event.getStatus().name());
+                    "Chỉ có thể duyệt/từ chối sự kiện ở trạng thái PENDING. Trạng thái hiện tại: " + event.getStatus().name());
         }
 
         // 3. Parse and validate new status
@@ -257,11 +270,11 @@ public class EventService {
         try {
             status = Event.EventStatus.valueOf(newStatus.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InvalidEventStatusException("Invalid status: " + newStatus);
+            throw new InvalidEventStatusException("Trạng thái không hợp lệ: " + newStatus);
         }
 
         if (status != Event.EventStatus.COMING && status != Event.EventStatus.REJECTED) {
-            throw new InvalidEventStatusException("Admin can only set status to COMING or REJECTED");
+            throw new InvalidEventStatusException("Quản trị viên chỉ có thể đặt trạng thái COMING hoặc REJECTED");
         }
 
         // 4. Update status
@@ -280,8 +293,9 @@ public class EventService {
     }
 
     /**
-     * Delete event by admin (any status allowed)
-     * DELETE /api/admin/events/{eventId}
+     * Admin deletes event (any status allowed)
+     * DELETE /admin/events/{eventId}
+     * No status restrictions for admin deletion
      */
     @Transactional
     public void deleteEventByAdmin(Long eventId) {
@@ -297,8 +311,10 @@ public class EventService {
     }
 
     /**
-     * Get event report with volunteer list (paginated)
-     * GET /api/events/{eventId}/report
+     * Get event report with volunteer list (organizer only)
+     * GET /events/{eventId}/report
+     * Returns registration statistics and paginated volunteer list
+     * Can filter by registration status (default: APPROVED)
      */
     @Transactional(readOnly = true)
     public EventReportDto getEventReport(
@@ -363,8 +379,10 @@ public class EventService {
     }
 
     /**
-     * Get events with recent activity (has posts)
+     * Get events with recent posts
      * GET /events/recent-activity
+     * Returns events that have at least one post
+     * Ordered by most recent post activity
      */
     @Transactional(readOnly = true)
     public Page<EventDetailDto> getRecentActivityEvents(int page, int size) {
@@ -377,8 +395,10 @@ public class EventService {
     }
 
     /**
-     * Get featured events (high engagement in last 3 days)
+     * Get featured events sorted by engagement
      * GET /events/featured
+     * Counts posts, comments, likes from last 3 days
+     * Includes COMING, ONGOING, FINISHED events
      */
     @Transactional(readOnly = true)
     public Page<EventDetailDto> getFeaturedEvents(int page, int size) {
