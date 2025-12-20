@@ -95,7 +95,6 @@ const ManageVolunteerPost = ({ title }) => {
 
         try {
             await patchAdminEventStatus(id, { status });
-            Swal.fire('Cập nhật', 'trạng thái sự kiện', 'thành công');
             setEvents(prev => prev.map(ev => ev.id === id ? { ...ev, status } : ev));
         } catch (err) {
             console.error('Failed to change status', err);

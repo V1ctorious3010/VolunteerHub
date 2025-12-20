@@ -44,7 +44,7 @@ const VolunteerNeedsCard = ({ volunteer }) => {
   return (
     <div className="mx-auto">
       <Link to={`/post-details/${id}`} state={{ event: volunteer }} className="block">
-        <Card className="max-w-[24rem] overflow-hidden shadow-md hover:shadow-2xl hover:bg-gray-100 cursor-pointer transition-colors transition-shadow duration-200">
+        <Card className="w-[24rem] min-w-[24rem] flex-none overflow-hidden shadow-md hover:shadow-2xl hover:bg-gray-100 cursor-pointer transition-colors transition-shadow duration-200">
           <CardHeader
             floated={false}
             shadow={false}
@@ -59,7 +59,7 @@ const VolunteerNeedsCard = ({ volunteer }) => {
               </div>
             )}
             {statusBadge && (
-              <div className="absolute top-2 right-2 z-20">{statusBadge}</div>
+              <div className="absolute top-2 right-2">{statusBadge}</div>
             )}
           </CardHeader>
           <CardBody>

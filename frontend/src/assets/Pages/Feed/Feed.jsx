@@ -301,6 +301,12 @@ const Feed = () => {
                     <Typography variant="h3" className="text-center mb-4">
                         Diễn đàn
                     </Typography>
+                    <Typography variant="lead" className="text-gray-600 text-center">
+                        Nơi cộng đồng chia sẻ thông tin minh bạch và tin cậy
+                    </Typography>
+                    <Typography variant="small" className="text-sm text-gray-500 text-center my-2 italic">
+                        Hãy tham gia sự kiện để tạo bài viết.
+                    </Typography>
 
                     {/* Sort Tabs */}
                     <div className="flex justify-center">
