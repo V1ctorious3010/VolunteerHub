@@ -61,6 +61,19 @@ public class RegistrationService {
         registration.setStatus(Registration.RequestStatus.PENDING);
         registration.setCreatedAt(LocalDateTime.now());
 
+        String organizerEmail = event.getOrganizer().getEmail();
+        String eventName = event.getTitle();
+        try {
+            String content = "Sự kiện " + eventName + " đã có thêm người đăng kí. Vui lòng kiểm tra.";
+            notificationProducer.send(
+                organizerEmail,
+                "SYSTEM",
+                "Notification",
+                content
+            );
+        } catch (Exception e) {
+            throw new BadCredentialsAppException("Lỗi gửi thông báo tới người tổ chức sự kiện");
+        }
         Registration saved = registrationRepository.save(registration);
         log.info("User {} successfully registered for event {} with registration ID {}", 
                 userEmail, eventId, saved.getId());

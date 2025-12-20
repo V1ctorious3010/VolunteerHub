@@ -44,9 +44,6 @@ public class AuthService {
         v.setEmail(req.getEmail());
         v.setPassword(passwordEncoder.encode(req.getPassword()));
         v.setName(req.getName());
-        if(req.getRole() == User.Role.ADMIN) {
-            throw new BadCredentialsAppException("Không thể đăng kí tài khoản làm quản trị viên.");
-        }
         v.setRole(req.getRole());
         v.setLocked(false);
         User saved = userRepository.save(v);

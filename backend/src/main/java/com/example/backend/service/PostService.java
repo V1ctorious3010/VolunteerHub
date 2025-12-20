@@ -163,10 +163,11 @@ public class PostService {
         post.setAuthor(author);
         post.setEvent(event);
 
+        post = postRepository.save(post);
         String organizerEmail = event.getOrganizer().getEmail();
         String eventName = event.getTitle();
         try {
-            String content = "Sự kiện " + eventName + "đã có thêm nội dung mới.";
+            String content = "Sự kiện " + eventName + " đã có thêm nội dung mới.";
             notificationProducer.send(
                 organizerEmail,
                 "EVENT_ORGANIZER",
@@ -176,7 +177,6 @@ public class PostService {
         } catch (Exception e) {
             throw new BadCredentialsAppException("Lỗi gửi thông báo");
         }
-        post = postRepository.save(post);
         log.info("Post {} created successfully", post.getId());
 
         return mapToPostDto(post, authorEmail);

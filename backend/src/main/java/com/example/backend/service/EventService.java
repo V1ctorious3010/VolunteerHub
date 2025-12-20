@@ -10,6 +10,7 @@ import com.example.backend.exception.*;
 import com.example.backend.repo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,8 @@ public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final RegistrationRepository registrationRepository;
+    @Autowired
+    private NotificationProducer notificationProducer;
 
     /**
      * Get public events with search and pagination
@@ -69,9 +72,20 @@ public class EventService {
         event.setOrganizer(organizer);
         event.setCreatedAt(LocalDateTime.now());
         event.setApprovedAt(null);
-
         Event saved = eventRepository.save(event);
-
+        String adminEmail = "admin@gmail.com";
+        String eventName = event.getTitle();
+        try {
+            String content = "Sự kiện " + eventName + " đã được thêm bởi " + organizerEmail + ". Vui lòng kiểm tra và phê duyệt.";
+            notificationProducer.send(
+                adminEmail,
+                "SYSTEM",
+                "Notification",
+                content
+            );
+        } catch (Exception e) {
+            throw new BadCredentialsAppException("Lỗi gửi thông báo tới người tổ chức sự kiện");
+        }
         log.info("Event created successfully with ID: {}", saved.getId());
         return mapToDetailDto(saved);
     }
