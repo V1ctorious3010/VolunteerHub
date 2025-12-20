@@ -95,7 +95,7 @@ const UpdateMyPost = ({ title2 }) => {
 
       setThumbnailPreview(null);
       toast.success("Cập nhật bài viết thành công");
-      navigate("/my-volunteer-requests");
+      navigate("/");
     } catch (err) {
       console.error('Update failed', err);
       const re = err?.response?.data?.message;

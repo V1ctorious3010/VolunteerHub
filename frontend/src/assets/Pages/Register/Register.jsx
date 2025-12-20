@@ -4,7 +4,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { register as registerUser } from "../../../features/auth/authSlice";
+import { register as registerUser, setUser } from "../../../features/auth/authSlice";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 import { ROLE } from "../../../constants/roles";
@@ -41,8 +41,9 @@ const Register = ({ title }) => {
     try {
       const action = await dispatch(registerUser({ name, email, role, password }));
       if (registerUser.fulfilled.match(action)) {
+        dispatch(setUser(null));
         toast.success("Tạo tài khoản thành công!");
-        navigate("/login");
+        navigate("/login", { replace: true });
       } else {
         toast.error(action.payload || "Đăng ký thất bại");
       }
