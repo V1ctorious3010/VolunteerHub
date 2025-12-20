@@ -65,7 +65,7 @@ public class AuthService {
             throw new BadCredentialsAppException("Mật khẩu không đúng.");
         }
         if (v.isLocked()) {
-            throw new BadCredentialsAppException("Tài khoản đã bị cấm.");
+            throw new BadCredentialsAppException("Tài khoản đã bị cấm. Hãy liên hệ quản trị viên qua email \"admin@gmail.com\".");
         }
         return v;
     }

@@ -181,7 +181,14 @@ const EvOrgPost = ({ title }) => {
                                     {myVolunteerPost.map((post, idx) => (
                                         <tr className="border border-gray-300" key={post.id}>
                                             <th className="font-semibold">{idx + 1}</th>
-                                            <td className="font-semibold">{truncateChars(post.title, 15)}</td>
+                                            <td className="font-semibold">
+                                                <Link 
+                                                    to={`/post-details/${post.id}`}
+                                                    className="hover:underline"
+                                                >
+                                                    {truncateChars(post.title, 15)}
+                                                </Link>
+                                            </td>
                                             <td className="font-semibold">{post.category}</td>
                                             <td className="font-semibold">{formatDateOnly(post.startTime)}</td>
                                             <td className="font-semibold">{formatDateOnly(post.endTime)}</td>
@@ -222,7 +229,14 @@ const EvOrgPost = ({ title }) => {
                                     <tbody>
                                         {myVolunteerPost.map((post) => (
                                             <tr className="border border-gray-300" key={post.id}>
-                                                <td>{truncateChars(post.title, 15)}</td>
+                                                <td>
+                                                    <Link 
+                                                        to={`/post-details/${post.id}`}
+                                                        className="hover:underline"
+                                                    >
+                                                        {truncateChars(post.title, 15)}
+                                                    </Link>
+                                                </td>
                                                 <td>{post.category}</td>
                                                 <td className="overflow-visible">
 

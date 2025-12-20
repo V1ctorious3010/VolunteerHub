@@ -4,7 +4,7 @@ import { getRegistrations, deleteRegistration } from '../../../utils/postApi';
 import { GiCancel } from "react-icons/gi";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import PageError from "../ErrorPage/PageError";
 import { Spinner } from "@material-tailwind/react";
 import { Helmet } from "react-helmet";
@@ -163,7 +163,14 @@ const MyVolunteerRequest = ({ title }) => {
                                     {myVolunteerRequest.map((post, idx) => (
                                         <tr className="border border-gray-300" key={post.registrationId}>
                                             <th className="font-semibold">{idx + 1}</th>
-                                            <td className="font-semibold">{truncateChars(post.eventTitle, 15)}</td>
+                                            <td className="font-semibold">
+                                                <Link 
+                                                    to={`/post-details/${post.eventId}`}
+                                                    className="hover:underline"
+                                                >
+                                                    {truncateChars(post.eventTitle, 15)}
+                                                </Link>
+                                            </td>
                                             <td className="font-semibold">{renderStatus(post)}</td>
                                             <td className="font-semibold">{post.organizerEmail}</td>
                                             <td className="font-semibold">{formatDateOnly(post.eventStartTime)}</td>
@@ -198,7 +205,14 @@ const MyVolunteerRequest = ({ title }) => {
                                 <tbody>
                                     {myVolunteerRequest.map((post) => (
                                         <tr className="border border-gray-300" key={post.registrationId}>
-                                            <td>{truncateChars(post.eventTitle, 15)}</td>
+                                            <td>
+                                                <Link 
+                                                    to={`/post-details/${post.eventId}`}
+                                                    className="hover:underline"
+                                                >
+                                                    {truncateChars(post.eventTitle, 15)}
+                                                </Link>
+                                            </td>
                                             <td>{renderStatus(post)}</td>
                                             <td>{formatDateOnly(post.eventStartTime)}</td>
                                             <td>

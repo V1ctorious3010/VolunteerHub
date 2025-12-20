@@ -73,13 +73,13 @@ public class RegistrationController {
 
     /**
      * Get volunteer's own registrations with filtering
-     * GET /registrations?status=APPROVED&page=0&size=12
+     * GET /registrations?status=APPROVED,COMPLETED&page=0&size=12
      * Role: VOLUNTEER, EVENT_ORGANIZER, ADMIN
      */
     @GetMapping("/registrations")
     @PreAuthorize("hasAnyRole('VOLUNTEER')")
     public ResponseEntity<Page<MyRegistrationDto>> getMyRegistrations(
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) List<Registration.RequestStatus> status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
             Authentication authentication) {

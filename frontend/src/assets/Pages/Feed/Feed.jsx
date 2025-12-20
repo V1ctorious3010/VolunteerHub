@@ -26,6 +26,7 @@ import handleUploadAnh from "../../../utils/handleUploadAnh";
 import GeneralPostCard from "./components/GeneralPostCard";
 import CommentDialog from "../EventFeed/components/CommentDialog";
 import EditPostDialog from "../EventFeed/components/EditPostDialog";
+import JoinedEventsSidebar from "./components/JoinedEventsSidebar";
 import Swal from 'sweetalert2';
 
 // centralize API error handling
@@ -277,81 +278,86 @@ const Feed = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 flex">
             <Helmet>
                 <title>Diễn đàn - VolunteerHub</title>
             </Helmet>
 
-            {/* Header */}
-            <div className="bg-white shadow-md mb-6">
-                <div className="container mx-auto px-4 py-6">
-                    <Typography variant="h3" className="text-center mb-4">
-                        Diễn đàn
-                    </Typography>
-                    <Typography variant="lead" className="text-gray-600 text-center">
-                        Nơi cộng đồng chia sẻ thông tin minh bạch và tin cậy
-                    </Typography>
-                    <Typography variant="small" className="text-sm text-gray-500 text-center my-2 italic">
-                        Hãy tham gia sự kiện để tạo bài viết.
-                    </Typography>
-
-                    {/* Sort Tabs */}
-                    <div className="flex justify-center">
-                        <Tabs value={sortType} className="w-full max-w-md">
-                            <TabsHeader>
-                                <Tab value="trending" onClick={() => handleSortChange("trending")}>
-                                    Nổi bật
-                                </Tab>
-                                <Tab value="recent" onClick={() => handleSortChange("recent")}>
-                                    Mới nhất
-                                </Tab>
-                            </TabsHeader>
-                        </Tabs>
-                    </div>
-                </div>
-            </div>
+            {/* Left Sidebar - Joined Events */}
+            {user && <JoinedEventsSidebar />}
 
             {/* Main Content */}
-            <div className="container mx-auto px-4 max-w-3xl">
-                {/* Posts Feed */}
-                <div className="space-y-4">
-                    {loadingPosts && currentPage === 0 ? (
-                        <div className="flex justify-center py-8">
-                            <Spinner className="h-8 w-8" />
-                        </div>
-                    ) : posts.length === 0 ? (
-                        <Card>
-                            <CardBody>
-                                <Typography className="text-center text-gray-600">
-                                    Chưa có bài viết nào
-                                </Typography>
-                            </CardBody>
-                        </Card>
-                    ) : (
-                        posts.map((post) => (
-                            <GeneralPostCard
-                                key={post.postId}
-                                post={post}
-                                currentUserEmail={user?.email}
-                                onToggleLike={handleToggleLike}
-                                onOpenComments={handleOpenComments}
-                                onEdit={(post) => {
-                                    setEditingPost(post);
-                                    setShowEditDialog(true);
-                                }}
-                                onDelete={handleDeletePost}
-                            />
-                        ))
-                    )}
+            <div className="flex-1 overflow-auto">
+                {/* Header */}
+                <div className="bg-white shadow-md mb-6">
+                    <div className="container mx-auto px-4 py-6">
+                        <Typography variant="h3" className="text-center mb-4">
+                            Diễn đàn
+                        </Typography>
+                        <Typography variant="lead" className="text-gray-600 text-center">
+                            Nơi cộng đồng chia sẻ thông tin minh bạch và tin cậy
+                        </Typography>
+                        <Typography variant="small" className="text-sm text-gray-500 text-center my-2 italic">
+                            Hãy tham gia sự kiện để tạo bài viết.
+                        </Typography>
 
-                    {/* Load More */}
-                    {hasMore && (
-                        <div className="flex justify-center py-4">
-                            <Button onClick={handleLoadMore} disabled={loadingPosts}>
-                                {loadingPosts ? <Spinner className="h-4 w-4" /> : "Xem thêm"}
-                            </Button>
+                        {/* Sort Tabs */}
+                        <div className="flex justify-center">
+                            <Tabs value={sortType} className="w-full max-w-md">
+                                <TabsHeader>
+                                    <Tab value="trending" onClick={() => handleSortChange("trending")}>
+                                        Nổi bật
+                                    </Tab>
+                                    <Tab value="recent" onClick={() => handleSortChange("recent")}>
+                                        Mới nhất
+                                    </Tab>
+                                </TabsHeader>
+                            </Tabs>
                         </div>
-                    )}
+                    </div>
+                </div>
+
+                {/* Posts Feed */}
+                <div className="container mx-auto px-4 max-w-3xl pb-8">
+                    <div className="space-y-4">
+                        {loadingPosts && currentPage === 0 ? (
+                            <div className="flex justify-center py-8">
+                                <Spinner className="h-8 w-8" />
+                            </div>
+                        ) : posts.length === 0 ? (
+                            <Card>
+                                <CardBody>
+                                    <Typography className="text-center text-gray-600">
+                                        Chưa có bài viết nào
+                                    </Typography>
+                                </CardBody>
+                            </Card>
+                        ) : (
+                            posts.map((post) => (
+                                <GeneralPostCard
+                                    key={post.postId}
+                                    post={post}
+                                    currentUserEmail={user?.email}
+                                    onToggleLike={handleToggleLike}
+                                    onOpenComments={handleOpenComments}
+                                    onEdit={(post) => {
+                                        setEditingPost(post);
+                                        setShowEditDialog(true);
+                                    }}
+                                    onDelete={handleDeletePost}
+                                />
+                            ))
+                        )}
+
+                        {/* Load More */}
+                        {hasMore && (
+                            <div className="flex justify-center py-4">
+                                <Button onClick={handleLoadMore} disabled={loadingPosts}>
+                                    {loadingPosts ? <Spinner className="h-4 w-4" /> : "Xem thêm"}
+                                </Button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 

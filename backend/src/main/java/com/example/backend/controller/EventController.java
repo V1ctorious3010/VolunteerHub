@@ -148,7 +148,7 @@ public class EventController {
      * Only allows deleting PENDING or COMING status events
      */
     @DeleteMapping("/events/{eventId}")
-    @PreAuthorize("hasAnyRole('EVENT_ORGANIZER')")
+    @PreAuthorize("hasAnyRole('EVENT_ORGANIZER','ADMIN')")
     public ResponseEntity<Map<String, String>> deleteEvent(
             @PathVariable Long eventId,
             Authentication authentication) {

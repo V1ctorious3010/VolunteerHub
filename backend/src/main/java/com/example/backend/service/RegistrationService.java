@@ -124,33 +124,30 @@ public class RegistrationService {
 
     /**
      * Get volunteer's own registrations with filtering
-     * GET /registrations?status=APPROVED&page=0&size=12
-     * Optional status filter (PENDING, APPROVED, REJECTED, COMPLETED)
+     * GET /registrations?status=APPROVED,COMPLETED&page=0&size=12
+     * Supports multiple statuses or single status
      * Sorted by createdAt DESC
      */
     @Transactional(readOnly = true)
     public Page<MyRegistrationDto> getMyRegistrations(
             String userEmail, 
-            String status, 
+            List<Registration.RequestStatus> statuses, 
             int page, 
             int size) {
         
-        log.info("Fetching registrations for user {} with status filter: {}", userEmail, status);
+        log.info("Fetching registrations for user {} with status filter: {}", userEmail, statuses);
         
-        Registration.RequestStatus requestStatus = null;
-        if (status != null && !status.isBlank()) {
-            try {
-                requestStatus = Registration.RequestStatus.valueOf(status.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                log.warn("Invalid status filter: {}", status);
-            }
-        }
-
         // Create pageable
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         
-        Page<Registration> registrations = registrationRepository.findByUserEmailAndStatus(
-                userEmail, requestStatus, pageable);
+        Page<Registration> registrations;
+        if (statuses != null && !statuses.isEmpty()) {
+            // Filter by provided statuses
+            registrations = registrationRepository.findByUserEmailAndStatusIn(userEmail, statuses, pageable);
+        } else {
+            // Default: get all registrations (pass null for status)
+            registrations = registrationRepository.findByUserEmailAndStatus(userEmail, null, pageable);
+        }
         
         return registrations.map(this::mapToMyRegistrationDto);
     }
@@ -409,6 +406,7 @@ public class RegistrationService {
         dto.setOrganizerEmail(registration.getEvent().getOrganizer().getEmail());
         dto.setRegistrationStatus(registration.getStatus().name());
         dto.setRegisteredAt(registration.getCreatedAt());
+        dto.setEventCategory(registration.getEvent().getCategory());
         return dto;
     }
 }

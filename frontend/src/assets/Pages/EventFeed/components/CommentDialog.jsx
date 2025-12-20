@@ -13,7 +13,10 @@ import {
     Typography,
 } from "@material-tailwind/react";
 import toast from 'react-hot-toast';
-import { PhotoIcon, XMarkIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PhotoIcon, XMarkIcon, TrashIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+import Swal from 'sweetalert2';
+import { banUser } from "../../../../utils/adminApi";
+import { ROLE } from "../../../../constants/roles";
 
 const CommentDialog = ({
     open,
@@ -29,7 +32,9 @@ const CommentDialog = ({
 }) => {
     const [newComment, setNewComment] = useState("");
     const [commentAttachment, setCommentAttachment] = useState(null);
+    const [banningUser, setBanningUser] = useState(null);
     const commentFileRef = useRef(null);
+    const isAdmin = user?.role === ROLE.ADMIN;
 
     const handleSubmit = async () => {
         if (!newComment || !newComment.trim()) {
@@ -40,6 +45,48 @@ const CommentDialog = ({
         await onSubmitComment(newComment, commentAttachment);
         setNewComment("");
         setCommentAttachment(null);
+    };
+
+    const handleBanUser = async (authorEmail, authorName) => {
+        if (authorEmail === user?.email) {
+            toast.error('Không thể khóa chính mình!');
+            return;
+        }
+
+        const result = await Swal.fire({
+            title: 'Xác nhận khóa tài khoản?',
+            text: `Bạn có chắc chắn muốn khóa tài khoản "${authorName}" (${authorEmail})?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Khóa tài khoản',
+            cancelButtonText: 'Hủy',
+            customClass: {
+                container: 'swal-high-zindex'
+            },
+            didOpen: () => {
+                // Ensure SweetAlert2 appears on top
+                const swalContainer = document.querySelector('.swal2-container');
+                if (swalContainer) {
+                    swalContainer.style.zIndex = '99999';
+                }
+            }
+        });
+
+        if (result.isConfirmed) {
+            try {
+                setBanningUser(authorEmail);
+                await banUser(authorEmail);
+                toast.success(`Đã khóa tài khoản ${authorName}`);
+            } catch (error) {
+                const errorMsg = error?.response?.data?.message || error?.message || 'Không thể khóa tài khoản';
+                toast.error(errorMsg);
+                console.error('Error banning user:', error);
+            } finally {
+                setBanningUser(null);
+            }
+        }
     };
 
     return (
@@ -70,16 +117,34 @@ const CommentDialog = ({
                                             <Typography variant="small" className="font-semibold">
                                                 {comment.authorName}
                                             </Typography>
-                                            {(user?.email === comment.authorEmail || user?.email === eventOrgEmail || user?.email === post?.authorEmail) && (
-                                                <IconButton
-                                                    size="sm"
-                                                    variant="text"
-                                                    color="red"
-                                                    onClick={() => onDeleteComment(comment.commentId)}
-                                                >
-                                                    <TrashIcon className="h-3 w-3" />
-                                                </IconButton>
-                                            )}
+                                            <div className="flex gap-1">
+                                                {isAdmin && comment.authorEmail !== user?.email && (
+                                                    <IconButton
+                                                        size="sm"
+                                                        variant="text"
+                                                        color="orange"
+                                                        onClick={() => handleBanUser(comment.authorEmail, comment.authorName)}
+                                                        disabled={banningUser === comment.authorEmail}
+                                                        title="Khóa tài khoản"
+                                                    >
+                                                        {banningUser === comment.authorEmail ? (
+                                                            <Spinner className="h-3 w-3" />
+                                                        ) : (
+                                                            <LockClosedIcon className="h-3 w-3" />
+                                                        )}
+                                                    </IconButton>
+                                                )}
+                                                {(user?.email === comment.authorEmail || user?.email === eventOrgEmail || user?.email === post?.authorEmail) && (
+                                                    <IconButton
+                                                        size="sm"
+                                                        variant="text"
+                                                        color="red"
+                                                        onClick={() => onDeleteComment(comment.commentId)}
+                                                    >
+                                                        <TrashIcon className="h-3 w-3" />
+                                                    </IconButton>
+                                                )}
+                                            </div>
                                         </div>
                                         <Typography variant="small">{comment.content}</Typography>
                                         {comment.attachment && (

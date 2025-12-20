@@ -1,10 +1,13 @@
-import { Button, Typography } from "@material-tailwind/react";
+import { Button, Typography, Spinner } from "@material-tailwind/react";
 import { ScrollRestoration, useLoaderData, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { ROLE } from "../../../constants/roles";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
+import { useState } from "react";
+import Swal from 'sweetalert2';
+import { deleteEventByAdmin } from "../../../utils/adminApi";
 
 
 const PostDetails = ({ title2 }) => {
@@ -15,6 +18,8 @@ const PostDetails = ({ title2 }) => {
   const user = useSelector(s => s.auth.user);
   const navigate = useNavigate();
   const isVolunteer = user?.role === ROLE.VOLUNTEER || (Array.isArray(user?.roles) && user.roles.includes(ROLE.VOLUNTEER));
+  const isAdmin = user?.role === ROLE.ADMIN;
+  const [deleting, setDeleting] = useState(false);
   const {
     id,
     title,
@@ -59,6 +64,34 @@ const PostDetails = ({ title2 }) => {
       return toast.error("Bạn không thể làm tình nguyện viên cho sự kiện này !");
     } else {
       navigate(`/be-a-volunteer/${id}`);
+    }
+  };
+
+  const handleDeleteEvent = async () => {
+    const result = await Swal.fire({
+      title: 'Xác nhận xóa sự kiện?',
+      text: `Bạn có chắc chắn muốn xóa sự kiện "${title}"? Hành động này không thể hoàn tác!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Xóa sự kiện',
+      cancelButtonText: 'Hủy'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        setDeleting(true);
+        await deleteEventByAdmin(id);
+        toast.success('Đã xóa sự kiện thành công');
+        navigate('/need-volunteer');
+      } catch (error) {
+        const errorMsg = error?.response?.data?.message || error?.message || 'Không thể xóa sự kiện';
+        toast.error(errorMsg);
+        console.error('Error deleting event:', error);
+      } finally {
+        setDeleting(false);
+      }
     }
   };
   return (
@@ -198,6 +231,17 @@ const PostDetails = ({ title2 }) => {
               >
                 Xem trang sự kiện
               </Button>
+              {isAdmin && (
+                <Button
+                  onClick={handleDeleteEvent}
+                  color="red"
+                  variant="gradient"
+                  className="w-52"
+                  disabled={deleting}
+                >
+                  {deleting ? <Spinner className="h-4 w-4" /> : "Xóa sự kiện"}
+                </Button>
+              )}
             </div>
           </div>
         </div>

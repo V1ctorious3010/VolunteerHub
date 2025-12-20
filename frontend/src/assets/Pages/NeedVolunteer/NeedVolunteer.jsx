@@ -182,6 +182,8 @@ const NeedVolunteer = ({ title }) => {
               <option value="Xã hội">Xã hội</option>
               <option value="Động vật hoang dã">Động vật hoang dã</option>
               <option value="Môi trường">Môi trường</option>
+              <option value="Cứu trợ lương thực">Cứu trợ lương thực</option>
+              <option value="Khác">Khác</option>
             </select>
           </div>
           <div>
