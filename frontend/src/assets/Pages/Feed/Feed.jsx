@@ -163,7 +163,6 @@ const Feed = () => {
             console.error('Error deleting post', error);
             const emsg = error?.response?.data?.message || error?.message || 'Lỗi khi xóa bài viết';
             Swal.fire('Error', emsg, 'error');
-            handleApiError("Error deleting post", error);
         }
     };
 

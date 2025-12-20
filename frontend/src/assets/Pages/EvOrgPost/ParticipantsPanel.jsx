@@ -18,8 +18,8 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
             setLoading(true);
             try {
                 // Fetch APPROVED and COMPLETED participants
-                const resp = await getEventReport(selectedEvent, { 
-                    page: partPage, 
+                const resp = await getEventReport(selectedEvent, {
+                    page: partPage,
                     size: partSize,
                     status: 'APPROVED,COMPLETED'
                 });
@@ -65,17 +65,17 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
             // Assuming we add registrationId to the DTO response
             const resp = await patchRegistrationStatus(volunteer.registrationId, { status: 'COMPLETED' });
             const msg = resp?.data?.message;
-            
+
             // Refresh the list
             setRefreshCounter(c => c + 1);
-            
+
             if (msg) {
                 Swal.fire({ title: 'Thông báo', text: msg, icon: 'success' });
             }
         } catch (err) {
             const emsg = err?.response?.data?.message || err.message || 'Lỗi';
             console.error('Complete action failed', err);
-            Swal.fire({ title: 'Error', text: emsg, icon: 'error' });
+            Swal.fire({ title: 'Lỗi', text: emsg, icon: 'error' });
         }
     };
 
@@ -123,7 +123,7 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
                                         <td className="font-semibold">{mapStatus(v.status)}</td>
                                         <td>
                                             {v.status === 'APPROVED' ? (
-                                                <button 
+                                                <button
                                                     className="btn btn-sm bg-blue-500 hover:bg-blue-600 text-white"
                                                     onClick={() => handleComplete(v.email || v.userEmail)}
                                                 >

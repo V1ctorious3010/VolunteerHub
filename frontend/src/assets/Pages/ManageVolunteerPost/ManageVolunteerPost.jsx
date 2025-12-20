@@ -98,7 +98,6 @@ const ManageVolunteerPost = ({ title }) => {
             setEvents(prev => prev.map(ev => ev.id === id ? { ...ev, status } : ev));
         } catch (err) {
             console.error('Failed to change status', err);
-            Swal.fire('Error', 'Failed to change status', 'error');
         }
     };
 

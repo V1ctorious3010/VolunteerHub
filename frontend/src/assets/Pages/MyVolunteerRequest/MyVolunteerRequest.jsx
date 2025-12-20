@@ -67,7 +67,7 @@ const MyVolunteerRequest = ({ title }) => {
                     const msg = resp?.data?.message;
                     const remaining = myVolunteerRequest.filter((post) => post.registrationId !== id && post.id !== id);
                     setMyVolunteerRequest(remaining);
-                    if (msg) Swal.fire('Thông báo', msg, 'success');
+                    if (msg) Swal.fire('Thông báo', msg, 'thành công');
                     navigate(`/my-volunteer-requests`);
                 } catch (err) {
                     const emsg = err?.response?.data?.message || 'Unable to cancel registration';

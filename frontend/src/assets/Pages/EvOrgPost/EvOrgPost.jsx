@@ -110,13 +110,12 @@ const EvOrgPost = ({ title }) => {
             if (result.isConfirmed) {
                 try {
                     await deleteEvent(id);
-                    Swal.fire({ title: 'Deleted!', text: 'The event has been deleted.', icon: 'success' });
+                    Swal.fire({ title: 'Đã xóa!', text: 'Sự kiện đã được xóa', icon: 'thành công' });
                     const remaining = myVolunteerPost.filter((post) => post.id !== id);
                     setMyVolunteerPost(remaining);
                     navigate(`/manage-event-list`);
                 } catch (err) {
                     console.error('Delete failed', err);
-                    Swal.fire({ title: 'Error', text: 'Failed to delete event', icon: 'error' });
                 }
             }
         });
