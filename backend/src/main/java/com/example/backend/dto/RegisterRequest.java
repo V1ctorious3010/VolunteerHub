@@ -1,6 +1,7 @@
 package com.example.backend.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import com.example.backend.entity.User.Role;
 
@@ -11,6 +12,7 @@ public class RegisterRequest {
 
     @NotBlank(message = "Mật khẩu không được để trống")
     @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Z]).+$", message = "Mật khẩu phải chứa ít nhất một chữ số")
     private String password;
 
     @NotBlank(message = "Tên không được để trống")
