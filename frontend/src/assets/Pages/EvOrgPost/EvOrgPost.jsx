@@ -248,7 +248,7 @@ const EvOrgPost = ({ title }) => {
                     </div>
                     <div className="flex justify-center gap-3 my-4">
                         <button onClick={() => setPage(p => Math.max(0, p - 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page <= 0}>Trước</button>
-                        <div className="px-3 py-2">Page {page + 1} / {totalPages}</div>
+                        <div className="px-3 py-2">Trang {page + 1} / {totalPages}</div>
                         <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page + 1 >= totalPages}>Sau</button>
                     </div>
                 </div>
