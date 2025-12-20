@@ -392,13 +392,15 @@ public class EventService {
      * GET /events/recent-activity
      * Returns events that have at least one post
      * Ordered by most recent post activity
+     * Supports keyword and category filtering
      */
     @Transactional(readOnly = true)
-    public Page<EventDetailDto> getRecentActivityEvents(int page, int size) {
-        log.info("Getting events with recent activity (page={}, size={})", page, size);
+    public Page<EventDetailDto> getRecentActivityEvents(String keyword, String category, int page, int size) {
+        log.info("Getting events with recent activity (keyword={}, category={}, page={}, size={})", 
+                keyword, category, page, size);
         
         Pageable pageable = PageRequest.of(page, size);
-        Page<Event> events = eventRepository.findEventsWithRecentPosts(pageable);
+        Page<Event> events = eventRepository.findEventsWithRecentPosts(keyword, category, pageable);
         
         return events.map(this::mapToDetailDto);
     }
@@ -408,14 +410,16 @@ public class EventService {
      * GET /events/featured
      * Counts posts, comments, likes from last 3 days
      * Includes COMING, ONGOING, FINISHED events
+     * Supports keyword and category filtering
      */
     @Transactional(readOnly = true)
-    public Page<EventDetailDto> getFeaturedEvents(int page, int size) {
-        log.info("Getting featured events (page={}, size={})", page, size);
+    public Page<EventDetailDto> getFeaturedEvents(String keyword, String category, int page, int size) {
+        log.info("Getting featured events (keyword={}, category={}, page={}, size={})", 
+                keyword, category, page, size);
         
         LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
         Pageable pageable = PageRequest.of(page, size);
-        Page<Event> events = eventRepository.findFeaturedEvents(threeDaysAgo, pageable);
+        Page<Event> events = eventRepository.findFeaturedEvents(keyword, category, threeDaysAgo, pageable);
         
         return events.map(this::mapToDetailDto);
     }

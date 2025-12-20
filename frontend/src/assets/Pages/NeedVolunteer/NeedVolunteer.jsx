@@ -33,9 +33,9 @@ const NeedVolunteer = ({ title }) => {
     const getData = async () => {
       let page;
       if (sort === 'recent') {
-        page = await getRecentActivityEvents(pageNumber, 10);
+        page = await getRecentActivityEvents(pageNumber, 9, search || '', category || '');
       } else if (sort === 'featured') {
-        page = await getFeaturedEvents(pageNumber, 10);
+        page = await getFeaturedEvents(pageNumber, 9, search || '', category || '');
       } else {
         let sortBy = '';
         if (sort === 'asc') sortBy = 'startTime,ASC';

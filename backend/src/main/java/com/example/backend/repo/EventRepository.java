@@ -65,10 +65,15 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         LEFT JOIN e.posts p
         ON p.author.isLocked = false
         WHERE e.status IN ('COMING', 'ONGOING', 'FINISHED')
+        AND (:keyword IS NULL OR :keyword = '' OR LOWER(e.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+        AND (:category IS NULL OR :category = '' OR LOWER(e.category) LIKE LOWER(CONCAT('%', :category, '%')))
         GROUP BY e
         ORDER BY MAX(p.createdAt) DESC
     """)
-    Page<Event> findEventsWithRecentPosts(Pageable pageable);
+    Page<Event> findEventsWithRecentPosts(
+            @Param("keyword") String keyword,
+            @Param("category") String category,
+            Pageable pageable);
 
     // Find featured events (high engagement in last 3 days)
     @Query("""
@@ -84,11 +89,17 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             ON l.createdAt >= :threeDaysAgo
             AND l.user.isLocked = false
         WHERE e.status IN ('COMING', 'ONGOING', 'FINISHED')
+        AND (:keyword IS NULL OR :keyword = '' OR LOWER(e.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+        AND (:category IS NULL OR :category = '' OR LOWER(e.category) LIKE LOWER(CONCAT('%', :category, '%')))
         GROUP BY e.id
         ORDER BY
         (COUNT(DISTINCT p.id)
         + COUNT(DISTINCT c.id)
         + COUNT(DISTINCT l.id)) DESC
     """)
-    Page<Event> findFeaturedEvents(@Param("threeDaysAgo") LocalDateTime threeDaysAgo, Pageable pageable);
+    Page<Event> findFeaturedEvents(
+            @Param("keyword") String keyword,
+            @Param("category") String category,
+            @Param("threeDaysAgo") LocalDateTime threeDaysAgo,
+            Pageable pageable);
 }

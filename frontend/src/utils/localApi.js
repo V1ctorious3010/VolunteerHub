@@ -32,10 +32,10 @@ export async function getStatistics() {
     }
 }
 
-export async function getRecentActivityEvents(page = 0, size = 9) {
+export async function getRecentActivityEvents(page = 0, size = 9, keyword = '', category = '') {
     try {
         const res = await api.get('/events/recent-activity', {
-            params: { page, size }
+            params: { page, size, keyword, category }
         });
         return res?.data || { content: [], totalPages: 0, number: 0 };
     } catch (e) {
@@ -44,10 +44,10 @@ export async function getRecentActivityEvents(page = 0, size = 9) {
     }
 }
 
-export async function getFeaturedEvents(page = 0, size = 9) {
+export async function getFeaturedEvents(page = 0, size = 9, keyword = '', category = '') {
     try {
         const res = await api.get('/events/featured', {
-            params: { page, size }
+            params: { page, size, keyword, category }
         });
         return res?.data || { content: [], totalPages: 0, number: 0 };
     } catch (e) {
