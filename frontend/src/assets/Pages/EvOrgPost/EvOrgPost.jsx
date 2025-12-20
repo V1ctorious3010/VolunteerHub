@@ -58,15 +58,25 @@ const EvOrgPost = ({ title }) => {
                     setTotalPages(1);
                 }
 
-                const normalized = items.map(e => ({
-                    id: e.id,
-                    title: e.title,
-                    category: e.category || 'General',
-                    startTime: e.startTime,
-                    endTime: e.endTime,
-                    location: e.location,
-                    status: e.status,
-                }));
+                const normalized = items.map(e => {
+                    const total = Number(e.noOfVolunteer ?? e.no_of_volunteer ?? 0) || 0;
+                    const remaining = Number(e.remaining ?? e.remainingVol ?? 0) || 0;
+                    const neededCount = Math.max(0, total - remaining);
+                    return ({
+                        id: e.id,
+                        title: e.title,
+                        category: e.category || 'General',
+                        startTime: e.startTime,
+                        endTime: e.endTime,
+                        location: e.location,
+                        status: e.status,
+                        noOfVolunteer: total,
+                        remaining: remaining,
+                        neededCount: neededCount,
+                        orgEmail: e.orgEmail || e.organizerEmail || (e.org && e.org.email) || e.org?.email,
+                        orgName: e.orgName || e.organizerName || (e.org && e.org.name) || e.org?.name,
+                    });
+                });
                 setMyVolunteerPost(normalized);
             } catch (err) {
                 console.error('Failed to load my events', err);
@@ -117,7 +127,6 @@ const EvOrgPost = ({ title }) => {
         REJECTED: 'Từ chối',
         ONGOING: "Đang diễn ra",
         FINISHED: "Hoàn thành",
-        COMING: "Sắp diễn ra",
     };
     const navigation = useNavigation();
     const formatDateOnly = (v) => {
@@ -152,11 +161,7 @@ const EvOrgPost = ({ title }) => {
                     <h2 className="text-5xl font-bold my-6 text-center mt-6">
                         Tổng số sự kiện: {totalCount || myVolunteerPost.length}
                     </h2>
-                    <div className="flex justify-center gap-3 mb-4">
-                        <button onClick={() => setPage(p => Math.max(0, p - 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page <= 0}>Prev</button>
-                        <div className="px-3 py-2">Page {page + 1} / {totalPages}</div>
-                        <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page + 1 >= totalPages}>Next</button>
-                    </div>
+
                     <div className="hidden md:block">
                         <div className="overflow-x-auto ">
                             <table className="table border-collapse border border-gray-400 text-center">
@@ -168,6 +173,7 @@ const EvOrgPost = ({ title }) => {
                                         <th>Thời gian bắt đầu </th>
                                         <th>Thời gian kết thúc</th>
                                         <th>Địa điểm</th>
+                                        <th>Số lượng</th>
                                         <th>Trạng thái</th>
                                         <th>Hành động</th>
                                     </tr>
@@ -181,15 +187,16 @@ const EvOrgPost = ({ title }) => {
                                             <td className="font-semibold">{formatDateOnly(post.startTime)}</td>
                                             <td className="font-semibold">{formatDateOnly(post.endTime)}</td>
                                             <td className="font-semibold">{post.location}</td>
+                                            <td className="font-semibold">{post.neededCount}/{post.noOfVolunteer || '-'}</td>
                                             <td className="font-semibold">{STATUS_LABELS[post.status] || post.status}</td>
 
-                                            <td>
-                                                <div className="flex items-center gap-6 justify-center">
+                                            <td className="overflow-visible">
+                                                <div className="flex items-center gap-3 justify-center flex-nowrap">
                                                     <Link to={`/update-my-post/${post.id}`}>
                                                         <MdEdit className="size-6" />
                                                     </Link>
-                                                    <Link to={`/manage-event-list/tabs`} state={{ event: post }} className="">
-                                                        <img src={postIcon} alt="Open tabs" className="w-6 h-6" />
+                                                    <Link to={`/manage-event-list/tabs`} state={{ event: post }} className="flex-shrink-0">
+                                                        <img src={postIcon} alt="Open tabs" className="w-6 h-6 object-contain flex-shrink-0" />
                                                     </Link>
                                                     <button onClick={() => handleDelete(post.id)}>
                                                         <MdDelete className="size-6" />
@@ -218,22 +225,19 @@ const EvOrgPost = ({ title }) => {
                                             <tr className="border border-gray-300" key={post.id}>
                                                 <td>{truncateChars(post.title, 15)}</td>
                                                 <td>{post.category}</td>
-                                                <td>
-                                                    {((post.orgEmail && post.orgEmail === user?.email) || (post.orgName && post.orgName === user?.name)) ? (
-                                                        <div className="flex items-center gap-6 justify-center">
-                                                            <Link to={`/update-my-post/${post.id}`}>
-                                                                <MdEdit className="size-6" />
-                                                            </Link>
-                                                            <Link to={`/manage-event-list/tabs`} state={{ event: post }}>
-                                                                <img src={postIcon} alt="Open tabs" className="w-6 h-6" />
-                                                            </Link>
-                                                            <button onClick={() => handleDelete(post.id)}>
-                                                                <MdDelete className="size-6" />
-                                                            </button>
-                                                        </div>
-                                                    ) : (
-                                                        <span className="text-sm text-gray-500">—</span>
-                                                    )}
+                                                <td className="overflow-visible">
+
+                                                    <div className="flex items-center gap-3 justify-center flex-nowrap">
+                                                        <Link to={`/update-my-post/${post.id}`}>
+                                                            <MdEdit className="size-6" />
+                                                        </Link>
+                                                        <Link to={`/manage-event-list/tabs`} state={{ event: post }} className="flex-shrink-0">
+                                                            <img src={postIcon} alt="Open tabs" className="w-6 h-6 object-contain flex-shrink-0" />
+                                                        </Link>
+                                                        <button onClick={() => handleDelete(post.id)}>
+                                                            <MdDelete className="size-6" />
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
@@ -241,6 +245,11 @@ const EvOrgPost = ({ title }) => {
                                 </table>
                             </div>
                         </div>
+                    </div>
+                    <div className="flex justify-center gap-3 my-4">
+                        <button onClick={() => setPage(p => Math.max(0, p - 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page <= 0}>Trước</button>
+                        <div className="px-3 py-2">Page {page + 1} / {totalPages}</div>
+                        <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page + 1 >= totalPages}>Sau</button>
                     </div>
                 </div>
             ) : showLoader ? (

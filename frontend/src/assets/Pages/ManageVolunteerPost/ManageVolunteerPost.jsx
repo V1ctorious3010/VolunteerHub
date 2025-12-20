@@ -219,11 +219,7 @@ const ManageVolunteerPost = ({ title }) => {
                                 </div>
                             </div>
 
-                            <div className="flex justify-center gap-3 mb-4 mt-4">
-                                <button onClick={() => setPage(p => Math.max(0, p - 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page <= 0}>Prev</button>
-                                <div className="px-3 py-2">Trang  {page + 1} / {totalPages}</div>
-                                <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page + 1 >= totalPages}>Next</button>
-                            </div>
+
 
                             <div className="md:hidden">
                                 <div className="overflow-x-auto ">
@@ -253,6 +249,12 @@ const ManageVolunteerPost = ({ title }) => {
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+
+                            <div className="flex justify-center gap-3 mb-4 mt-4">
+                                <button onClick={() => setPage(p => Math.max(0, p - 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page <= 0}>Trước </button>
+                                <div className="px-3 py-2">Trang  {page + 1} / {totalPages}</div>
+                                <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} className="px-3 py-2 bg-gray-200 rounded" disabled={page + 1 >= totalPages}>Sau </button>
                             </div>
                         </div>
                     )}

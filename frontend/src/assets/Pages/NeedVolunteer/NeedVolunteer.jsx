@@ -232,11 +232,7 @@ const NeedVolunteer = ({ title }) => {
         </div>
       ) : (
         <div>
-          <div className="flex justify-center gap-3 my-4">
-            <button onClick={handlePrev} className="px-3 py-2 bg-gray-200 rounded" disabled={pageNumber <= 0}>Prev</button>
-            <div className="px-3 py-2">Trang {pageNumber + 1} / {totalPages || 1}</div>
-            <button onClick={handleNext} className="px-3 py-2 bg-gray-200 rounded" disabled={pageNumber >= (totalPages - 1)}>Next</button>
-          </div>
+
           <div className={gridView ? "block" : "hidden"}>
             <div className=" container mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 md:gap-y-12">
               {volunteers.map((volunteer) => (
@@ -326,6 +322,11 @@ const NeedVolunteer = ({ title }) => {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="flex justify-center gap-3 my-4">
+            <button onClick={handlePrev} className="px-3 py-2 bg-gray-200 rounded" disabled={pageNumber <= 0}>Trước</button>
+            <div className="px-3 py-2">Trang {pageNumber + 1} / {totalPages || 1}</div>
+            <button onClick={handleNext} className="px-3 py-2 bg-gray-200 rounded" disabled={pageNumber >= (totalPages - 1)}>Sau</button>
           </div>
         </div>
       )}

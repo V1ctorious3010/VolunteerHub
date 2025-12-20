@@ -122,9 +122,9 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
                     </div>
 
                     <div className="flex items-center gap-2 justify-center mt-4">
-                        <button className="btn" disabled={regsPage <= 0} onClick={() => setRegsPage(p => Math.max(0, p - 1))}>Prev</button>
-                        <span>Page {regsPage + 1} / {regsTotalPages || 1}</span>
-                        <button className="btn" disabled={regsPage + 1 >= (regsTotalPages || 1)} onClick={() => setRegsPage(p => p + 1)}>Next</button>
+                        <button className="btn" disabled={regsPage <= 0} onClick={() => setRegsPage(p => Math.max(0, p - 1))}>Trước</button>
+                        <span>Trang {regsPage + 1} / {regsTotalPages || 1}</span>
+                        <button className="btn" disabled={regsPage + 1 >= (regsTotalPages || 1)} onClick={() => setRegsPage(p => p + 1)}>Sau</button>
                     </div>
                 </div>
             ) : (

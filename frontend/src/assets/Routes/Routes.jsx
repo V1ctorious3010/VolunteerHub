@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home title="GiveNow"></Home>,
+        element: <Home title="GoodHands"></Home>,
       },
       {
         path: "/feed",

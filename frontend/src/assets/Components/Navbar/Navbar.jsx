@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import logo from '../../images/logo.svg';
 import { logout } from '../../../features/auth/authSlice';
 import { ROLE } from '../../../constants/roles';
 import "react-dropdown/style.css";
@@ -70,10 +71,10 @@ const Navbar = () => {
             </ul>
           </div>
           <Link to="/" className="cursor-pointer inter flex items-center ">
-
-            <div>
+            <div className="flex items-center gap-2">
+              <img src={logo} alt="goodhand logo" className="w-8 h-8" />
               <h2 className="hidden md:flex font-bold text-xl md:text-2xl">
-                <span className="text-yellow-200">GiveNow</span>
+                <span className="text-[#5ce7ff]">GoodHands</span>
               </h2>
             </div>
           </Link>

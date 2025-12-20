@@ -131,8 +131,8 @@ const MyVolunteerRequest = ({ title }) => {
                 </select>
                 <div className="ml-auto">
                     <span className="text-sm">Trang {page + 1} / {totalPages || 1}</span>
-                    <button className="btn btn-sm ml-2" disabled={page <= 0} onClick={() => setPage(p => Math.max(0, p - 1))}>Prev</button>
-                    <button className="btn btn-sm ml-2" disabled={page + 1 >= (totalPages || 1)} onClick={() => setPage(p => p + 1)}>Next</button>
+                    <button className="btn btn-sm ml-2" disabled={page <= 0} onClick={() => setPage(p => Math.max(0, p - 1))}>Trước </button>
+                    <button className="btn btn-sm ml-2" disabled={page + 1 >= (totalPages || 1)} onClick={() => setPage(p => p + 1)}>Sau</button>
                 </div>
             </div>
 

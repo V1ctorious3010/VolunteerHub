@@ -92,9 +92,9 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
                     </div>
 
                     <div className="flex items-center gap-2 justify-center mt-4">
-                        <button className="btn" disabled={partPage <= 0} onClick={() => setPartPage(p => Math.max(0, p - 1))}>Prev</button>
-                        <span>Page {(report.volunteers?.number || 0) + 1} / {report.volunteers?.totalPages || 1}</span>
-                        <button className="btn" disabled={partPage + 1 >= (partTotalPages || 1)} onClick={() => setPartPage(p => p + 1)}>Next</button>
+                        <button className="btn" disabled={partPage <= 0} onClick={() => setPartPage(p => Math.max(0, p - 1))}>Trước</button>
+                        <span>Trang {(report.volunteers?.number || 0) + 1} / {report.volunteers?.totalPages || 1}</span>
+                        <button className="btn" disabled={partPage + 1 >= (partTotalPages || 1)} onClick={() => setPartPage(p => p + 1)}>Sau</button>
                     </div>
                 </div>
             ) : (

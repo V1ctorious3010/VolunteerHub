@@ -14,7 +14,7 @@ const Footer = () => {
                     <div className="flex-1 lg:flex-none lg:w-1/3">
                         <Link to="/" className="flex items-center gap-3">
                             <div>
-                                <h2 className="font-bold text-xl md:text-2xl">GiveNow</h2>
+                                <h2 className="font-bold text-xl md:text-2xl">GoodHands</h2>
                                 <p className="text-sm text-gray-200 mt-1">Nền tảng gây quỹ cộng đồng trực tuyến tiện lợi, tin cậy và minh bạch.</p>
                             </div>
                         </Link>
@@ -36,7 +36,7 @@ const Footer = () => {
                             <h3 className="uppercase font-bold text-sm mb-2">Liên hệ</h3>
                             <ul className="text-sm text-gray-200 space-y-2">
                                 <li className="flex items-center gap-2"><FaPhoneSquareAlt className="text-white" /> <span>Hotline: <span className="text-red-400 font-semibold">0915440555</span></span></li>
-                                <li className="flex items-center gap-2"><MdEmail className="text-white" /> <span>Hotro@givenow.vn</span></li>
+                                <li className="flex items-center gap-2"><MdEmail className="text-white" /> <span>Hotro@goodhands.vn</span></li>
                                 <li className="flex items-center gap-2"><IoLocationSharp className="text-white" /> <span>Số 09, ngõ 04, phố Duy Tân, Cầu Giấy, Hà Nội.</span></li>
                             </ul>
                         </div>
@@ -45,7 +45,7 @@ const Footer = () => {
                 </div>
 
                 <div className="mt-6 border-t border-white/10 pt-4 text-sm text-center text-gray-200">
-                    © Givenow - All Rights Reserved
+                    © GoodHands - All Rights Reserved
                 </div>
             </div>
         </footer>
