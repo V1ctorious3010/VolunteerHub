@@ -128,7 +128,7 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
                     </div>
                 </div>
             ) : (
-                <div className="text-gray-600">Không có đăng ký cho sự kiện này.</div>
+                <div className="text-gray-600 text-center">Không có đăng ký cho sự kiện này.</div>
             )}
         </>
     );
