@@ -1,7 +1,7 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.CommentDto;
-import com.example.backend.dto.CreateCommentRequest;
+import com.example.backend.dto.Post.CommentDto;
+import com.example.backend.dto.Post.CreateCommentRequest;
 import com.example.backend.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

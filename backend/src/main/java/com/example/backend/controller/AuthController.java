@@ -1,8 +1,8 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.AuthResponse;
-import com.example.backend.dto.LoginRequest;
-import com.example.backend.dto.RegisterRequest;
+import com.example.backend.dto.User.AuthResponse;
+import com.example.backend.dto.User.LoginRequest;
+import com.example.backend.dto.User.RegisterRequest;
 import com.example.backend.entity.User;
 import com.example.backend.exception.BadCredentialsAppException;
 import com.example.backend.repo.UserRepository;

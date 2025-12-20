@@ -1,9 +1,11 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.Event.CreateEventRequest;
+import com.example.backend.dto.Event.EventDetailDto;
+import com.example.backend.dto.Event.UpdateEventRequest;
 import com.example.backend.entity.Event;
 import com.example.backend.repo.EventRepository;
-import com.example.backend.dto.*;
-import com.example.backend.dto.EventReportDto;
+import com.example.backend.dto.Event.EventReportDto;
 import com.example.backend.dto.VolunteerReportDto;
 import com.example.backend.entity.*;
 import com.example.backend.exception.*;

@@ -1,10 +1,9 @@
 package com.example.backend.controller;
-import com.example.backend.dto.UserAvatarDTO;
-import com.example.backend.dto.UserStatusRequest;
+import com.example.backend.dto.User.UserAvatarDTO;
+import com.example.backend.dto.User.UserStatusRequest;
 import com.example.backend.entity.User;
 import com.example.backend.exception.UserNotFoundException;
 import com.example.backend.repo.UserRepository;
-import com.example.backend.security.JwtService;
 import com.example.backend.service.CloudinaryService;
 import com.example.backend.service.UserService;
 import jakarta.validation.Valid;

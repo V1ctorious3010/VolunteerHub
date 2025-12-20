@@ -1,7 +1,7 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.EventDetailDto;
-import com.example.backend.dto.EventStatusRequest;
+import com.example.backend.dto.Event.EventDetailDto;
+import com.example.backend.dto.Event.EventStatusRequest;
 import com.example.backend.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

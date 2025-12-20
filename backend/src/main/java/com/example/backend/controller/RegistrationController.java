@@ -1,21 +1,17 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.MyRegistrationDto;
-import com.example.backend.dto.RegistrationDto;
-import com.example.backend.dto.RegistrationStatusRequest;
+import com.example.backend.dto.Registration.MyRegistrationDto;
+import com.example.backend.dto.Registration.RegistrationDto;
+import com.example.backend.dto.Registration.RegistrationStatusRequest;
 import com.example.backend.entity.Registration;
-import com.example.backend.exception.BadCredentialsAppException;
-import com.example.backend.service.NotificationProducer;
 import com.example.backend.service.RegistrationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 

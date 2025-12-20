@@ -1,10 +1,10 @@
 package com.example.backend.controller;
 
 
-import com.example.backend.dto.CreateEventRequest;
-import com.example.backend.dto.EventDetailDto;
-import com.example.backend.dto.EventReportDto;
-import com.example.backend.dto.UpdateEventRequest;
+import com.example.backend.dto.Event.CreateEventRequest;
+import com.example.backend.dto.Event.EventDetailDto;
+import com.example.backend.dto.Event.EventReportDto;
+import com.example.backend.dto.Event.UpdateEventRequest;
 import com.example.backend.entity.Registration;
 import com.example.backend.service.EventService;
 import jakarta.validation.Valid;

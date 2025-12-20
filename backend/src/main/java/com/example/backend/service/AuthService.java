@@ -1,10 +1,9 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.LoginRequest;
-import com.example.backend.dto.RegisterRequest;
+import com.example.backend.dto.User.LoginRequest;
+import com.example.backend.dto.User.RegisterRequest;
 import com.example.backend.entity.User;
 import com.example.backend.exception.BadCredentialsAppException;
-import com.example.backend.repo.NotificationRepository;
 import com.example.backend.repo.UserRepository;
 import com.example.backend.security.JwtService;
 import java.util.Map;

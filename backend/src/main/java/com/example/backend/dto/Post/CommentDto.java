@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package com.example.backend.dto.Post;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDto {
-    private Long postId;
+public class CommentDto {
+    private Long commentId;
     private String content;
     private String attachment;
     
@@ -24,16 +24,4 @@ public class PostDto {
     private String authorName;
     private String authorEmail;
     private String authorAvatar;
-    
-    // Event info
-    private Long eventId;
-    private String eventTitle;
-    
-    // Statistics
-    private Long likeCount;
-    private Long commentCount;
-    private Boolean isLikedByMe;
-    
-    // Latest comment
-    private CommentDto latestComment;
 }

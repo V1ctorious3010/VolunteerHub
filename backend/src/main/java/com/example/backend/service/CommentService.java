@@ -1,7 +1,7 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.CommentDto;
-import com.example.backend.dto.CreateCommentRequest;
+import com.example.backend.dto.Post.CommentDto;
+import com.example.backend.dto.Post.CreateCommentRequest;
 import com.example.backend.entity.*;
 import com.example.backend.exception.*;
 import com.example.backend.repo.*;

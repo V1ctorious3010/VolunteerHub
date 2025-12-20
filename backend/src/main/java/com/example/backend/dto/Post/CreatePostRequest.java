@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package com.example.backend.dto.Post;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdatePostRequest {
+public class CreatePostRequest {
 
     @NotBlank(message = "Nội dung không được để trống")
     @Size(min = 1, max = 5000, message = "Nội dung phải từ 1 đến 5000 ký tự")

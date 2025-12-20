@@ -1,8 +1,10 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.*;
+import com.example.backend.dto.Post.CommentDto;
+import com.example.backend.dto.Post.CreatePostRequest;
+import com.example.backend.dto.Post.PostDto;
+import com.example.backend.dto.Post.UpdatePostRequest;
 import com.example.backend.entity.*;
-import com.example.backend.entity.Registration.RequestStatus;
 import com.example.backend.exception.*;
 import com.example.backend.repo.*;
 import lombok.RequiredArgsConstructor;

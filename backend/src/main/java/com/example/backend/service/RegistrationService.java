@@ -1,8 +1,8 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.MyRegistrationDto;
-import com.example.backend.dto.RegistrationDto;
-import com.example.backend.dto.RegistrationStatusRequest;
+import com.example.backend.dto.Registration.MyRegistrationDto;
+import com.example.backend.dto.Registration.RegistrationDto;
+import com.example.backend.dto.Registration.RegistrationStatusRequest;
 import com.example.backend.entity.Event;
 import com.example.backend.entity.Registration;
 import com.example.backend.entity.Registration.RequestStatus;

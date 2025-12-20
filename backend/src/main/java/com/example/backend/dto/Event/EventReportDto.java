@@ -1,13 +1,11 @@
-package com.example.backend.dto;
+package com.example.backend.dto.Event;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.example.backend.dto.VolunteerReportDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
-
-import java.time.LocalDateTime;
 
 /**
  * DTO for event report with volunteer statistics

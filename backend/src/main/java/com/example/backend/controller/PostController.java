@@ -1,8 +1,8 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.CreatePostRequest;
-import com.example.backend.dto.PostDto;
-import com.example.backend.dto.UpdatePostRequest;
+import com.example.backend.dto.Post.CreatePostRequest;
+import com.example.backend.dto.Post.PostDto;
+import com.example.backend.dto.Post.UpdatePostRequest;
 import com.example.backend.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

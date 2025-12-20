@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package com.example.backend.dto.User;
 
 import com.example.backend.entity.User.Role;
 

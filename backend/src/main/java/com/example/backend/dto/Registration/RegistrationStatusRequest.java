@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package com.example.backend.dto.Registration;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

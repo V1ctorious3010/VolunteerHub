@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package com.example.backend.dto.Registration;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
