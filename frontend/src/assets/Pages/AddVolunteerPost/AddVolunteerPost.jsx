@@ -252,7 +252,7 @@ const AddVolunteerPost = ({ title }) => {
               <input
                 className={`px-8 w-full py-4 leading-5 ${isSubmitting ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'} text-white transition-colors duration-300 transhtmlForm bg-green-500 font-bold rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600`}
                 type="submit"
-                value={isSubmitting ? 'Đang gửi...' : 'Add Post'}
+                value={isSubmitting ? 'Đang gửi...' : 'Tạo sự kiện'}
                 disabled={isSubmitting}
               />
             </div>
