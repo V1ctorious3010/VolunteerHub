@@ -146,7 +146,7 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
                     </div>
                 </div>
             ) : (
-                <div className="text-gray-600">Không có dữ liệu báo cáo cho sự kiện này.</div>
+                <div className="text-gray-600 text-center">Không có dữ liệu báo cáo cho sự kiện này.</div>
             )}
         </>
     );

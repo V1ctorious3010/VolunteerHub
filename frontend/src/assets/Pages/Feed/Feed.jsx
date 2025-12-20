@@ -255,17 +255,6 @@ const Feed = () => {
 
     // Delete comment (use SweetAlert2 confirmation)
     const handleDeleteComment = async (commentId) => {
-        const result = await Swal.fire({
-            title: "Bạn chắc chưa?",
-            text: "Bạn sẽ không thể thay đổi lựa chọn này!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Hãy xóa đi!",
-            cancelButtonText: "Không",
-        });
-        if (!result.isConfirmed) return;
 
         try {
             await deleteComment(commentId);
@@ -280,7 +269,6 @@ const Feed = () => {
                 )
             );
 
-            await Swal.fire('Thông báo', 'Xóa bình luận thành công!', 'success');
         } catch (error) {
             console.error('Error deleting comment', error);
             const emsg = error?.response?.data?.message || error?.message || 'Lỗi khi xóa bình luận';
