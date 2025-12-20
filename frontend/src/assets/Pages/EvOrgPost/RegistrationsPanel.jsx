@@ -17,7 +17,12 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
         const loadRegs = async () => {
             setLoading(true);
             try {
-                const rresp = await getEventRegistrations(selectedEvent, { page: regsPage, size: regsSize });
+                // Only fetch PENDING registrations
+                const rresp = await getEventRegistrations(selectedEvent, { 
+                    page: regsPage, 
+                    size: regsSize,
+                    status: 'PENDING'
+                });
                 const regsData = rresp?.data || { content: [], totalPages: 0 };
                 if (!mounted) return;
                 setRegistrations(regsData.content || []);
@@ -65,7 +70,7 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
         if (!s) return '';
         const key = String(s).toUpperCase();
         switch (key) {
-            case 'APPROVED': return 'Đồng ý';
+            case 'APPROVED': return 'Chấp nhận';
             case 'REJECTED': return 'Từ chối';
             case 'COMPLETED': return 'Hoàn thành';
             case 'PENDING': return 'Chờ duyệt';
@@ -104,15 +109,19 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
                                         <td className="font-semibold">{mapStatus(r.status)}</td>
                                         <td>
                                             <div className="flex items-center gap-2 justify-center">
-                                                {r.status === 'PENDING' && (
-                                                    <button className="btn btn-sm bg-green-500" onClick={() => handleAction(r.registrationId ?? r.id, 'APPROVED')}>Đồng ý</button>
-                                                )}
-                                                {r.status === 'PENDING' && (
-                                                    <button className="btn btn-sm bg-red-500" onClick={() => handleAction(r.registrationId ?? r.id, 'REJECTED')}>Từ chối</button>
-                                                )}
-                                                {r.status === 'APPROVED' && (
-                                                    <button className="btn btn-sm bg-indigo-300" onClick={() => handleAction(r.registrationId ?? r.id, 'COMPLETED')}>Hoàn thành</button>
-                                                )}
+                                                {/* Only show Approve/Reject for PENDING registrations */}
+                                                <button 
+                                                    className="btn btn-sm bg-green-500 hover:bg-green-600 text-white" 
+                                                    onClick={() => handleAction(r.registrationId ?? r.id, 'APPROVED')}
+                                                >
+                                                    Chấp nhận
+                                                </button>
+                                                <button 
+                                                    className="btn btn-sm bg-red-500 hover:bg-red-600 text-white" 
+                                                    onClick={() => handleAction(r.registrationId ?? r.id, 'REJECTED')}
+                                                >
+                                                    Từ chối
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
