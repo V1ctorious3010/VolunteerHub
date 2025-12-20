@@ -15,7 +15,7 @@ const Footer = () => {
                         <Link to="/" className="flex items-center gap-3">
                             <div>
                                 <h2 className="font-bold text-xl md:text-2xl">GoodHands</h2>
-                                <p className="text-sm text-gray-200 mt-1">Nền tảng gây quỹ cộng đồng trực tuyến tiện lợi, tin cậy và minh bạch.</p>
+                                <p className="text-sm text-gray-200 mt-1">Nền tảng kêu gọi tình nguyện cộng đồng trực tuyến tiện lợi, tin cậy và minh bạch.</p>
                             </div>
                         </Link>
                     </div>
