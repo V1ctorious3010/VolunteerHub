@@ -4,8 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public class LoginRequest {
-    @Email(message = "Must be a valid email format.")
-    @NotBlank(message = "Email must not be empty.")
+    @Email(message = "Định dạng email không hợp lệ")
+    @NotBlank(message = "Email không được để trống")
     private String email;
 
     public LoginRequest(String password, String email) {
@@ -13,7 +13,7 @@ public class LoginRequest {
         this.email = email;
     }
 
-    @NotBlank(message = "Password must not be empty.")
+    @NotBlank(message = "Mật khẩu không được để trống")
     private String password;
 
     // Getters and Setters

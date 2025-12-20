@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EventStatusRequest {
 
-    @NotBlank(message = "Status is required")
-    @Pattern(regexp = "COMING|REJECTED", message = "Status must be either COMING or REJECTED")
+    @NotBlank(message = "Trạng thái không được để trống")
+    @Pattern(regexp = "COMING|REJECTED", message = "Trạng thái phải là COMING hoặc REJECTED")
     private String status;
 }

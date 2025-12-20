@@ -13,29 +13,29 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UpdateEventRequest {
 
-    @Size(min = 5, max = 200, message = "Title must be between 5 and 200 characters")
+    @Size(min = 5, max = 200, message = "Tiêu đề phải từ 5 đến 200 ký tự")
     private String title;
 
-    @Size(max = 255, message = "Location must not exceed 255 characters")
+    @Size(max = 255, message = "Địa điểm không được vượt quá 255 ký tự")
     private String location;
 
     private String thumbnail;
 
-    @Min(value = 1, message = "At least 1 volunteer is needed")
-    @Max(value = 10000, message = "Maximum 10000 volunteers allowed")
+    @Min(value = 1, message = "Cần ít nhất 1 tình nguyện viên")
+    @Max(value = 10000, message = "Tối đa 10000 tình nguyện viên")
     private Integer noOfVolunteer;
 
-    @Future(message = "Start time must be in the future")
+    @Future(message = "Thời gian bắt đầu phải ở tương lai")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startTime;
 
-    @Future(message = "End time must be in the future")
+    @Future(message = "Thời gian kết thúc phải ở tương lai")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime endTime;
 
-    @Size(min = 20, max = 5000, message = "Description must be between 20 and 5000 characters")
+    @Size(min = 20, max = 5000, message = "Mô tả phải từ 20 đến 5000 ký tự")
     private String description;
 
-    @Size(max = 100, message = "Category must not exceed 100 characters")
+    @Size(max = 100, message = "Danh mục không được vượt quá 100 ký tự")
     private String category; // Optional
 }

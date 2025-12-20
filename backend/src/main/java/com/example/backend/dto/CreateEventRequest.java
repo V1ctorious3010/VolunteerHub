@@ -13,36 +13,36 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CreateEventRequest {
 
-    @NotBlank(message = "Title is required")
-    @Size(min = 5, max = 200, message = "Title must be between 5 and 200 characters")
+    @NotBlank(message = "Tiêu đề không được để trống")
+    @Size(min = 5, max = 200, message = "Tiêu đề phải từ 5 đến 200 ký tự")
     private String title;
 
-    @NotBlank(message = "Location is required")
-    @Size(max = 255, message = "Location must not exceed 255 characters")
+    @NotBlank(message = "Địa điểm không được để trống")
+    @Size(max = 255, message = "Địa điểm không được vượt quá 255 ký tự")
     private String location;
 
     private String thumbnail; // Optional
 
-    @NotNull(message = "Number of volunteers is required")
-    @Min(value = 1, message = "At least 1 volunteer is needed")
-    @Max(value = 10000, message = "Maximum 10000 volunteers allowed")
+    @NotNull(message = "Số lượng tình nguyện viên không được để trống")
+    @Min(value = 1, message = "Cần ít nhất 1 tình nguyện viên")
+    @Max(value = 10000, message = "Tối đa 10000 tình nguyện viên")
     private Integer noOfVolunteer;
 
-    @NotNull(message = "Start time is required")
-    @Future(message = "Start time must be in the future")
+    @NotNull(message = "Thời gian bắt đầu không được để trống")
+    @Future(message = "Thời gian bắt đầu phải ở tương lai")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startTime;
 
-    @NotNull(message = "End time is required")
-    @Future(message = "End time must be in the future")
+    @NotNull(message = "Thời gian kết thúc không được để trống")
+    @Future(message = "Thời gian kết thúc phải ở tương lai")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime endTime;
 
-    @NotBlank(message = "Description is required")
-    @Size(min = 20, max = 5000, message = "Description must be between 20 and 5000 characters")
+    @NotBlank(message = "Mô tả không được để trống")
+    @Size(min = 20, max = 5000, message = "Mô tả phải từ 20 đến 5000 ký tự")
     private String description;
 
-    @NotBlank(message = "Category is required")
-    @Size(max = 100, message = "Category must not exceed 100 characters")
+    @NotBlank(message = "Danh mục không được để trống")
+    @Size(max = 100, message = "Danh mục không được vượt quá 100 ký tự")
     private String category;
 }
