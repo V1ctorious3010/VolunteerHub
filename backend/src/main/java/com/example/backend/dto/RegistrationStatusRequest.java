@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegistrationStatusRequest {
-    @NotNull(message = "Status is required")
+    @NotNull(message = "Trạng thái không được để trống")
     private String status; // APPROVED, REJECTED, COMPLETED
 }

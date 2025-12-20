@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -181,14 +182,14 @@ public class EventController {
 
     /**
      * Get event report with volunteer list (paginated)
-     * GET /events/{eventId}/report
+     * GET /events/{eventId}/report?status=APPROVED,COMPLETED&page=0&size=20
      * Role: EVENT_ORGANIZER
      */
     @GetMapping("/events/{eventId}/report")
     @PreAuthorize("hasAnyRole('EVENT_ORGANIZER')")
     public ResponseEntity<EventReportDto> getEventReport(
             @PathVariable Long eventId,
-            @RequestParam(defaultValue = "APPROVED") Registration.RequestStatus status,
+            @RequestParam(required = false) List<Registration.RequestStatus> status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             Authentication authentication) {

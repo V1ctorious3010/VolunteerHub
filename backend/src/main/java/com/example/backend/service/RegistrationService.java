@@ -145,17 +145,18 @@ public class RegistrationService {
     /**
      * Get all registrations for specific event (organizer only)
      * GET /events/{eventId}/registrations
-     * Returns all registrations regardless of status
+     * Can filter by multiple registration statuses
      * Sorted by createdAt ASC
      */
     @Transactional(readOnly = true)
     public Page<RegistrationDto> getEventRegistrations(
             Long eventId, 
-            String organizerEmail, 
+            String organizerEmail,
+            List<Registration.RequestStatus> statuses,
             int page, 
             int size) {
         
-        log.info("Fetching registrations for event {} by organizer {}", eventId, organizerEmail);
+        log.info("Fetching registrations for event {} by organizer {} with statuses {}", eventId, organizerEmail, statuses);
         
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(eventId));
@@ -165,7 +166,15 @@ public class RegistrationService {
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
-        Page<Registration> registrations = registrationRepository.findByEventId(eventId, pageable);
+        Page<Registration> registrations;
+        
+        if (statuses != null && !statuses.isEmpty()) {
+            // Filter by provided statuses
+            registrations = registrationRepository.findByEventIdAndStatusIn(eventId, statuses, pageable);
+        } else {
+            // Default: get all registrations
+            registrations = registrationRepository.findByEventId(eventId, pageable);
+        }
         
         return registrations.map(this::mapToRegistrationDto);
     }

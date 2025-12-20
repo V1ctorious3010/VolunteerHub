@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VolunteerReportDto {
+    private Long registrationId;
     private String userEmail;
     private String name;
     private String email;

@@ -314,17 +314,17 @@ public class EventService {
      * Get event report with volunteer list (organizer only)
      * GET /events/{eventId}/report
      * Returns registration statistics and paginated volunteer list
-     * Can filter by registration status (default: APPROVED)
+     * Can filter by multiple registration statuses (e.g., APPROVED, COMPLETED)
      */
     @Transactional(readOnly = true)
     public EventReportDto getEventReport(
             Long eventId,
             String organizerEmail,
-            Registration.RequestStatus status,
+            List<Registration.RequestStatus> statuses,
             int page,
             int size
     ) {
-        log.info("Getting event report for event {}, organizer {}, status {}", eventId, organizerEmail, status);
+        log.info("Getting event report for event {}, organizer {}, statuses {}", eventId, organizerEmail, statuses);
 
         // 1. Find event and verify ownership
         Event event = eventRepository.findByIdAndOrganizerEmail(eventId, organizerEmail)
@@ -337,14 +337,23 @@ public class EventService {
         Long pendingCount = registrationRepository.countByEventIdAndStatus(eventId, Registration.RequestStatus.PENDING);
         Long rejectedCount = registrationRepository.countByEventIdAndStatus(eventId, Registration.RequestStatus.REJECTED);
 
-        // 3. Get paginated volunteers filtered by status (default APPROVED)
+        // 3. Get paginated volunteers filtered by statuses
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
-        Page<Registration> registrationPage = registrationRepository.findByEventIdAndStatus(eventId, status, pageable);
+        Page<Registration> registrationPage;
+        
+        if (statuses != null && !statuses.isEmpty()) {
+            // Filter by provided statuses
+            registrationPage = registrationRepository.findByEventIdAndStatusIn(eventId, statuses, pageable);
+        } else {
+            // Default: get all registrations
+            registrationPage = registrationRepository.findByEventId(eventId, pageable);
+        }
 
         // 4. Map to VolunteerReportDto
         Page<VolunteerReportDto> volunteerPage = registrationPage.map(registration -> {
             User user = registration.getUser();
             return VolunteerReportDto.builder()
+                    .registrationId(registration.getId())
                     .userEmail(user.getEmail())
                     .name(user.getName())
                     .email(user.getEmail())

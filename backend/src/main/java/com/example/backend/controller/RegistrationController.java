@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.MyRegistrationDto;
 import com.example.backend.dto.RegistrationDto;
 import com.example.backend.dto.RegistrationStatusRequest;
+import com.example.backend.entity.Registration;
 import com.example.backend.exception.BadCredentialsAppException;
 import com.example.backend.service.NotificationProducer;
 import com.example.backend.service.RegistrationService;
@@ -19,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -94,23 +96,24 @@ public class RegistrationController {
 
     /**
      * Get registrations for a specific event (for organizer)
-     * GET /events/{eventId}/registrations?page=0&size=12
+     * GET /events/{eventId}/registrations?status=PENDING&page=0&size=12
      * Role: EVENT_ORGANIZER, ADMIN
      */
     @GetMapping("/events/{eventId}/registrations")
     @PreAuthorize("hasAnyRole('EVENT_ORGANIZER')")
     public ResponseEntity<Page<RegistrationDto>> getEventRegistrations(
             @PathVariable Long eventId,
+            @RequestParam(required = false) List<Registration.RequestStatus> status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
             Authentication authentication) {
         
         String organizerEmail = authentication.getName();
-        log.info("GET /events/{}/registrations by {} (page={}, size={})",
-                eventId, organizerEmail, page, size);
+        log.info("GET /events/{}/registrations by {} (status={}, page={}, size={})",
+                eventId, organizerEmail, status, page, size);
         
         Page<RegistrationDto> registrations = registrationService.getEventRegistrations(
-                eventId, organizerEmail, page, size);
+                eventId, organizerEmail, status, page, size);
         
         return ResponseEntity.ok(registrations);
     }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner } from '@material-tailwind/react';
-import { getEventReport } from '../../../utils/postApi';
+import Swal from 'sweetalert2';
+import { getEventReport, patchRegistrationStatus } from '../../../utils/postApi';
 
 const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
     const [loading, setLoading] = useState(true);
@@ -8,6 +9,7 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
     const [partPage, setPartPage] = useState(0);
     const [partSize] = useState(20);
     const [partTotalPages, setPartTotalPages] = useState(0);
+    const [refreshCounter, setRefreshCounter] = useState(0);
 
     useEffect(() => {
         if (!selectedEvent) return;
@@ -15,7 +17,12 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
         const loadReport = async () => {
             setLoading(true);
             try {
-                const resp = await getEventReport(selectedEvent, { page: partPage, size: partSize });
+                // Fetch APPROVED and COMPLETED participants
+                const resp = await getEventReport(selectedEvent, { 
+                    page: partPage, 
+                    size: partSize,
+                    status: 'APPROVED,COMPLETED'
+                });
                 if (!mounted) return;
                 const rep = resp?.data || null;
                 setReport(rep);
@@ -30,7 +37,7 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
         };
         loadReport();
         return () => { mounted = false };
-    }, [selectedEvent, partPage, partSize]);
+    }, [selectedEvent, partPage, partSize, refreshCounter]);
     const formatDateOnly = (v) => {
         if (!v) return "";
         const s = String(v).trim();
@@ -44,11 +51,39 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
         return `${dd}/${mm}/${yyyy}`;
     };
 
+    const handleComplete = async (userEmail) => {
+        try {
+            // Find the registration for this user
+            const volunteer = report?.volunteers?.content?.find(v => v.email === userEmail || v.userEmail === userEmail);
+            if (!volunteer) {
+                Swal.fire({ title: 'Lỗi', text: 'Không tìm thấy tình nguyện viên', icon: 'error' });
+                return;
+            }
+
+            // Get registration ID from the volunteer data or find it via API
+            // For now, we'll need to pass registrationId from backend in VolunteerReportDto
+            // Assuming we add registrationId to the DTO response
+            const resp = await patchRegistrationStatus(volunteer.registrationId, { status: 'COMPLETED' });
+            const msg = resp?.data?.message;
+            
+            // Refresh the list
+            setRefreshCounter(c => c + 1);
+            
+            if (msg) {
+                Swal.fire({ title: 'Thông báo', text: msg, icon: 'success' });
+            }
+        } catch (err) {
+            const emsg = err?.response?.data?.message || err.message || 'Lỗi';
+            console.error('Complete action failed', err);
+            Swal.fire({ title: 'Error', text: emsg, icon: 'error' });
+        }
+    };
+
     const mapStatus = (s) => {
         if (!s) return '';
         const key = String(s).toUpperCase();
         switch (key) {
-            case 'APPROVED': return 'Đồng ý';
+            case 'APPROVED': return 'Chấp nhận';
             case 'REJECTED': return 'Từ chối';
             case 'COMPLETED': return 'Hoàn thành';
             case 'PENDING': return 'Chờ duyệt';
@@ -74,6 +109,7 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
                                     <th>Thời gian bắt đầu</th>
                                     <th>Địa điểm</th>
                                     <th>Trạng thái</th>
+                                    <th>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,6 +121,18 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
                                         <td className="font-semibold">{formatDateOnly(currentEventObj?.startTime || v.registeredAt)}</td>
                                         <td className="font-semibold">{currentEventObj?.location || ''}</td>
                                         <td className="font-semibold">{mapStatus(v.status)}</td>
+                                        <td>
+                                            {v.status === 'APPROVED' ? (
+                                                <button 
+                                                    className="btn btn-sm bg-blue-500 hover:bg-blue-600 text-white"
+                                                    onClick={() => handleComplete(v.email || v.userEmail)}
+                                                >
+                                                    Hoàn thành
+                                                </button>
+                                            ) : (
+                                                <span className="text-gray-400 text-sm">—</span>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

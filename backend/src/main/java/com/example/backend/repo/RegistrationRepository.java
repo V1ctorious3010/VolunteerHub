@@ -66,4 +66,7 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     
     // Find registrations by event and status with pagination (for report)
     Page<Registration> findByEventIdAndStatus(Long eventId, Registration.RequestStatus status, Pageable pageable);
+    
+    // Find registrations by event and multiple statuses with pagination
+    Page<Registration> findByEventIdAndStatusIn(Long eventId, List<Registration.RequestStatus> statuses, Pageable pageable);
 }
