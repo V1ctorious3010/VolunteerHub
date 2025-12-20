@@ -118,7 +118,7 @@ const PostDetails = ({ title2 }) => {
 
                   className="text-lg font-semibold "
                 >
-                  Hạn cuối :
+                  Kết thúc :
                 </Typography>
                 <Typography
 
