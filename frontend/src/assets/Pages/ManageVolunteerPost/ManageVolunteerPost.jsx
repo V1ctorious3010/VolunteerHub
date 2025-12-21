@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { getAdminEvents, patchAdminEventStatus, exportAdminEvents } from '../../../utils/postApi';
+import { getAdminEvents, patchAdminEventStatus } from '../../../utils/postApi';
 import { truncateChars } from '../../../utils/textUtils';
 import { useSelector } from 'react-redux';
 import ROLE from '../../../constants/roles';
@@ -68,18 +68,57 @@ const ManageVolunteerPost = ({ title }) => {
 
     const handleExport = async (format) => {
         try {
-            const resp = await exportAdminEvents(format);
-            const blob = resp.data;
+            if (!events || events.length === 0) {
+                Swal.fire('Thông báo', 'Không có sự kiện để xuất', 'info');
+                return;
+            }
+
+            if (format === 'json') {
+                const content = JSON.stringify(events, null, 2);
+                const blob = new Blob([content], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `events_export.json`);
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                window.URL.revokeObjectURL(url);
+                Swal.fire('Thành công', 'Đã tải xuống danh sách sự kiện (JSON)', 'success');
+                return;
+            }
+
+            // CSV export
+            const toCSV = (arr) => {
+                if (!arr || arr.length === 0) return '';
+                const keys = Array.from(arr.reduce((set, obj) => {
+                    if (!obj || typeof obj !== 'object') return set;
+                    Object.keys(obj).forEach(k => set.add(k));
+                    return set;
+                }, new Set()));
+
+                const escape = (val) => {
+                    if (val === null || val === undefined) return '';
+                    const s = typeof val === 'object' ? JSON.stringify(val) : String(val);
+                    return '"' + s.replace(/"/g, '""') + '"';
+                };
+
+                const header = keys.map(k => escape(k)).join(',');
+                const rows = arr.map(obj => keys.map(k => escape(obj[k])).join(','));
+                return [header, ...rows].join('\r\n');
+            };
+
+            const csv = toCSV(events);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            const ext = format === 'json' ? 'json' : 'csv';
-            link.setAttribute('download', `events_export.${ext}`);
+            link.setAttribute('download', `events_export.csv`);
             document.body.appendChild(link);
             link.click();
             link.remove();
             window.URL.revokeObjectURL(url);
-            Swal.fire('Thành công', 'Đã tải xuống danh sách sự kiện', 'success');
+            Swal.fire('Thành công', 'Đã tải xuống danh sách sự kiện (CSV)', 'success');
         } catch (err) {
             console.error('Export failed', err);
             Swal.fire('Lỗi', 'Không thể tải danh sách sự kiện', 'error');
@@ -197,7 +236,7 @@ const ManageVolunteerPost = ({ title }) => {
                                                 <tr className="border border-gray-300" key={ev.id}>
                                                     <th className="font-semibold px-4 py-3">{idx + 1}</th>
                                                     <td className="font-semibold px-4 py-3">
-                                                        <Link 
+                                                        <Link
                                                             to={`/post-details/${ev.id}`}
                                                             className="hover:underline"
                                                         >
@@ -241,7 +280,7 @@ const ManageVolunteerPost = ({ title }) => {
                                             {events.map((ev) => (
                                                 <tr className="border border-gray-300" key={ev.id}>
                                                     <td className="px-4 py-3">
-                                                        <Link 
+                                                        <Link
                                                             to={`/post-details/${ev.id}`}
                                                             className="hover:underline"
                                                         >

@@ -30,7 +30,7 @@ const UserInfo = ({ title }) => {
                 localStorage.setItem('vh_auth_user', JSON.stringify(obj));
             } catch (_) { }
             // reload to ensure navbar and other components read updated avatar
-            // window.location.reload();
+            window.location.reload();
         } catch (err) {
             console.error(err);
             // alert('Upload thất bại: ' + (err.message || ''));

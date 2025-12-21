@@ -20,8 +20,8 @@ export const getAdminEvents = (params) => {
     return api.get('/admin/events', { params });
 };
 
-export const exportAdminEvents = (format = 'xlsx') => {
-    return api.get('/admin/events/export', { params: { format }, responseType: 'blob' });
+export const exportAdminEvents = (format = 'xlsx', extraParams = {}) => {
+    return api.get('/admin/events/export', { params: { format, ...extraParams }, responseType: 'blob' });
 };
 
 export const patchAdminEventStatus = (eventId, statusBody) => {
