@@ -77,7 +77,6 @@ const EventFeed = () => {
         fetchEvent();
     }, [eventId]);
 
-    // Check can-create permission
     useEffect(() => {
         const checkCanCreate = async () => {
             try {
@@ -123,7 +122,6 @@ const EventFeed = () => {
     // Handle image upload
     const handleImageUpload = async (file) => {
         try {
-            // prevent handleUploadAnh from notifying /user/avatar by default
             const url = await handleUploadAnh(file, { notifyUrl: null });
             return url;
         } catch (error) {

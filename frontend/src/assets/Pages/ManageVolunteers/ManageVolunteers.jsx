@@ -16,15 +16,13 @@ const ManageVolunteers = ({ title }) => {
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(null); // email của user đang xử lý
 
-    // State cho confirmation popup
     const [confirmModal, setConfirmModal] = useState({
         isOpen: false,
-        type: null, // 'ban' hoặc 'unban'
+        type: null,
         email: null,
         name: null,
     });
 
-    // Kiểm tra quyền ADMIN
     useEffect(() => {
         if (!user || user.role !== ROLE.ADMIN) {
             toast.error("Bạn không có quyền truy cập");
@@ -32,7 +30,6 @@ const ManageVolunteers = ({ title }) => {
         }
     }, [user, navigate]);
 
-    // Lấy danh sách users
     const loadUsers = async () => {
         try {
             setLoading(true);
@@ -51,13 +48,11 @@ const ManageVolunteers = ({ title }) => {
         }
     }, [user]);
 
-    // Xử lý ban user
     const handleBan = async (email) => {
         try {
             setActionLoading(email);
             await banUser(email);
             toast.success(`Đã ban ${email}`);
-            // Cập nhật state local
             setUsers((prev) =>
                 prev.map((u) => (u.email === email ? { ...u, locked: true } : u))
             );
@@ -68,7 +63,6 @@ const ManageVolunteers = ({ title }) => {
         }
     };
 
-    // Xử lý unban user
     const handleUnban = async (email) => {
         try {
             setActionLoading(email);
@@ -85,17 +79,14 @@ const ManageVolunteers = ({ title }) => {
         }
     };
 
-    // Mở modal xác nhận
     const openConfirmModal = (type, email, name) => {
         setConfirmModal({ isOpen: true, type, email, name });
     };
 
-    // Đóng modal
     const closeConfirmModal = () => {
         setConfirmModal({ isOpen: false, type: null, email: null, name: null });
     };
 
-    // Xác nhận hành động từ modal
     const handleConfirmAction = async () => {
         const { type, email } = confirmModal;
         closeConfirmModal();
@@ -106,7 +97,6 @@ const ManageVolunteers = ({ title }) => {
         }
     };
 
-    // Xuất danh sách users ra file JSON
     const exportToJSON = () => {
         const dataStr = JSON.stringify(users, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json' });
@@ -121,7 +111,6 @@ const ManageVolunteers = ({ title }) => {
         toast.success('Đã xuất file JSON');
     };
 
-    // Xuất danh sách users ra file CSV
     const exportToCSV = () => {
         if (users.length === 0) {
             toast.error('Không có dữ liệu');
@@ -155,7 +144,6 @@ const ManageVolunteers = ({ title }) => {
         toast.success('Đã xuất file CSV');
     };
 
-    // Hiển thị role badge
     const getRoleBadge = (role) => {
         const colors = {
             [ROLE.ADMIN]: "bg-red-500 text-white",
@@ -169,7 +157,6 @@ const ManageVolunteers = ({ title }) => {
         );
     };
 
-    // Hiển thị status badge
     const getStatusBadge = (locked) => {
         return locked ? (
             <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">

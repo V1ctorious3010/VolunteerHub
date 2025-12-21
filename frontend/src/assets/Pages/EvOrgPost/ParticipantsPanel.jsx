@@ -17,7 +17,6 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
         const loadReport = async () => {
             setLoading(true);
             try {
-                // Fetch APPROVED and COMPLETED participants
                 const resp = await getEventReport(selectedEvent, {
                     page: partPage,
                     size: partSize,
@@ -53,16 +52,12 @@ const ParticipantsPanel = ({ selectedEvent, currentEventObj }) => {
 
     const handleComplete = async (userEmail) => {
         try {
-            // Find the registration for this user
             const volunteer = report?.volunteers?.content?.find(v => v.email === userEmail || v.userEmail === userEmail);
             if (!volunteer) {
                 Swal.fire({ title: 'Lỗi', text: 'Không tìm thấy tình nguyện viên', icon: 'error' });
                 return;
             }
 
-            // Get registration ID from the volunteer data or find it via API
-            // For now, we'll need to pass registrationId from backend in VolunteerReportDto
-            // Assuming we add registrationId to the DTO response
             const resp = await patchRegistrationStatus(volunteer.registrationId, { status: 'COMPLETED' });
             const msg = resp?.data?.message;
 

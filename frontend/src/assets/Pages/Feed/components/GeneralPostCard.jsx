@@ -27,8 +27,6 @@ const GeneralPostCard = ({
     const navigate = useNavigate();
 
     const handleEventClick = () => {
-        // Navigate to event feed - eventId should be included in API response
-        // If not, backend needs to add it
         if (post.eventId) {
             navigate(`/event-feed/${post.eventId}`);
         } else {

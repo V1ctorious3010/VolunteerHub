@@ -24,7 +24,6 @@ const AddVolunteerPost = ({ title }) => {
     const postTitle = (form.title.value || '').trim();
     const description = (form.description.value || '').trim();
 
-    // Client-side validation (title >5 chars, description >20 chars)
     if (postTitle.length < 6) {
       toast.error('Tiêu đề phải có hơn 5 ký tự');
       form.title.focus();
@@ -42,7 +41,6 @@ const AddVolunteerPost = ({ title }) => {
     let thumbnail = "";
     if (file) {
       try {
-        // upload to cloud and get http(s) URL; do NOT notify the user-avatar endpoint
         thumbnail = await handleUploadAnh(file, { notifyUrl: null });
       } catch (err) {
         console.error('Failed to upload file', err);
@@ -50,7 +48,6 @@ const AddVolunteerPost = ({ title }) => {
       }
     }
     const noOfVolunteer = parseInt(form.noOfVolunteer.value);
-    // Validate location and number
     if (!(location || '').toString().trim()) {
       toast.error('Địa điểm không được để trống');
       form.location.focus();
@@ -66,8 +63,8 @@ const AddVolunteerPost = ({ title }) => {
       form.noOfVolunteer.focus();
       return;
     }
-    const startTimeInput = '00:00'; // default midnight
-    const endTimeInput = '00:00'; // default midnight
+    const startTimeInput = '00:00';
+    const endTimeInput = '00:00';
 
     const formatDate = (d) => {
       const dd = String(d.getDate()).padStart(2, '0');
@@ -90,10 +87,8 @@ const AddVolunteerPost = ({ title }) => {
       description,
     };
 
-    // start submitting state to prevent double submits
     setIsSubmitting(true);
     try {
-      // POST to backend
       await createEvent(newVolunteerPost);
       toast.success("Bạn đã tạo sự kiện thành công. Hãy chờ để được xét duyệt!");
       form.reset();

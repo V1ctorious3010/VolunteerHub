@@ -9,7 +9,6 @@ const VolunteerNeeds = ({ tabs }) => {
   const [direction, setDirection] = useState(1);
   const [autoAdvance, setAutoAdvance] = useState(true);
 
-  // Auto-advance tabs every 5 seconds
   useEffect(() => {
     if (!tabs || tabs.length === 0 || !autoAdvance) return;
 

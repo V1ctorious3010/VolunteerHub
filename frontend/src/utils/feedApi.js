@@ -83,7 +83,6 @@ export const deletePost = async (postId) => {
     }
 };
 
-// ========== LIKE APIs ==========
 
 /**
  * Like a post
@@ -115,7 +114,6 @@ export const unlikePost = async (postId) => {
     }
 };
 
-// ========== COMMENT APIs ==========
 
 /**
  * Get list of comments for a specific post

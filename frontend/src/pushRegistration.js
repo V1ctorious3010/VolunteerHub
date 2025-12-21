@@ -53,10 +53,8 @@ export async function registerAndSubscribe(vapidPublicKey, sendSubscriptionFn) {
 
     console.log('Service Worker registered successfully');
 
-    // Wait for service worker to be ready
     await navigator.serviceWorker.ready;
 
-    // Request notification permission
     const permission = await Notification.requestPermission();
 
     if (permission !== 'granted') {
@@ -64,11 +62,9 @@ export async function registerAndSubscribe(vapidPublicKey, sendSubscriptionFn) {
       return null;
     }
 
-    // Check if already subscribed
     let subscription = await registration.pushManager.getSubscription();
 
     if (!subscription) {
-      // Prepare applicationServerKey
       let applicationServerKey;
       try {
         if (!vapidPublicKey || typeof vapidPublicKey !== 'string') {
@@ -84,7 +80,6 @@ export async function registerAndSubscribe(vapidPublicKey, sendSubscriptionFn) {
         throw e;
       }
 
-      // Subscribe to push
       try {
         subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
@@ -99,7 +94,6 @@ export async function registerAndSubscribe(vapidPublicKey, sendSubscriptionFn) {
       console.log('Already subscribed to push');
     }
 
-    // Send subscription to backend
     if (sendSubscriptionFn) {
       await sendSubscriptionFn(subscription);
     }

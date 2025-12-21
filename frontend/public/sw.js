@@ -35,13 +35,11 @@ self.addEventListener('notificationclick', event => {
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then(clients => {
-        // Tìm tab đã mở
         for (const client of clients) {
           if (client.url.includes(self.location.origin) && 'focus' in client) {
             return client.focus();
           }
         }
-        // Mở tab mới nếu chưa có
         if (self.clients.openWindow) {
           return self.clients.openWindow(url);
         }
@@ -51,5 +49,4 @@ self.addEventListener('notificationclick', event => {
 
 self.addEventListener('pushsubscriptionchange', event => {
   console.log('Push subscription changed');
-  // Có thể tự động đăng ký lại nếu cần
 });

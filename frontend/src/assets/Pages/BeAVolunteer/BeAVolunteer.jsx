@@ -11,7 +11,6 @@ import PropTypes from "prop-types";
 
 const BeAVolunteer = ({ title }) => {
   const post = useLoaderData();
-  // safe parse of deadline -> Date
   const parseDate = (v) => {
     try {
       const d = v ? new Date(v) : new Date();
@@ -28,7 +27,6 @@ const BeAVolunteer = ({ title }) => {
     location,
     thumbnail,
     noOfVolunteer,
-    // deadline (string) handled by startDate
     description,
     orgEmail, orgName,
   } = post;
@@ -66,7 +64,6 @@ const BeAVolunteer = ({ title }) => {
       orgName,
       postId: id
     };
-    // console.log(requestVolunteerPost);
     try {
       const requestBody = {
         volunteerName,

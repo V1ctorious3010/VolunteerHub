@@ -13,13 +13,11 @@ export function usePushNotifications() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Check if push is supported
     const supported = 'serviceWorker' in navigator &&
       'PushManager' in window &&
       'Notification' in window;
     setIsSupported(supported);
 
-    // Check current subscription status
     if (supported) {
       getCurrentSubscription().then(sub => {
         setIsSubscribed(!!sub);
@@ -77,10 +75,8 @@ export function usePushNotifications() {
       const subscription = await getCurrentSubscription();
 
       if (subscription) {
-        // Remove from server first
         await unsubscribeFromServer(subscription);
 
-        // Then unsubscribe locally
         const success = await unsubscribeFromPush();
 
         if (success) {

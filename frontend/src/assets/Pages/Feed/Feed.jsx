@@ -141,7 +141,7 @@ const Feed = () => {
         }
     };
 
-    // Delete post (use SweetAlert2 confirmation)
+    // Delete post
     const handleDeletePost = async (postId) => {
         const result = await Swal.fire({
             title: "Bạn chắc chưa?",

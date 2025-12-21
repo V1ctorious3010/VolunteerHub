@@ -10,7 +10,6 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
  */
 export function getVapidPublicKey() {
   const key = import.meta.env.VITE_VAPID_PUBLIC_KEY;
-  // console.log('VAPID env:', key);
   if (!key) {
     throw new Error('VITE_VAPID_PUBLIC_KEY not found in environment');
   }

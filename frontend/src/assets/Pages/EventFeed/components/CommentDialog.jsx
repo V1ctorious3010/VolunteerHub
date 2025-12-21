@@ -66,7 +66,6 @@ const CommentDialog = ({
                 container: 'swal-high-zindex'
             },
             didOpen: () => {
-                // Ensure SweetAlert2 appears on top
                 const swalContainer = document.querySelector('.swal2-container');
                 if (swalContainer) {
                     swalContainer.style.zIndex = '99999';

@@ -10,19 +10,15 @@ import { registerAndSubscribe } from "./pushRegistration";
 import { getVapidPublicKey, sendSubscriptionToServer } from "./utils/pushApi";
 import { fetchMe } from './features/auth/authSlice';
 
-// Initialize Web Push Notifications after successful login
 const startPushWhenLoggedIn = () => {
   let previousUser = store.getState().auth?.user;
   const unsubscribe = store.subscribe(() => {
     const currentUser = store.getState().auth?.user;
-    // when user becomes non-null (login succeeded), initialize push
     if (!previousUser && currentUser) {
       (async () => {
         try {
           const vapidPublicKey = getVapidPublicKey();
           await registerAndSubscribe(vapidPublicKey, async (subscription) => {
-            // backend uses cookie-based auth (refresh token in HttpOnly cookie),
-            // so we send subscription with credentials from the client (no bearer needed)
             await sendSubscriptionToServer(subscription);
           });
           console.log('Push notifications initialized after login');

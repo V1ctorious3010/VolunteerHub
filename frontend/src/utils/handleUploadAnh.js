@@ -6,7 +6,6 @@ export default async function handleUploadAnh(file, options = {}) {
     const signatureUrl = options.signatureUrl || '/user/signature';
     const notifyUrl = options.hasOwnProperty('notifyUrl') ? options.notifyUrl : '/user/avatar';
 
-    // 1) get signature from backend
     const sigResp = await api.get(signatureUrl);
     if (!sigResp || !sigResp.data) throw new Error('Failed to get signature');
     const sig = sigResp.data;

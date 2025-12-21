@@ -17,8 +17,7 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
         const loadRegs = async () => {
             setLoading(true);
             try {
-                // Only fetch PENDING registrations
-                const rresp = await getEventRegistrations(selectedEvent, { 
+                const rresp = await getEventRegistrations(selectedEvent, {
                     page: regsPage, 
                     size: regsSize,
                     status: 'PENDING'
@@ -56,7 +55,6 @@ const RegistrationsPanel = ({ selectedEvent, currentEventObj }) => {
         try {
             const resp = await patchRegistrationStatus(registrationId, { status });
             const msg = resp?.data?.message;
-            // update local state optimistically based on returned status
             setRegistrations(prev => prev.map(x => x.registrationId === registrationId ? { ...x, status } : x));
             setRefreshCounter(c => c + 1);
             if (msg) Swal.fire({ title: 'Thông báo', text: msg, icon: 'success' });

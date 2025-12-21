@@ -17,16 +17,12 @@ const Navbar = () => {
       if (res && typeof res.then === 'function') {
         await res;
       }
-      // navigate to home and replace history so back doesn't return to protected pages
       window.location.replace('/');
     } catch (e) {
-      // still navigate even if logout thunk failed
       console.error('Logout failed', e);
       window.location.replace('/');
     }
   };
-  // ensure the app always uses light theme
-  // console.log(user);
   useEffect(() => {
     try {
       document.querySelector("html").setAttribute("data-theme", "light");

@@ -52,9 +52,7 @@ const PostDetails = ({ title2 }) => {
   };
   const formattedStart = formatDateOnly(startTime);
   const formattedEnd = formatDateOnly(endTime);
-  // console.log(post);
   const handleVolunteer = () => {
-    // console.log("I want to be a volunteer !");
     const available = typeof remaining !== 'undefined' ? remaining : noOfVolunteer;
     if (available <= 0) {
       toast.error("Sự kiện đã đủ người !");

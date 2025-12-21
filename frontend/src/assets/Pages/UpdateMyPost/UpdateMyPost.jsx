@@ -32,12 +32,10 @@ const UpdateMyPost = ({ title2 }) => {
     if (!v) return new Date();
     if (v instanceof Date) return isNaN(v) ? new Date() : v;
     const s = String(v).trim();
-    // If ISO-like date (yyyy-mm-dd...), let Date handle it
     if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
       const d = new Date(s);
       return isNaN(d) ? new Date() : d;
     }
-    // Handle dd/MM/yyyy and optional time part (e.g. "31/12/2025 00:00:00")
     const parts = s.split(' ')[0].split('/');
     if (parts.length === 3) {
       const day = parseInt(parts[0], 10);
