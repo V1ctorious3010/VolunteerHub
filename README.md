@@ -4,6 +4,7 @@
 Repo bao gồm:
 - Toàn bộ mã nguồn của dự án (Frontend + Backend).
 - File backup cơ sở dữ liệu dạng `.sql`.
+- Tài khoản và mật khẩu admin: "admin@gmail.com" / "123456aA".
 
 
 ---
