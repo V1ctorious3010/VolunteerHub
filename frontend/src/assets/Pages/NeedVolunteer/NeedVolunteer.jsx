@@ -19,7 +19,7 @@ const NeedVolunteer = ({ title }) => {
   const [search, setSearch] = useState("");
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState("");
-  const [sort, setSort] = useState("");
+  const [sort, setSort] = useState("newly");
   const [showLoader, setShowLoader] = useState(true);
 
   useEffect(() => {
@@ -197,7 +197,7 @@ const NeedVolunteer = ({ title }) => {
               <option value="newly">Mới nhất</option>
               <option value="recent">Hoạt động gần đây</option>
               <option value="featured">Nổi bật</option>
-              <option value="desc">Cũ nhất</option>
+              <option value="asc">Cũ nhất</option>
             </select>
           </div>
         </div>

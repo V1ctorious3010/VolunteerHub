@@ -10,6 +10,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const { user } = useSelector(s => s.auth);
   const role = user?.role;
+  const [mobileOpen, setMobileOpen] = useState(false);
   const handleLogout = async () => {
     try {
       const res = dispatch(logout());
@@ -33,6 +34,11 @@ const Navbar = () => {
     } catch (e) {
       // ignore if DOM not available
     }
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setMobileOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
   return (
     <div data-aos="fade-down"
@@ -40,7 +46,64 @@ const Navbar = () => {
       data-aos-easing="linear"
       data-aos-duration="1000" className="font-qs">
       <div className="navbar bg-blue-600">
-        <div className="w-1/2 justify-start md:justify-center">
+        <div className="w-1/2 justify-start md:justify-center flex items-center">
+          {/* Mobile menu toggle */}
+          <button
+            aria-label={mobileOpen ? 'Đóng menu' : 'Mở menu'}
+            onClick={() => setMobileOpen(v => !v)}
+            className="lg:hidden mr-2 p-2 text-white hover:bg-white/10 rounded-md"
+          >
+            {mobileOpen ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+          {/* Mobile menu overlay */}
+          {mobileOpen && (
+            <div className="absolute top-14 left-2 right-2 bg-white shadow-md rounded-md z-50 p-4 lg:hidden">
+              <ul className="flex flex-col gap-2">
+                <li>
+                  <Link to="/" onClick={() => setMobileOpen(false)}>Trang chủ</Link>
+                </li>
+                <li>
+                  <Link to="/need-volunteer" onClick={() => setMobileOpen(false)}>Dự án</Link>
+                </li>
+                <li>
+                  <Link to="/feed" onClick={() => setMobileOpen(false)}>Diễn đàn</Link>
+                </li>
+                {user && user.role !== ROLE.VOLUNTEER && (
+                  <>
+                    {(role === ROLE.EVENT_ORGANIZER) && (
+                      <li>
+                        <Link to="/add-volunteer-post" onClick={() => setMobileOpen(false)}>Tạo mới sự kiện</Link>
+                      </li>
+                    )}
+                    {(role === ROLE.EVENT_ORGANIZER) && (
+                      <li>
+                        <Link to="/manage-event-list" onClick={() => setMobileOpen(false)}>Quản lý sự kiện</Link>
+                      </li>
+                    )}
+                    {role === ROLE.ADMIN && (
+                      <li>
+                        <Link to="/manage-volunteers" onClick={() => setMobileOpen(false)}>Quản lý người dùng</Link>
+                      </li>
+                    )}
+                    {role === ROLE.ADMIN && (
+                      <li>
+                        <Link to="/manage-admin-events" onClick={() => setMobileOpen(false)}>Quản lý sự kiện</Link>
+                      </li>
+                    )}
+                  </>
+                )}
+              </ul>
+            </div>
+          )}
+
           <div className="dropdown">
 
             <ul
