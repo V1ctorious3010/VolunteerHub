@@ -58,7 +58,7 @@ npm run dev
 ```
 
 ### 3.6. Truy cập hệ thống
-- **Frontend:** http://localhost:5173`
+- **Frontend:** `http://localhost:5173`
 - **Backend API:** `http://localhost:5000`.
 
 ### 3.7. Thứ tự khởi động khuyến nghị
