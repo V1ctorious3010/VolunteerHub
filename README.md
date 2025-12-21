@@ -4,7 +4,8 @@
 Repo bao gồm:
 - Toàn bộ mã nguồn của dự án (Frontend + Backend).
 - File backup cơ sở dữ liệu dạng `.sql`.
-- Tài khoản và mật khẩu admin: "admin@gmail.com" / "123456aA".
+  - Tài khoản và mật khẩu admin: "admin@gmail.com" / "123456aA".
+  - Tài khoản và mật khẩu event_organizer: "event_organizer@gmail.com" / "123456aA".
 
 
 ---
@@ -23,13 +24,16 @@ Repo bao gồm:
 
 ### 3.1. Yêu cầu môi trường
 - Node.js 
-- Java 
+- Java
+  
 ### 3.2. Chuẩn bị cơ sở dữ liệu
 1. Mở MySQL.
 2. Import dữ liệu mẫu từ file `.sql` đi kèm trong dự án.
 
 ### 3.3. Khởi động Message Queue bằng Docker
-Mở terminal tại thư mục gốc của dự án (chứa file `docker-compose.yml`) và chạy:
+Chạy Docker Engine trên máy
+
+Mở terminal tại thư mục `backend` của dự án (chứa file `docker-compose.yml`) và chạy:
 
 ```bash
 docker compose up -d
@@ -64,6 +68,6 @@ npm run dev
 
 ### 3.7. Thứ tự khởi động khuyến nghị
 1. Khởi động MySQL và import database.
-2. Chạy Docker Compose để mở Message Queue.
+2. Khởi động Docker Engine và chạy Docker Compose để mở Message Queue.
 3. Chạy Backend.
 4. Chạy Frontend.
