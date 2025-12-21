@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { getAdminEvents, patchAdminEventStatus } from '../../../utils/postApi';
+import { deleteEventByAdmin } from '../../../utils/adminApi';
 import { truncateChars } from '../../../utils/textUtils';
 import { useSelector } from 'react-redux';
 import ROLE from '../../../constants/roles';
@@ -15,6 +16,7 @@ const ManageVolunteerPost = ({ title }) => {
     const [status, setStatus] = useState('');
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    const [deletingId, setDeletingId] = useState(null);
     const user = useSelector(s => s.auth.user);
     const isAdmin = user?.role === ROLE.ADMIN || (Array.isArray(user?.roles) && user.roles.includes(ROLE.ADMIN));
 
@@ -141,6 +143,28 @@ const ManageVolunteerPost = ({ title }) => {
         }
     };
 
+    const handleDelete = async (id) => {
+        const confirm = await Swal.fire({
+            title: 'Bạn có chắc muốn xóa sự kiện này?',
+            showCancelButton: true,
+            icon: 'warning',
+            confirmButtonText: 'Xóa',
+        });
+        if (!confirm.isConfirmed) return;
+
+        try {
+            setDeletingId(id);
+            await deleteEventByAdmin(id);
+            setEvents(prev => prev.filter(ev => ev.id !== id));
+            Swal.fire('Đã xóa', 'Sự kiện đã được xóa', 'success');
+        } catch (err) {
+            console.error('Delete failed', err);
+            Swal.fire('Lỗi', 'Không thể xóa sự kiện', 'error');
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
     const formatDateOnly = (v) => {
         if (!v) return "";
         const s = String(v).trim();
@@ -256,6 +280,17 @@ const ManageVolunteerPost = ({ title }) => {
                                                                 <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, 'REJECTED')}>Từ chối</button>
                                                             </div>
                                                         ) : null}
+                                                        {ev.status !== 'PENDING' ? (
+                                                            <div className="flex items-center justify-center mt-2">
+                                                                <button
+                                                                    className="px-3 py-1 bg-gray-500 text-white rounded"
+                                                                    onClick={() => handleDelete(ev.id)}
+                                                                    disabled={deletingId === ev.id}
+                                                                >
+                                                                    {deletingId === ev.id ? 'Đang xóa...' : 'Xóa'}
+                                                                </button>
+                                                            </div>
+                                                        ) : null}
                                                     </td>
                                                 </tr>
                                             ))}
@@ -293,6 +328,17 @@ const ManageVolunteerPost = ({ title }) => {
                                                             <div className="flex items-center gap-2  justify-center">
                                                                 <button className="px-3 py-1 bg-green-500 text-white rounded" onClick={() => changeStatus(ev.id, "COMING")}>Duyệt</button>
                                                                 <button className="px-3 py-1 bg-red-500 text-white rounded" onClick={() => changeStatus(ev.id, "REJECT")}>Từ chối</button>
+                                                            </div>
+                                                        ) : null}
+                                                        {ev.status !== 'PENDING' ? (
+                                                            <div className="flex items-center justify-center mt-2">
+                                                                <button
+                                                                    className="px-3 py-1 bg-gray-500 text-white rounded"
+                                                                    onClick={() => handleDelete(ev.id)}
+                                                                    disabled={deletingId === ev.id}
+                                                                >
+                                                                    {deletingId === ev.id ? 'Đang xóa...' : 'Xóa'}
+                                                                </button>
                                                             </div>
                                                         ) : null}
                                                     </td>
