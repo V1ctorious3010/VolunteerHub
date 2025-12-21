@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Helmet } from 'react-helmet';
 
 const UserInfo = ({ title }) => {
@@ -16,12 +16,19 @@ const UserInfo = ({ title }) => {
         r.readAsDataURL(f);
     };
 
+    const dispatch = useDispatch();
+
     const handleSave = async () => {
         if (!selectedFile) return alert('Chọn ảnh trước khi lưu');
         try {
             const { default: upload } = await import('../../../utils/handleUploadAnh');
             const url = await upload(selectedFile);
-            // update local storage user copy so UI reflects new avatar
+            try {
+                const updated = { ...(user || {}), avatar: url, avatarUrl: url };
+                dispatch({ type: 'auth/setUser', payload: updated });
+            } catch (e) {
+                console.error('Failed to dispatch setUser', e);
+            }
             try {
                 const raw = localStorage.getItem('vh_auth_user');
                 const obj = raw ? JSON.parse(raw) : {};
@@ -29,11 +36,10 @@ const UserInfo = ({ title }) => {
                 obj.avatarUrl = url;
                 localStorage.setItem('vh_auth_user', JSON.stringify(obj));
             } catch (_) { }
-            // reload to ensure navbar and other components read updated avatar
-            window.location.reload();
+            setPreview(url);
+            setSelectedFile(null);
         } catch (err) {
             console.error(err);
-            // alert('Upload thất bại: ' + (err.message || ''));
         }
     };
 
