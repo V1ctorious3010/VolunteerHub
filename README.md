@@ -10,11 +10,11 @@ Repo bao gồm:
 
 ## 2. Danh sách thành viên nhóm và phân công công việc
 
-| STT | Thành viên | MSSV | Nhiệm vụ | Tỷ lệ |
+| STT | Thành viên | MSSV | Nhiệm vụ | Tỷ lệ đóng góp|
 |:---:|:---|:---:|:---|:---:|
-| 1 | **Đầu Hồng Quang** | 23020135 | **Frontend Developer**<br>| **33.34%** |
-| 2 | **Đỗ Trung Kiên** | 23020085 | **Backend Developer**<br>-  | **33.33%** |
-| 3 | **Đỗ Đức Thắng** | 23020158 | **Backend Developer**<br>-  | **33.33%** |
+| 1 | **Đầu Hồng Quang** | 23020135 | **Frontend Developer**<br>| **33.33%** |
+| 2 | **Đỗ Trung Kiên** | 23020085 | **Backend Developer**<br>  | **33.33%** |
+| 3 | **Đỗ Đức Thắng** | 23020158 | **Backend Developer**<br>  | **33.33%** |
 
 ---
 
