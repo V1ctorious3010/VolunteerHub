@@ -44,7 +44,7 @@ const GeneralPostCard = ({
                     <div className="flex gap-3">
                         <Avatar
                             src={post.authorAvatar || ""}
-                            alt={post.authorName}
+                            // alt={post.authorName}
                             size="sm"
                         />
                         <div>

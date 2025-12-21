@@ -29,7 +29,7 @@ const CreatePostForm = ({ user, onSubmit, uploading }) => {
                 <div className="flex gap-3">
                     <Avatar
                         src={user.avatar || ""}
-                        alt={user.name}
+                        // alt={user.name}
                         size="sm"
                     />
                     <div className="flex-1">

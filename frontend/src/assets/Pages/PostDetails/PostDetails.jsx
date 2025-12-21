@@ -213,7 +213,7 @@ const PostDetails = ({ title2 }) => {
               </div>
             </div>
             <div className="mb-4 flex w-full items-center gap-3 flex-wrap">
-              {isVolunteer && postStatus !== 'ONGOING' ? (
+              {isVolunteer && postStatus === 'COMING' ? (
                 <Button
                   onClick={handleVolunteer}
                   color="red"
